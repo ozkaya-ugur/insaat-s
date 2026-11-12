@@ -125,7 +125,13 @@ async function renderFooterComponent() {
         };
         if (dbData && typeof dbData === 'object') {
             Object.entries(footerMap).forEach(([k, field]) => {
-                if (hasValue(dbData[k])) textData[field] = String(dbData[k]).replace(/[<>]/g, '');
+                if (hasValue(dbData[k])) {
+                    // Satır kırıları korunur, diğer HTML etiketleri temizlenir
+                    textData[field] = String(dbData[k])
+                        .replace(/<br\s*\/?>/gi, '\u0000')
+                        .replace(/[<>]/g, '')
+                        .replace(/\u0000/g, '<br>');
+                }
             });
             if (hasValue(dbData.footer_cta_btn_link)) data.ctaBtnLink = dbData.footer_cta_btn_link;
         }

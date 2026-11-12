@@ -159,3 +159,39 @@ INSERT IGNORE INTO site_settings (s_key,s_value) VALUES
 ('phone','444 33 43'),('whatsapp','904443343'),('email','info@buyapi.com.tr'),
 ('instagram','https://instagram.com/buyapitr'),('facebook','https://facebook.com/buyapiinsaat'),
 ('notify_email','');
+
+-- İletişim sayfası ve footer metinleri (panelden düzenlenebilir varsayılanlar)
+INSERT INTO site_settings (s_key,s_value) VALUES ('contact_banner_tag','BİZİMLE İLETİŞİME GEÇİN') ON DUPLICATE KEY UPDATE s_value=VALUES(s_value);
+INSERT INTO site_settings (s_key,s_value) VALUES ('contact_banner_tag_en','GET IN TOUCH WITH US') ON DUPLICATE KEY UPDATE s_value=VALUES(s_value);
+INSERT INTO site_settings (s_key,s_value) VALUES ('contact_banner_tag_ar','تواصلوا معنا') ON DUPLICATE KEY UPDATE s_value=VALUES(s_value);
+INSERT INTO site_settings (s_key,s_value) VALUES ('contact_page_title','İletişim & Ofislerimiz') ON DUPLICATE KEY UPDATE s_value=VALUES(s_value);
+INSERT INTO site_settings (s_key,s_value) VALUES ('contact_page_title_en','Contact & Our Offices') ON DUPLICATE KEY UPDATE s_value=VALUES(s_value);
+INSERT INTO site_settings (s_key,s_value) VALUES ('contact_page_title_ar','اتصل بنا ومكاتبنا') ON DUPLICATE KEY UPDATE s_value=VALUES(s_value);
+INSERT INTO site_settings (s_key,s_value) VALUES ('contact_form_title','Projenizi Birlikte Başlatalım') ON DUPLICATE KEY UPDATE s_value=VALUES(s_value);
+INSERT INTO site_settings (s_key,s_value) VALUES ('contact_form_title_en','Let\'s Start Your Project Together') ON DUPLICATE KEY UPDATE s_value=VALUES(s_value);
+INSERT INTO site_settings (s_key,s_value) VALUES ('contact_form_title_ar','لنبدأ مشروعكم معاً') ON DUPLICATE KEY UPDATE s_value=VALUES(s_value);
+INSERT INTO site_settings (s_key,s_value) VALUES ('contact_form_desc','Hayalinizdeki konut, iş merkezi veya mimari yatırımlarınız için ekibimize mesaj bırakabilirsiniz.') ON DUPLICATE KEY UPDATE s_value=VALUES(s_value);
+INSERT INTO site_settings (s_key,s_value) VALUES ('contact_form_desc_en','Leave a message for our team about your dream home, business center, or architectural investment.') ON DUPLICATE KEY UPDATE s_value=VALUES(s_value);
+INSERT INTO site_settings (s_key,s_value) VALUES ('contact_form_desc_ar','يمكنكم ترك رسالة لفريقنا بخصوص منزل أحلامكم أو مركز الأعمال أو استثماركم المعماري.') ON DUPLICATE KEY UPDATE s_value=VALUES(s_value);
+INSERT INTO site_settings (s_key,s_value) VALUES ('footer_section_tag','PROJE & İŞ BİRLİĞİ') ON DUPLICATE KEY UPDATE s_value=VALUES(s_value);
+INSERT INTO site_settings (s_key,s_value) VALUES ('footer_section_tag_en','PROJECT & COLLABORATION') ON DUPLICATE KEY UPDATE s_value=VALUES(s_value);
+INSERT INTO site_settings (s_key,s_value) VALUES ('footer_section_tag_ar','المشروع والتعاون') ON DUPLICATE KEY UPDATE s_value=VALUES(s_value);
+INSERT INTO site_settings (s_key,s_value) VALUES ('footer_cta_title','Geleceği Şekillendiren Yapılarda <br> İmzanız Olsun.') ON DUPLICATE KEY UPDATE s_value=VALUES(s_value);
+INSERT INTO site_settings (s_key,s_value) VALUES ('footer_cta_title_en','Leave Your Mark on the Buildings of Tomorrow.') ON DUPLICATE KEY UPDATE s_value=VALUES(s_value);
+INSERT INTO site_settings (s_key,s_value) VALUES ('footer_cta_title_ar','ليكن لك بصمة في إعمار المستقبل.') ON DUPLICATE KEY UPDATE s_value=VALUES(s_value);
+INSERT INTO site_settings (s_key,s_value) VALUES ('footer_cta_desc','Hayalinizdeki lüks konut, iş merkezi veya endüstriyel proje için mimari ekibimizle doğrudan iletişime geçin.') ON DUPLICATE KEY UPDATE s_value=VALUES(s_value);
+INSERT INTO site_settings (s_key,s_value) VALUES ('footer_cta_desc_en','Contact our architectural team directly to bring your dream luxury home, business center, or industrial project to life.') ON DUPLICATE KEY UPDATE s_value=VALUES(s_value);
+INSERT INTO site_settings (s_key,s_value) VALUES ('footer_cta_desc_ar','تواصلوا مباشرة مع فريقنا المعماري من أجل مشروع أحلامكم السكني الفاخر، أو التجاري، أو الصناعي.') ON DUPLICATE KEY UPDATE s_value=VALUES(s_value);
+INSERT INTO site_settings (s_key,s_value) VALUES ('footer_cta_btn_text','Projenizi Başlatın') ON DUPLICATE KEY UPDATE s_value=VALUES(s_value);
+INSERT INTO site_settings (s_key,s_value) VALUES ('footer_cta_btn_text_en','Start your project') ON DUPLICATE KEY UPDATE s_value=VALUES(s_value);
+INSERT INTO site_settings (s_key,s_value) VALUES ('footer_cta_btn_text_ar','ابتدئ مشروعك') ON DUPLICATE KEY UPDATE s_value=VALUES(s_value);
+INSERT INTO site_settings (s_key,s_value) VALUES ('footer_brand_desc','35 yılı aşkın mühendislik birikimiyle; teknik inovasyonu mimari estetikle buluşturan prestij projeleri üretiyoruz.') ON DUPLICATE KEY UPDATE s_value=VALUES(s_value);
+INSERT INTO site_settings (s_key,s_value) VALUES ('footer_brand_desc_en','With over 35 years of engineering expertise, we create prestigious projects that fuse technical innovation with architectural aesthetics.') ON DUPLICATE KEY UPDATE s_value=VALUES(s_value);
+INSERT INTO site_settings (s_key,s_value) VALUES ('footer_brand_desc_ar','مع أكثر من 35 عاماً من الخبرة الهندسية؛ نصنع مشاريع فاخرة تمزج بين الابتكار التكنولوجي والجماليات المعمارية.') ON DUPLICATE KEY UPDATE s_value=VALUES(s_value);
+INSERT INTO site_settings (s_key,s_value) VALUES ('footer_copy_text','© 2026 BUYAPI İNŞAAT A.Ş. • TÜM HAKLARI SAKLIDIR.') ON DUPLICATE KEY UPDATE s_value=VALUES(s_value);
+INSERT INTO site_settings (s_key,s_value) VALUES ('footer_copy_text_en','© 2026 BUYAPI İNŞAAT A.Ş. • ALL RIGHTS RESERVED.') ON DUPLICATE KEY UPDATE s_value=VALUES(s_value);
+INSERT INTO site_settings (s_key,s_value) VALUES ('footer_copy_text_ar','© 2026 BUYAPI İNŞAAT A.Ş. • جميع الحقوق محفوظة.') ON DUPLICATE KEY UPDATE s_value=VALUES(s_value);
+INSERT INTO site_settings (s_key,s_value) VALUES ('footer_tagline','ARCHITECTURAL PRESTIGE & ENGINEERING') ON DUPLICATE KEY UPDATE s_value=VALUES(s_value);
+INSERT INTO site_settings (s_key,s_value) VALUES ('footer_tagline_en','ARCHITECTURAL PRESTIGE & ENGINEERING') ON DUPLICATE KEY UPDATE s_value=VALUES(s_value);
+INSERT INTO site_settings (s_key,s_value) VALUES ('footer_tagline_ar','ARCHITECTURAL PRESTIGE & ENGINEERING') ON DUPLICATE KEY UPDATE s_value=VALUES(s_value);
+INSERT INTO site_settings (s_key,s_value) VALUES ('footer_cta_btn_link','iletisim.html') ON DUPLICATE KEY UPDATE s_value=VALUES(s_value);
