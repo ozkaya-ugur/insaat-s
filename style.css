@@ -3319,7 +3319,10 @@ body.detail-page-body {
     .hero-content,
     .slide-caption,
     .carousel-caption,
-    [class*="content"] {
+    .slider [class*="content"],
+    .hero-slider [class*="content"],
+    .swiper-container [class*="content"],
+    .carousel [class*="content"] {
         position: absolute !important;
         bottom: 110px !important; /* Yazı ve butonu 110px yukarı çekiyoruz */
         left: 0 !important;
@@ -3328,6 +3331,17 @@ body.detail-page-body {
         margin: 0 auto !important;
         z-index: 10 !important;
         text-align: left !important;
+    }
+
+    /* İletişim formu ve ofis kolonu mobilde de normal akışta kalmalı:
+       mutlak konumlandırma formu ofis kartlarının üzerine bindiriyordu. */
+    .contact-form-card,
+    .contact-info-col {
+        position: static !important;
+        bottom: auto !important;
+        left: auto !important;
+        right: auto !important;
+        z-index: auto !important;
     }
 
     /* Yazı boyutunu mobilde hizalama */
