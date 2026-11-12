@@ -16,6 +16,20 @@ $FIELDS_CONTACT = [
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     csrf_check();
 
+    // Test e-postası gönderimi
+    if (($_POST['action'] ?? '') === 'test_mail') {
+        $to = trim((string)($_POST['test_to'] ?? ''));
+        if ($to === '') $to = setting('notify_email');
+        if (!filter_var($to, FILTER_VALIDATE_EMAIL)) {
+            flash('Geçerli bir test e-posta adresi girin.', 'err');
+        } else {
+            $res = send_mail($to, 'BUYAPI - Test e-postası', "Bu mesaj BUYAPI yönetim panelinden gönderilen bir test e-postasıdır.\nTarih: " . date('d.m.Y H:i'));
+            if ($res['ok']) flash('Test e-postası gönderildi: ' . $to . ' (' . ($res['transport'] ?? '') . ')');
+            else flash('Test e-postası gönderilemedi: ' . ($res['response'] ?? 'bilinmeyen hata'), 'err');
+        }
+        redirect('settings.php');
+    }
+
     // 1. İletişim & Sosyal Medya
     foreach ($FIELDS_CONTACT as $k => [$l, $t]) {
         // Alan formda yoksa mevcut değeri koru (kısmi gönderimlerde veri kaybını önler)
@@ -310,5 +324,41 @@ admin_header('Site & Sayfa Ayarları', 'settings');
     <button class="btn"><i class="fa-solid fa-floppy-disk"></i> Tüm Ayarları Kaydet</button>
   </div>
 </form>
+
+<?php
+$mailLog = [];
+try { $mailLog = q('SELECT * FROM mail_log ORDER BY id DESC LIMIT 8')->fetchAll(); } catch (Throwable $ex) {}
+?>
+<div class="card" style="margin-top:24px">
+  <div class="row between" style="margin-bottom:14px">
+    <h2><i class="fa-solid fa-paper-plane" style="color:var(--gold)"></i> Bildirim E-postası Testi</h2>
+    <span class="muted">Form mesajları bu adrese iletilir</span>
+  </div>
+  <form method="post" class="row" style="gap:10px;align-items:flex-end;flex-wrap:wrap">
+    <?= csrf_field() ?>
+    <input type="hidden" name="action" value="test_mail">
+    <div class="field" style="flex:1;min-width:260px;margin:0">
+      <label>Test Alıcısı</label>
+      <input type="email" name="test_to" value="<?= e(setting('notify_email')) ?>" placeholder="ornek@alanadi.com">
+    </div>
+    <button class="btn"><i class="fa-solid fa-paper-plane"></i> Test Maili Gönder</button>
+  </form>
+  <table class="resp" style="margin-top:16px">
+    <thead><tr><th>Tarih</th><th>Alıcı</th><th>Durum</th><th>Kanall</th><th>Yanıt</th></tr></thead>
+    <tbody>
+    <?php foreach ($mailLog as $ml): ?>
+      <tr>
+        <td class="muted"><?= e(date('d.m.Y H:i', strtotime($ml['created_at']))) ?></td>
+        <td><?= e($ml['to_email']) ?></td>
+        <td><span class="pill" style="background:<?= $ml['status'] === 'sent' ? 'rgba(80,200,120,0.18)' : 'rgba(220,80,80,0.18)' ?>;color:<?= $ml['status'] === 'sent' ? '#6ede9b' : '#ff8f8f' ?>"><?= $ml['status'] === 'sent' ? 'Gönderildi' : 'Başarısız' ?></span></td>
+        <td class="muted"><?= e($ml['transport']) ?></td>
+        <td class="muted" style="max-width:320px;overflow:hidden;text-overflow:ellipsis"><?= e($ml['response']) ?></td>
+      </tr>
+    <?php endforeach; if (!$mailLog): ?>
+      <tr><td colspan="5" class="muted" style="text-align:center;padding:20px">Henüz e-posta kaydı yok.</td></tr>
+    <?php endif; ?>
+    </tbody>
+  </table>
+</div>
 
 <?php admin_footer(); ?>

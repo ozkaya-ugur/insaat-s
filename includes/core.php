@@ -4,6 +4,19 @@ require_once __DIR__ . '/../config.php';
 if (DEBUG) { ini_set('display_errors', 1); error_reporting(E_ALL); }
 else { ini_set('display_errors', 0); }
 
+// ---------- Güvenlik başlıkları ----------
+if (!headers_sent()) {
+    header_remove('X-Powered-By');
+    header('X-Content-Type-Options: nosniff');
+    header('X-Frame-Options: SAMEORIGIN');
+    header('Referrer-Policy: strict-origin-when-cross-origin');
+    header('Permissions-Policy: geolocation=(), microphone=(), camera=()');
+    header("Content-Security-Policy: frame-ancestors 'self'; object-src 'none'; base-uri 'self'");
+    if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') {
+        header('Strict-Transport-Security: max-age=31536000; includeSubDomains');
+    }
+}
+
 // mbstring eklentisi kapalı olan sunucular için UTF-8 uyumlu yedek fonksiyonlar
 if (!function_exists('mb_substr')) {
     function _u8_chars(string $s): array {
@@ -105,6 +118,133 @@ function flash(?string $msg = null, string $type = 'ok') {
 }
 
 function redirect(string $url): void { header('Location: ' . $url); exit; }
+
+
+// ---------- E-posta gönderimi (SMTP) ----------
+// Sunucuda sendmail_path=/bin/true olduğu için PHP mail() sessizce hiçbir şey yapmıyor.
+// Bu yüzden mesajlar doğrudan SMTP ile teslim edilir: önce yerel aktarıcı (127.0.0.1:25),
+// reddedilirse alıcı alan adının MX sunucusu denenir.
+function smtp_read($fp): string {
+    $out = '';
+    while (($line = fgets($fp, 2048)) !== false) {
+        $out .= $line;
+        if (strlen($line) < 4 || $line[3] === ' ') break;
+    }
+    return $out;
+}
+
+function smtp_cmd($fp, string $cmd): string {
+    fwrite($fp, $cmd . "\r\n");
+    return smtp_read($fp);
+}
+
+function smtp_code(string $resp): string { return substr(trim($resp), 0, 3); }
+
+function smtp_deliver(string $host, int $port, string $from, string $to, string $data, int $timeout = 12): array {
+    $errno = 0; $errstr = '';
+    $fp = @fsockopen($host, $port, $errno, $errstr, $timeout);
+    if (!$fp) return ['ok' => false, 'code' => 'conn', 'response' => "Bağlantı kurulamadı ($host:$port) $errstr"];
+    stream_set_timeout($fp, $timeout);
+    $banner = smtp_read($fp);
+    if (smtp_code($banner) !== '220') { fclose($fp); return ['ok' => false, 'code' => smtp_code($banner), 'response' => trim($banner)]; }
+    $ehlo = smtp_cmd($fp, 'EHLO ' . (parse_url(SITE_URL, PHP_URL_HOST) ?: 'localhost'));
+    if (smtp_code($ehlo) !== '250') { $ehlo = smtp_cmd($fp, 'HELO ' . (parse_url(SITE_URL, PHP_URL_HOST) ?: 'localhost')); }
+    $r = smtp_cmd($fp, 'MAIL FROM:<' . $from . '>');
+    if (smtp_code($r) !== '250') { smtp_cmd($fp, 'QUIT'); fclose($fp); return ['ok' => false, 'code' => smtp_code($r), 'response' => trim($r)]; }
+    $r = smtp_cmd($fp, 'RCPT TO:<' . $to . '>');
+    if (!in_array(smtp_code($r), ['250', '251'], true)) { smtp_cmd($fp, 'QUIT'); fclose($fp); return ['ok' => false, 'code' => smtp_code($r), 'response' => trim($r)]; }
+    $r = smtp_cmd($fp, 'DATA');
+    if (smtp_code($r) !== '354') { smtp_cmd($fp, 'QUIT'); fclose($fp); return ['ok' => false, 'code' => smtp_code($r), 'response' => trim($r)]; }
+    $r = smtp_cmd($fp, $data . "\r\n.");
+    smtp_cmd($fp, 'QUIT');
+    fclose($fp);
+    return ['ok' => smtp_code($r) === '250', 'code' => smtp_code($r), 'response' => trim($r)];
+}
+
+function mx_hosts(string $domain): array {
+    $hosts = [];
+    if (function_exists('dns_get_record')) {
+        foreach ((array)@dns_get_record($domain, DNS_MX) as $mx) {
+            if (!empty($mx['target'])) $hosts[(int)($mx['pri'] ?? 0)] = rtrim($mx['target'], '.');
+        }
+    }
+    if (!$hosts && function_exists('getmxrr')) {
+        $list = []; $weights = [];
+        if (@getmxrr($domain, $list, $weights)) foreach ($list as $i => $h) $hosts[(int)($weights[$i] ?? 0)] = rtrim($h, '.');
+    }
+    ksort($hosts);
+    return array_values($hosts);
+}
+
+function mail_log_write(string $to, string $subject, array $res, string $transport): void {
+    try {
+        q('INSERT INTO mail_log (to_email,subject,status,transport,response,ip) VALUES (?,?,?,?,?,?)', [
+            mb_substr($to, 0, 190), mb_substr($subject, 0, 190),
+            $res['ok'] ? 'sent' : 'failed', mb_substr($transport, 0, 120),
+            mb_substr((string)($res['response'] ?? ''), 0, 500), client_ip(),
+        ]);
+    } catch (Throwable $ex) { /* tablo yoksa e-posta akışını engelleme */ }
+}
+
+function send_mail(string $to, string $subject, string $body, string $replyTo = '', string $fromName = 'BUYAPI'): array {
+    $to = trim($to);
+    if (!filter_var($to, FILTER_VALIDATE_EMAIL)) return ['ok' => false, 'response' => 'Geçersiz alıcı adresi'];
+
+    $from = setting('email', 'info@buyapi.com.tr');
+    if (!filter_var($from, FILTER_VALIDATE_EMAIL)) $from = 'info@buyapi.com.tr';
+    $host = parse_url(SITE_URL, PHP_URL_HOST) ?: 'localhost';
+    $domain = preg_replace('/^www\./', '', $host);
+
+    $headers = [
+        'From: =?UTF-8?B?' . base64_encode($fromName) . '?= <' . $from . '>',
+        'To: <' . $to . '>',
+        'Subject: =?UTF-8?B?' . base64_encode($subject) . '?=',
+        'Date: ' . date('r'),
+        'Message-ID: <' . bin2hex(random_bytes(10)) . '@' . $domain . '>',
+        'MIME-Version: 1.0',
+        'Content-Type: text/plain; charset=UTF-8',
+        'Content-Transfer-Encoding: 8bit',
+    ];
+    if ($replyTo !== '' && filter_var($replyTo, FILTER_VALIDATE_EMAIL)) {
+        $headers[] = 'Reply-To: <' . str_replace(["\r", "\n"], '', $replyTo) . '>';
+    }
+    $data = implode("\r\n", $headers) . "\r\n\r\n" . str_replace("\n", "\r\n", $body);
+
+    $res = smtp_deliver('127.0.0.1', 25, $from, $to, $data);
+    $transport = 'relay:127.0.0.1';
+    if (!$res['ok']) {
+        $mxDomain = substr(strrchr($to, '@') ?: '', 1);
+        foreach (mx_hosts($mxDomain) as $mx) {
+            $res = smtp_deliver($mx, 25, $from, $to, $data);
+            $transport = 'mx:' . $mx;
+            if ($res['ok']) break;
+        }
+    }
+    if (!$res['ok'] && function_exists('mail')) {
+        $ok = @mail($to, '=?UTF-8?B?' . base64_encode($subject) . '?=', $body, $headers[0] . "\r\nContent-Type: text/plain; charset=UTF-8");
+        $res = ['ok' => (bool)$ok, 'response' => 'mail() fallback'];
+        $transport = 'mail()';
+    }
+    mail_log_write($to, $subject, $res, $transport);
+    return $res + ['transport' => $transport];
+}
+
+// ---------- Basit istek sınırlama (IP bazlı) ----------
+function throttle_count(string $key, int $windowSec): int {
+    try {
+        $w = max(1, (int)$windowSec);
+        return (int)q("SELECT COUNT(*) FROM login_attempts WHERE k=? AND created_at > (NOW() - INTERVAL $w SECOND)", [$key])->fetchColumn();
+    } catch (Throwable $ex) { return 0; }
+}
+function throttle_hit(string $key): void {
+    try {
+        q('INSERT INTO login_attempts (k,ip) VALUES (?,?)', [$key, client_ip()]);
+        if (random_int(1, 20) === 1) q('DELETE FROM login_attempts WHERE created_at < (NOW() - INTERVAL 1 DAY)');
+    } catch (Throwable $ex) { }
+}
+function throttle_clear(string $key): void {
+    try { q('DELETE FROM login_attempts WHERE k=?', [$key]); } catch (Throwable $ex) { }
+}
 
 // ---------- Dosya yükleme ----------
 function upload_file(string $field, array $allowedExt, string $sub = ''): ?string {

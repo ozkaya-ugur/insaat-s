@@ -18,7 +18,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $_SESSION['fails'] = $_SESSION['fails'] ?? 0;
     $_SESSION['lock_until'] = $_SESSION['lock_until'] ?? 0;
 
-    if (time() < $_SESSION['lock_until']) {
+    // IP bazlı koruma (çerez silinse de devre dışı kalmaz): 15 dakikada 10 hatalı deneme
+    $throttleKey = 'login:' . client_ip();
+    if (throttle_count($throttleKey, 900) >= 10) {
+        $error = 'Çok fazla hatalı giriş denemesi. Lütfen 15 dakika sonra tekrar deneyin.';
+    } elseif (time() < $_SESSION['lock_until']) {
         $error = 'Çok fazla hatalı deneme. Lütfen ' . ($_SESSION['lock_until'] - time()) . ' saniye bekleyin.';
     } else {
         $u = trim($_POST['username'] ?? '');
@@ -28,10 +32,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             session_regenerate_id(true);
             $_SESSION['admin'] = ['id' => (int)$row['id'], 'username' => $row['username'], 'name' => $row['full_name']];
             $_SESSION['fails'] = 0;
+            throttle_clear($throttleKey);
             q('UPDATE admins SET last_login=NOW() WHERE id=?', [$row['id']]);
             redirect('index.php');
         }
         $_SESSION['fails']++;
+        throttle_hit($throttleKey);
         if ($_SESSION['fails'] >= 5) { $_SESSION['lock_until'] = time() + 60; $_SESSION['fails'] = 0; }
         $error = 'Kullanıcı adı veya şifre hatalı.';
         usleep(400000);

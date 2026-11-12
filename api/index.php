@@ -376,10 +376,10 @@ try {
 
         $notify = setting('notify_email');
         if ($notify && filter_var($notify, FILTER_VALIDATE_EMAIL)) {
-            $subj = ($src === 'kentsel_donusum') ? 'BUYAPI - Yeni Kentsel Dönüşüm Başvurusu' : 'BUYAPI - Yeni İletişim Mesajı';
-            $body = "Ad: $name\nTelefon: $phone\nE-posta: $email\nKonu / Proje: $proj\nKaynak: $src\n\n$msg";
-            @mail($notify, '=?UTF-8?B?' . base64_encode($subj) . '?=', $body,
-                "Content-Type: text/plain; charset=UTF-8\r\n" . ($email ? 'Reply-To: ' . str_replace(["\r","\n"], '', $email) . "\r\n" : ''));
+            $labels = ['kentsel_donusum' => 'Yeni Kentsel Dönüşüm Başvurusu', 'proje_detay' => 'Yeni Proje Talebi'];
+            $subj = 'BUYAPI - ' . ($labels[$src] ?? 'Yeni İletişim Mesajı') . ($proj !== '' ? ' | ' . mb_substr($proj, 0, 60) : '');
+            $body = "Ad: $name\nTelefon: $phone\nE-posta: $email\nKonu / Proje: $proj\nKaynak: $src\nIP: " . client_ip() . "\n\n$msg";
+            send_mail($notify, $subj, $body, $email);
         }
         out(['ok' => true, 'id' => $messageId, 'message' => 'Mesajınız başarıyla iletildi.']);
     }

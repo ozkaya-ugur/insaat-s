@@ -1,0 +1,35 @@
+# ---------- Güvenlik başlıkları ----------
+<IfModule mod_headers.c>
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set X-Frame-Options "SAMEORIGIN"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+  Header always set Permissions-Policy "geolocation=(), microphone=(), camera=()"
+  Header always set Content-Security-Policy "frame-ancestors 'self'; object-src 'none'; base-uri 'self'"
+  Header always unset X-Powered-By
+  Header always unset Server
+  <IfModule mod_setenvif.c>
+    SetEnvIfExpr "%{HTTPS} == 'on'" is_https
+    Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains" env=is_https
+  </IfModule>
+</IfModule>
+
+# ---------- Dizin listeleme kapalı ----------
+Options -Indexes
+
+# ---------- Hassas dosyalara erişim yok ----------
+<FilesMatch "\.(sql|md|log|ini|bak|old|sh|py|json|lock|yml|yaml)$">
+  Require all denied
+</FilesMatch>
+<FilesMatch "^(config\.php|database\.sql|README\.md)$">
+  Require all denied
+</FilesMatch>
+
+# ---------- Gizli klasörler (.git, .config vb.) ----------
+RedirectMatch 403 /\.[^/]+(/|$)
+
+# ---------- Yükleme klasöründe betik çalıştırma yok ----------
+<IfModule mod_php.c>
+  <Directory "uploads">
+    php_flag engine off
+  </Directory>
+</IfModule>
