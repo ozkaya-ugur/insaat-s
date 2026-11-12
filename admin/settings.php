@@ -65,6 +65,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'office_istanbul_badge', 'office_istanbul_city', 'office_istanbul_title', 'office_istanbul_address', 'office_istanbul_map_link', 'office_istanbul_embed'
     ];
 
+    $pp = (int)($_POST['projects_per_page'] ?? 9);
+    if ($pp < 3) $pp = 3;
+    if ($pp > 48) $pp = 48;
+    q('INSERT INTO site_settings (s_key,s_value) VALUES (?,?) ON DUPLICATE KEY UPDATE s_value=VALUES(s_value)', ['projects_per_page', (string)$pp]);
+
     foreach ($officeKeys as $ok) {
         if (isset($_POST[$ok])) {
             q('INSERT INTO site_settings (s_key,s_value) VALUES (?,?) ON DUPLICATE KEY UPDATE s_value=VALUES(s_value)', [$ok, trim($_POST[$ok])]);
@@ -192,6 +197,11 @@ admin_header('Site & Sayfa Ayarları', 'settings');
   <div class="card">
     <div class="row between" style="margin-bottom:14px">
       <h2><i class="fa-solid fa-layer-group" style="color:var(--gold)"></i> Projeler & Kentsel Dönüşüm Sayfa Metinleri</h2>
+      <div class="field" style="margin-top:10px;max-width:280px">
+        <label>Projeler Sayfası - Sayfa Başına Proje</label>
+        <input type="number" name="projects_per_page" min="3" max="48" step="1" value="<?= e(setting('projects_per_page', '9')) ?>">
+        <div class="hint">İzin verilen aralık: 3 - 48. Varsayılan: 9</div>
+      </div>
       <span class="muted">/projeler.html banner alanı ve /kentsel-donusum.html bölüm başlıkları</span>
     </div>
 

@@ -142,3 +142,15 @@ tr:hover td{background:rgba(255,255,255,.02)}
 .dropzone .dz-preview:empty{display:none}
 .dropzone .dz-item{display:flex;flex-direction:column;gap:4px;max-width:160px;font-size:11px;word-break:break-all}
 .dropzone .dz-item img,.dropzone .dz-item video{width:160px;height:90px;object-fit:cover;border-radius:6px;background:#000}
+
+
+.table-wrap{width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.table-wrap > table{min-width:100%}
+.projects-table td,.projects-table th,.pages-table td,.pages-table th{vertical-align:middle}
+.table-actions{justify-content:flex-end;flex-wrap:nowrap;white-space:nowrap;gap:8px}
+.table-actions .btn{white-space:nowrap}
+.projects-table .drag-handle{border:1px solid var(--line);background:var(--panel2);color:var(--dim);border-radius:6px;padding:6px 8px;cursor:grab}
+.projects-table tr.dragging{opacity:.55}
+.projects-table tr.dragging td{background:rgba(197,160,89,.08)}
+.projects-table .drag-handle:active{cursor:grabbing}
+@media(min-width:901px){.table-wrap{overflow-x:visible}}

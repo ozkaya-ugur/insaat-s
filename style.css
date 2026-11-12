@@ -637,8 +637,10 @@ html {
 .showcase-arrows button { background: var(--card-glass); backdrop-filter: blur(10px); border: 1px solid var(--border-hairline); color: var(--text-white); width: 48px; height: 48px; cursor: pointer; transition: all 0.3s ease; }
 .showcase-arrows button:hover { border-color: var(--accent-gold); color: var(--accent-gold); background: rgba(197, 160, 89, 0.15); }
 
-.showcase-slider-wrapper { width: 100%; overflow: hidden; position: relative; cursor: grab; }
+.showcase-slider-wrapper { width: 100%; overflow: hidden; position: relative; cursor: grab; touch-action: pan-y; user-select: none; }
 .showcase-track { display: flex; gap: 30px; transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1); will-change: transform; }
+.showcase-slider-wrapper.dragging{cursor:grabbing}
+.showcase-slider-wrapper.dragging .showcase-track{transition:none}
 
 .showcase-card {
     flex: 0 0 calc((100% - 60px) / 3);
@@ -4469,3 +4471,10 @@ body.detail-page-body {
     transition: color 0.3s ease;
 }
 .footer-credit a:hover { color: #ffffff; }
+
+
+.projects-pagination{margin-top:28px;padding:14px;border:1px solid var(--border-hairline);background:rgba(255,255,255,.02)}
+.projects-pagination-top{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.projects-pagination-controls{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap}
+.projects-page-numbers{display:flex;gap:6px;flex-wrap:wrap;justify-content:center}
+.projects-page-numbers .page-num.active{background:var(--accent-gold);color:#000;border-color:var(--accent-gold)}

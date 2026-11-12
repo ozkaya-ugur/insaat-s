@@ -133,7 +133,7 @@ admin_header('Sayfa Yönetimi', 'pages');
 $pages = q('SELECT * FROM pages ORDER BY sort_order ASC, id ASC')->fetchAll();
 $v = fn($k, $d = '') => e($editPage[$k] ?? $d);
 ?>
-<div class="grid g2" style="align-items:start">
+<div class="grid" style="align-items:start">
 
   <div class="card">
     <div class="row between" style="margin-bottom:12px">
@@ -312,7 +312,8 @@ $v = fn($k, $d = '') => e($editPage[$k] ?? $d);
       <span class="muted" style="font-size:0.85rem"><i class="fa-solid fa-circle-info"></i> Bu listede aktif/pasif tüm sayfalar görünür.</span>
     </div>
 
-    <table class="resp">
+    <div class="table-wrap">
+    <table class="resp pages-table">
       <thead>
         <tr>
           <th>Başlık</th>
@@ -348,7 +349,7 @@ $v = fn($k, $d = '') => e($editPage[$k] ?? $d);
               <?= csrf_field() ?>
               <input type="hidden" name="action" value="toggle_menu">
               <input type="hidden" name="id" value="<?= (int)$p['id'] ?>">
-              <button class="btn ghost sm" type="submit" style="padding:6px 10px;white-space:nowrap;min-width:128px">
+              <button class="btn ghost sm" type="submit" style="padding:6px 10px;white-space:nowrap">
                 <?= $p['show_in_menu'] ? 'Menüden Gizle' : 'Menüde Göster' ?>
               </button>
             </form>
@@ -358,7 +359,7 @@ $v = fn($k, $d = '') => e($editPage[$k] ?? $d);
               <?= csrf_field() ?>
               <input type="hidden" name="action" value="toggle_active">
               <input type="hidden" name="id" value="<?= (int)$p['id'] ?>">
-              <button class="btn ghost sm" type="submit" style="padding:6px 10px;white-space:nowrap;min-width:128px">
+              <button class="btn ghost sm" type="submit" style="padding:6px 10px;white-space:nowrap">
                 <?= $p['is_active'] ? 'Yayından Kaldır' : 'Yayına Al' ?>
               </button>
             </form>
@@ -382,6 +383,7 @@ $v = fn($k, $d = '') => e($editPage[$k] ?? $d);
       <?php endforeach; ?>
       </tbody>
     </table>
+    </div>
   </div>
 </div>
 

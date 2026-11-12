@@ -131,6 +131,18 @@
                 </div>
             </div>
 
+            <div class="projects-pagination" id="projectsPagination" style="display:none">
+                <div class="projects-pagination-top">
+                    <span id="projectsPaginationSummary" class="muted"></span>
+                    <span id="projectsPaginationIndicator" class="muted"></span>
+                </div>
+                <div class="projects-pagination-controls">
+                    <button type="button" class="btn ghost sm" id="projectsPrevPage">Önceki</button>
+                    <div id="projectsPageNumbers" class="projects-page-numbers"></div>
+                    <button type="button" class="btn ghost sm" id="projectsNextPage">Sonraki</button>
+                </div>
+            </div>
+
             <!-- 3. HARİTA GÖRÜNTÜSÜ (HIGHCHARTS 81 İL VEKTOREL HARİTA) -->
             <div class="view-container view-map" id="viewMap">
                 <div class="full-map-layout">
@@ -167,6 +179,10 @@
         let allProjects = [];
         let mapChartInstance = null;
         let currentStatusFilter = 'all';
+        let currentPage = 1;
+        let projectsPerPage = 9;
+        let lastFiltered = [];
+
 
         // İl kodları farklı kaynaklardan gelebildiği için tek biçime normalize edilir.
         const CITY_FILTER_MAP = {
@@ -207,6 +223,8 @@
                         const bh = document.getElementById('projectsBannerTitle');
                         if (bt && st.projects_banner_tag) { bt.innerText = st.projects_banner_tag; bt.removeAttribute('data-i18n'); }
                         if (bh && st.projects_banner_title) { bh.innerText = st.projects_banner_title; bh.removeAttribute('data-i18n'); }
+                        const ppp = parseInt(st.projects_per_page || '9', 10);
+                        projectsPerPage = Number.isFinite(ppp) ? Math.max(3, Math.min(48, ppp)) : 9;
                     }
                 } catch (e) { console.warn('Projeler sayfası ayarları çekilemedi:', e); }
 
@@ -214,6 +232,9 @@
                 if (!response.ok) throw new Error("API Yükleme Hatası");
                 
                 allProjects = await response.json();
+                const sp = new URLSearchParams(window.location.search);
+                const qp = parseInt(sp.get('sayfa') || '1', 10);
+                currentPage = Number.isFinite(qp) && qp > 0 ? qp : 1;
                 applyFilters();
             } catch (err) {
                 console.error("Projeler veritabanından çekilemedi:", err);
@@ -246,12 +267,85 @@
                 return matchStatus && matchLoc && matchType;
             });
 
-            renderGrid(filtered);
-            renderList(filtered);
+            lastFiltered = filtered;
+            const pageData = paginateProjects(filtered);
+            renderGrid(pageData.items, pageData.startIndex);
+            renderList(pageData.items, pageData.startIndex);
+            renderPagination(pageData);
+        }
+
+        
+
+        function t(key, fallback) {
+            const lang = localStorage.getItem('selectedLang') || window.currentLang || 'tr';
+            return (window.UI_TRANSLATIONS?.[lang]?.[key]) || (window.UI_TRANSLATIONS?.tr?.[key]) || fallback;
+        }
+
+        function paginateProjects(items) {
+            const total = items.length;
+            const per = Math.max(3, Math.min(48, projectsPerPage || 9));
+            const pages = Math.max(1, Math.ceil(total / per));
+            if (currentPage > pages) currentPage = pages;
+            if (currentPage < 1) currentPage = 1;
+            const start = (currentPage - 1) * per;
+            const sliced = items.slice(start, start + per);
+            return { items: sliced, total, pages, currentPage, start: start + 1, end: start + sliced.length, startIndex: start };
+        }
+
+        function updatePageQuery(page) {
+            const u = new URL(window.location.href);
+            if (page <= 1) u.searchParams.delete('sayfa');
+            else u.searchParams.set('sayfa', String(page));
+            history.pushState({ sayfa: page }, '', u);
+        }
+
+        function smoothScrollViews() {
+            const target = document.querySelector('.view-container.active');
+            if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function renderPagination(meta) {
+            const box = document.getElementById('projectsPagination');
+            const summary = document.getElementById('projectsPaginationSummary');
+            const indicator = document.getElementById('projectsPaginationIndicator');
+            const prev = document.getElementById('projectsPrevPage');
+            const next = document.getElementById('projectsNextPage');
+            const nums = document.getElementById('projectsPageNumbers');
+            if (!box || !summary || !indicator || !prev || !next || !nums) return;
+
+            if (!meta.total || meta.pages <= 1) {
+                box.style.display = 'none';
+                return;
+            }
+            box.style.display = 'block';
+            summary.textContent = t('projects.pagination_summary', '{total} projeden {start}-{end} arası gösteriliyor')
+                .replace('{total}', String(meta.total)).replace('{start}', String(meta.start)).replace('{end}', String(meta.end));
+            indicator.textContent = t('projects.pagination_page', '{current} / {total}')
+                .replace('{current}', String(meta.currentPage)).replace('{total}', String(meta.pages));
+            prev.textContent = t('projects.pagination_prev', 'Önceki');
+            next.textContent = t('projects.pagination_next', 'Sonraki');
+            prev.disabled = meta.currentPage <= 1;
+            next.disabled = meta.currentPage >= meta.pages;
+
+            nums.innerHTML = '';
+            for (let i = 1; i <= meta.pages; i++) {
+                const b = document.createElement('button');
+                b.type = 'button';
+                b.className = 'btn ghost sm page-num' + (i === meta.currentPage ? ' active' : '');
+                b.textContent = String(i);
+                b.addEventListener('click', () => {
+                    if (i === currentPage) return;
+                    currentPage = i;
+                    updatePageQuery(currentPage);
+                    applyFilters();
+                    smoothScrollViews();
+                });
+                nums.appendChild(b);
+            }
         }
 
         // 1. Grid (Kart) Görünümünü Basma
-        function renderGrid(projects) {
+        function renderGrid(projects, startIndex = 0) {
             const gridContainer = document.getElementById('projectGridContainer');
             if (!gridContainer) return;
 
@@ -264,7 +358,7 @@
             }
 
             gridContainer.innerHTML = projects.map((proj, index) => {
-                const numStr = String(index + 1).padStart(2, '0');
+                const numStr = String(startIndex + index + 1).padStart(2, '0');
                 const statusClass = (proj.status || '').toLowerCase().includes('tamam') ? 'tamamlanan' : 'devam-eden';
                 
                 let statusText = (proj.status || 'DEVAM EDİYOR').toUpperCase();
@@ -295,7 +389,7 @@
         }
 
         // 2. Liste Görünümünü Basma
-        function renderList(projects) {
+        function renderList(projects, startIndex = 0) {
             const listContainer = document.getElementById('projectListContainer');
             if (!listContainer) return;
 
@@ -304,7 +398,7 @@
             const detailLabel = (window.UI_TRANSLATIONS?.[curLang]?.['projects.detail_btn'] || 'DETAY');
 
             listContainer.innerHTML = projects.map((proj, index) => {
-                const numStr = String(index + 1).padStart(2, '0');
+                const numStr = String(startIndex + index + 1).padStart(2, '0');
                 const statusClass = (proj.status || '').toLowerCase().includes('tamam') ? 'tamamlanan' : 'devam-eden';
                 
                 let statusText = (proj.status || 'DEVAM EDİYOR').toUpperCase();
@@ -479,6 +573,8 @@
                         const ft = document.getElementById('filterType');
                         if (ft && ft.value === 'kentsel') ft.value = 'all';
                     }
+                    currentPage = 1;
+                    updatePageQuery(currentPage);
                     applyFilters();
                 });
             });
@@ -493,13 +589,36 @@
             }
 
             // Select Dropdown Filtreleri
-            document.getElementById('filterLocation')?.addEventListener('change', applyFilters);
+            document.getElementById('filterLocation')?.addEventListener('change', () => { currentPage = 1; updatePageQuery(currentPage); applyFilters(); });
             document.getElementById('filterType')?.addEventListener('change', () => {
                 const ftVal = document.getElementById('filterType')?.value;
                 if (ftVal === 'kentsel') {
                     document.querySelectorAll('.status-tab').forEach(b => b.classList.remove('active'));
                     document.getElementById('kdTabBtn')?.classList.add('active');
                 }
+                currentPage = 1; updatePageQuery(currentPage); applyFilters();
+            });
+
+            document.getElementById('projectsPrevPage')?.addEventListener('click', () => {
+                if (currentPage <= 1) return;
+                currentPage -= 1;
+                updatePageQuery(currentPage);
+                applyFilters();
+                smoothScrollViews();
+            });
+            document.getElementById('projectsNextPage')?.addEventListener('click', () => {
+                const pages = Math.max(1, Math.ceil(lastFiltered.length / Math.max(3, Math.min(48, projectsPerPage || 9))));
+                if (currentPage >= pages) return;
+                currentPage += 1;
+                updatePageQuery(currentPage);
+                applyFilters();
+                smoothScrollViews();
+            });
+
+            window.addEventListener('popstate', () => {
+                const sp = new URLSearchParams(window.location.search);
+                const qp = parseInt(sp.get('sayfa') || '1', 10);
+                currentPage = Number.isFinite(qp) && qp > 0 ? qp : 1;
                 applyFilters();
             });
 

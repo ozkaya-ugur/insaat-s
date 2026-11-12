@@ -79,7 +79,8 @@ try {
         if ($rows) {
             $ids = implode(',', array_map('intval', array_column($rows, 'id')));
             foreach (q("SELECT * FROM project_media WHERE project_id IN ($ids) ORDER BY sort_order ASC, id ASC")->fetchAll() as $m) {
-                $media[$m['project_id']][$m['kind']][] = ['src' => asset($m['file_path']), 'caption' => $m['caption']];
+                $k = $m['kind'] === 'gallery' ? 'render' : $m['kind'];
+                $media[$m['project_id']][$k][] = ['src' => asset($m['file_path']), 'caption' => $m['caption']];
             }
         }
 

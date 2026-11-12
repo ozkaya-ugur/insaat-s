@@ -10,11 +10,29 @@ if (!admin_can('projects', $p ? 'edit' : 'create')) admin_deny();
 $IMG = ['jpg','jpeg','png','webp','gif'];
 $KINDS = [
     'hero'   => 'Arka Plan Slider Görselleri (Hero)',
-    'render' => 'Proje Görselleri (Render)',
+    'gallery'=> 'Proje Görselleri (Galeri)',
     'plan'   => 'Kat Planları',
     'site'   => 'Şantiye Görselleri',
     'video'  => 'Tanıtım Videoları',
 ];
+
+// Yüklü medya kütüphanesi (JSON) — sliders.php deseninin proje formuna uyarlanmış hali
+if (isset($_GET['media'])) {
+    header('Content-Type: application/json; charset=utf-8');
+    $type = in_array($_GET['type'] ?? 'all', ['all', 'image', 'video'], true) ? $_GET['type'] : 'all';
+    $all = media_library(mb_substr(trim((string)($_GET['q'] ?? '')), 0, 80), $type);
+    $per = 48;
+    $page = max(1, (int)($_GET['p'] ?? 1));
+    $prefix = fn($p) => strpos($p, 'uploads/') === 0 ? '../' . $p : rtrim(SITE_URL, '/') . '/' . $p;
+    $items = array_map(fn($i) => $i + ['url' => $prefix($i['path'])], array_slice($all, ($page - 1) * $per, $per));
+    echo json_encode([
+        'total' => count($all),
+        'page' => $page,
+        'pages' => max(1, (int)ceil(count($all) / $per)),
+        'items' => $items,
+    ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+    exit;
+}
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     csrf_check();
@@ -32,6 +50,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     [$id, $kind, $path, $cap !== '' ? $cap : pathinfo($orig, PATHINFO_FILENAME), ++$max]);
             });
             flash($n ? "$n dosya yüklendi." : 'Dosya seçilmedi.', $n ? 'ok' : 'err');
+            redirect("project_edit.php?id=$id#media-$kind");
+        }
+        // ---- Medya kütüphanesinden tek görsel ekle ----
+        if ($act === 'media_add_path' && $p) {
+            $kind = $_POST['kind'] ?? '';
+            if (!isset($KINDS[$kind]) || $kind === 'video') throw new RuntimeException('Bu bölüm için yalnızca görsel seçilebilir.');
+            $picked = ltrim(trim((string)($_POST['media_path'] ?? '')), '/');
+            if (!media_path_valid($picked, $IMG)) throw new RuntimeException('Seçilen görsel bulunamadı veya izin verilmeyen bir yol.');
+            $cap = trim((string)($_POST['caption'] ?? ''));
+            $max = (int)q('SELECT COALESCE(MAX(sort_order),0) FROM project_media WHERE project_id=? AND kind=?', [$id, $kind])->fetchColumn();
+            q('INSERT INTO project_media (project_id,kind,file_path,caption,sort_order) VALUES (?,?,?,?,?)', [
+                $id,
+                $kind,
+                $picked,
+                $cap !== '' ? $cap : pathinfo($picked, PATHINFO_FILENAME),
+                $max + 1,
+            ]);
+            flash('Görsel medya kütüphanesinden eklendi.');
             redirect("project_edit.php?id=$id#media-$kind");
         }
         // ---- Medya sil ----
@@ -55,8 +91,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $status = array_key_exists($f('status'), PROJECT_STATUS) ? $f('status') : 'devam-eden';
 
         $cover = $p['cover_image'] ?? '';
-        if ($new = upload_file('cover', $IMG, 'covers')) { if ($cover) delete_upload($cover); $cover = $new; }
-        elseif ($f('cover_path') !== '') $cover = $f('cover_path');
+        if ($new = upload_file('cover', $IMG, 'covers')) {
+            if ($cover) delete_upload($cover);
+            $cover = $new;
+        } elseif ($f('cover_path') !== '') {
+            $pickedCover = ltrim($f('cover_path'), '/');
+            if (!media_path_valid($pickedCover, $IMG)) throw new RuntimeException('Kapak görseli yolu geçersiz veya izin verilmeyen bir konuma işaret ediyor.');
+            $cover = $pickedCover;
+        }
         if (!empty($_POST['cover_remove'])) { delete_upload($cover); $cover = ''; }
 
         $catalog = $p['catalog_file'] ?? '';
@@ -176,8 +218,13 @@ $prev = fn($path) => strpos($path, 'uploads/') === 0 ? '../' . $path : rtrim(SIT
           <input type="file" name="cover" accept="image/*">
         </div>
         <div class="field" style="margin-top:10px">
-          <label>veya harici dosya yolu</label>
-          <input type="text" name="cover_path" placeholder="images/banner-1.webp" value="">
+          <label>veya medya kütüphanesinden seçin</label>
+          <div class="row" style="gap:8px;flex-wrap:nowrap">
+            <input type="text" name="cover_path" id="coverPathInput" placeholder="images/banner-1.webp veya uploads/covers/ornek.webp" value="<?= $v('cover_image') ?>" style="flex:1">
+            <button type="button" class="btn ghost" id="openCoverMediaLib" style="white-space:nowrap"><i class="fa-solid fa-photo-film"></i> Kütüphaneden Seç</button>
+          </div>
+          <div id="coverPathPreview" style="margin-top:8px;display:none"></div>
+          <div class="hint">Sadece uploads/ ve images/ altındaki güvenli görsel yolları kabul edilir.</div>
         </div>
       </div>
       <div>
@@ -257,7 +304,9 @@ $prev = fn($path) => strpos($path, 'uploads/') === 0 ? '../' . $path : rtrim(SIT
   </div>
 
   <?php foreach ($KINDS as $kind => $label):
-      $items = q('SELECT * FROM project_media WHERE project_id=? AND kind=? ORDER BY sort_order,id', [$id, $kind])->fetchAll();
+      $items = $kind === 'gallery'
+        ? q("SELECT * FROM project_media WHERE project_id=? AND kind IN ('gallery','render') ORDER BY sort_order,id", [$id])->fetchAll()
+        : q('SELECT * FROM project_media WHERE project_id=? AND kind=? ORDER BY sort_order,id', [$id, $kind])->fetchAll();
       $isHero = ($kind === 'hero');
   ?>
     <div class="card" id="media-<?= e($kind) ?>" style="<?= $isHero ? 'border-color:rgba(197,160,89,0.4);background:rgba(18,21,28,0.95)' : '' ?>">
@@ -310,6 +359,19 @@ $prev = fn($path) => strpos($path, 'uploads/') === 0 ? '../' . $path : rtrim(SIT
             <label>Açıklama / Başlık (İsteğe bağlı)</label>
             <input type="text" name="caption" placeholder="<?= $kind === 'video' ? 'Video başlığı (ör. Lansman Filmi)' : ($isHero ? 'Arka plan adı (ör. Giriş Cephesi)' : 'Görsel açıklaması') ?>">
           </div>
+          <?php if ($kind === 'gallery'): ?>
+          <div class="field" style="margin-bottom:10px">
+            <label>veya kütüphaneden tek görsel ekle</label>
+            <div class="row" style="gap:8px;flex-wrap:nowrap">
+              <input type="text" name="media_path" class="galleryMediaPath" placeholder="uploads/projects/...webp" style="flex:1" readonly>
+              <button type="button" class="btn ghost openGalleryMediaLib" style="white-space:nowrap"><i class="fa-solid fa-photo-film"></i> Kütüphaneden Seç</button>
+            </div>
+            <div class="galleryMediaPreview" style="margin-top:8px;display:none"></div>
+            <button class="btn ghost" name="action" value="media_add_path" style="width:100%;justify-content:center;margin-top:8px">
+              <i class="fa-solid fa-circle-plus"></i> Galeriye Ekle
+            </button>
+          </div>
+          <?php endif; ?>
           <button class="btn" name="action" value="media_add" style="width:100%;justify-content:center">
             <i class="fa-solid fa-upload"></i> Seçilen Dosyaları Yükle
           </button>
@@ -324,6 +386,42 @@ $prev = fn($path) => strpos($path, 'uploads/') === 0 ? '../' . $path : rtrim(SIT
   <p class="muted">Arka plan görselleri (Hero), galeri, plan, şantiye ve video yükleme alanları projeyi ilk kez kaydettikten sonra açılır.</p>
 </div>
 <?php endif; ?>
+
+<style>
+#projectMediaLib{position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:1100;display:none;align-items:center;justify-content:center;padding:20px}
+#projectMediaLib.on{display:flex}
+#projectMediaLib .ml-box{background:var(--panel,#16181d);border:1px solid var(--line,#2a2d34);border-radius:10px;width:min(1100px,100%);max-height:90vh;display:flex;flex-direction:column;overflow:hidden}
+#projectMediaLib .ml-head,#projectMediaLib .ml-foot{padding:14px 16px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;border-bottom:1px solid var(--line,#2a2d34)}
+#projectMediaLib .ml-foot{border-bottom:0;border-top:1px solid var(--line,#2a2d34);justify-content:space-between}
+#projectMediaLib .ml-head input{flex:1;min-width:180px}
+#projectMediaLib .ml-head select{width:auto}
+#pmlGrid{padding:14px;overflow:auto;display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));grid-auto-rows:max-content;align-content:start;gap:12px;flex:1;min-height:0}
+#pmlGrid .ml-item{position:relative;background:var(--panel2,#1d2026);border:2px solid transparent;border-radius:8px;padding:0;cursor:pointer;text-align:left;color:var(--text,#eee);overflow:hidden;font:inherit}
+#pmlGrid .ml-item:hover{border-color:var(--gold,#c5a059)}
+#pmlGrid .ml-item img,#pmlGrid .ml-item video{width:100%;height:100px;object-fit:cover;display:block;background:#000}
+#pmlGrid .ml-name{display:block;font-size:.75rem;padding:6px 8px 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#pmlGrid .ml-size{display:block;font-size:.7rem;padding:0 8px 7px;color:var(--dim,#999)}
+#pmlGrid .ml-badge{position:absolute;top:6px;left:6px;background:var(--gold,#c5a059);color:#000;font-size:.65rem;font-weight:700;padding:2px 6px;border-radius:4px}
+@media(max-width:768px){
+  #projectMediaLib{padding:10px}
+  #projectMediaLib .ml-head,#projectMediaLib .ml-foot{padding:10px}
+}
+</style>
+<div id="projectMediaLib" role="dialog" aria-modal="true" aria-label="Medya kütüphanesi">
+  <div class="ml-box">
+    <div class="ml-head">
+      <strong style="margin-right:6px"><i class="fa-solid fa-photo-film" style="color:var(--gold)"></i> Yüklü Dosyalar</strong>
+      <input type="text" id="pmlSearch" placeholder="Dosya adı veya klasörde ara">
+      <select id="pmlType"><option value="image">Görseller</option><option value="video">Videolar</option><option value="all">Tümü</option></select>
+      <button type="button" class="btn ghost sm" data-pml-close>Kapat</button>
+    </div>
+    <div id="pmlGrid"></div>
+    <div class="ml-foot">
+      <span class="muted" id="pmlInfo"></span>
+      <div class="row" style="gap:8px"><button type="button" class="btn ghost sm" id="pmlPrev">‹ Önceki</button><button type="button" class="btn ghost sm" id="pmlNext">Sonraki ›</button></div>
+    </div>
+  </div>
+</div>
 
 <script>
 // Harita & Street View Canlı Önizleme Motoru
@@ -405,5 +503,113 @@ document.querySelectorAll('.dropzone').forEach(dz => {
         updateLabel(input.files);
     });
 });
+
+function initProjectMediaLibrary() {
+    const modal = document.getElementById('projectMediaLib');
+    const grid = document.getElementById('pmlGrid');
+    const info = document.getElementById('pmlInfo');
+    const search = document.getElementById('pmlSearch');
+    const type = document.getElementById('pmlType');
+    const prevBtn = document.getElementById('pmlPrev');
+    const nextBtn = document.getElementById('pmlNext');
+    if (!modal || !grid || !info || !search || !type || !prevBtn || !nextBtn) return;
+
+    let page = 1, pages = 1, timer = null;
+    let targetInput = null, targetPreview = null, targetType = 'image';
+
+    const esc = (str) => String(str).replace(/[&<>"']/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    const kb = (n) => n > 1048576 ? (n/1048576).toFixed(1)+' MB' : Math.max(1, Math.round(n/1024))+' KB';
+
+    function showPreview(path, url, isVideo) {
+        if (!targetPreview) return;
+        targetPreview.style.display = 'block';
+        targetPreview.innerHTML = (isVideo
+            ? `<video src="${esc(url)}" muted playsinline style="width:220px;height:120px;object-fit:cover;border-radius:6px"></video>`
+            : `<img src="${esc(url)}" alt="" style="width:220px;height:120px;object-fit:cover;border-radius:6px">`)
+            + `<div class="hint">Seçildi: ${esc(path)}</div>`;
+    }
+
+    async function loadMedia() {
+        grid.innerHTML = '<div class="muted" style="padding:20px">Yükleniyor...</div>';
+        try {
+            const url = `project_edit.php?media=1&p=${page}&type=${encodeURIComponent(type.value)}&q=${encodeURIComponent(search.value.trim())}`;
+            const r = await fetch(url, {credentials:'same-origin'});
+            const d = await r.json();
+            pages = d.pages || 1; page = d.page || 1;
+            info.textContent = `${d.total || 0} dosya · Sayfa ${page}/${pages}`;
+            prevBtn.disabled = page <= 1;
+            nextBtn.disabled = page >= pages;
+            const wantedType = targetType;
+            const items = (d.items || []).filter((i) => wantedType === 'all' ? true : i.type === wantedType);
+            grid.innerHTML = items.length ? items.map((i) => `
+                <button type="button" class="ml-item" data-path="${esc(i.path)}" data-url="${esc(i.url)}" data-video="${i.type === 'video' ? 1 : 0}" title="${esc(i.path)}">
+                    ${i.type === 'video' ? `<video src="${esc(i.url)}" muted preload="metadata"></video><span class="ml-badge">Video</span>` : `<img src="${esc(i.url)}" loading="lazy" alt="">`}
+                    <span class="ml-name">${esc(i.path.split('/').pop())}</span>
+                    <span class="ml-size">${kb(i.size || 0)}</span>
+                </button>
+            `).join('') : '<div class="muted" style="padding:20px">Dosya bulunamadı.</div>';
+        } catch (e) {
+            grid.innerHTML = '<div class="muted" style="padding:20px">Kütüphane yüklenemedi.</div>';
+        }
+    }
+
+    function openFor(input, preview, mType='image') {
+        targetInput = input;
+        targetPreview = preview;
+        targetType = mType;
+        type.value = mType === 'video' ? 'video' : 'image';
+        page = 1;
+        modal.classList.add('on');
+        loadMedia();
+    }
+
+    document.querySelectorAll('#openCoverMediaLib').forEach((btn) => {
+        btn.addEventListener('click', () => openFor(document.getElementById('coverPathInput'), document.getElementById('coverPathPreview'), 'image'));
+    });
+
+    document.querySelectorAll('.openGalleryMediaLib').forEach((btn) => {
+        btn.addEventListener('click', () => {
+            const card = btn.closest('.field');
+            const input = card ? card.querySelector('.galleryMediaPath') : null;
+            const preview = card ? card.querySelector('.galleryMediaPreview') : null;
+            openFor(input, preview, 'image');
+        });
+    });
+
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal || e.target.closest('[data-pml-close]')) modal.classList.remove('on');
+    });
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modal.classList.contains('on')) modal.classList.remove('on');
+    });
+
+    search.addEventListener('input', () => {
+        clearTimeout(timer);
+        timer = setTimeout(() => { page = 1; loadMedia(); }, 250);
+    });
+    type.addEventListener('change', () => { page = 1; loadMedia(); });
+    prevBtn.addEventListener('click', () => { if (page > 1) { page--; loadMedia(); } });
+    nextBtn.addEventListener('click', () => { if (page < pages) { page++; loadMedia(); } });
+
+    grid.addEventListener('click', (e) => {
+        const it = e.target.closest('.ml-item');
+        if (!it || !targetInput) return;
+        targetInput.value = it.dataset.path;
+        showPreview(it.dataset.path, it.dataset.url, it.dataset.video === '1');
+        modal.classList.remove('on');
+    });
+
+    // Var olan kapak yolunun önizlemesi
+    const coverPath = document.getElementById('coverPathInput');
+    const coverPreview = document.getElementById('coverPathPreview');
+    if (coverPath && coverPreview && coverPath.value.trim()) {
+        const path = coverPath.value.trim();
+        const url = path.startsWith('uploads/') ? '../' + path : path;
+        showPreview(path, url, false);
+    }
+}
+
+initProjectMediaLibrary();
+
 </script>
 <?php admin_footer();

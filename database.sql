@@ -81,7 +81,7 @@ CREATE TABLE IF NOT EXISTS pages (
 CREATE TABLE IF NOT EXISTS project_media (
   id INT AUTO_INCREMENT PRIMARY KEY,
   project_id INT NOT NULL,
-  kind ENUM('hero','render','plan','site','video') NOT NULL,
+  kind ENUM('hero','gallery','render','plan','site','video') NOT NULL,
   file_path VARCHAR(255) NOT NULL,
   caption VARCHAR(160) DEFAULT '',
   sort_order INT DEFAULT 0,

@@ -323,36 +323,155 @@
         // Satıştaki Projelerimiz: sağ/sol okları (RTL uyumlu, dinamik kart yüklemesinden sonra da çalışır)
         (function () {
             let idx = 0;
+            let isDragging = false;
+            let moved = false;
+            let startX = 0;
+            let startY = 0;
+            let dragStartOffset = 0;
+            let lastDx = 0;
+            let preventClickUntil = 0;
             const track = () => document.getElementById('showcaseTrack');
+            const wrapper = () => document.querySelector('.showcase-slider-wrapper');
             function metrics() {
-                const t = track(); if (!t) return null;
+                const t = track(); const w = wrapper();
+                if (!t || !w) return null;
                 const cards = t.querySelectorAll('.showcase-card'); if (!cards.length) return null;
                 const gap = parseFloat(getComputedStyle(t).columnGap || getComputedStyle(t).gap) || 0;
                 const step = cards[0].getBoundingClientRect().width + gap;
-                const viewW = t.parentElement.getBoundingClientRect().width;
-                const visible = Math.max(1, Math.floor((viewW + gap) / step));
-                return { t, step, max: Math.max(0, cards.length - visible) };
+                const visible = Math.max(1, Math.round((w.clientWidth + gap) / step));
+                const max = Math.max(0, cards.length - visible);
+                const rtl = (document.documentElement.getAttribute('dir') || '').toLowerCase() === 'rtl';
+                return { t, w, step, max, rtl, cards };
             }
-            function apply() {
+            function setTrackTranslate(px, animated = true) {
                 const m = metrics(); if (!m) return;
-                idx = Math.min(Math.max(idx, 0), m.max);
-                const rtl = (document.documentElement.getAttribute('dir') || getComputedStyle(m.t).direction) === 'rtl';
-                m.t.style.transform = `translateX(${(rtl ? 1 : -1) * idx * m.step}px)`;
+                m.t.style.transition = animated ? 'transform 0.6s cubic-bezier(0.25, 1, 0.5, 1)' : 'none';
+                m.t.style.transform = `translateX(${px}px)`;
             }
-            function move(d) {
+            function apply(animated = true) {
                 const m = metrics(); if (!m) return;
-                idx += d;
+                if (idx > m.max) idx = m.max;
+                if (idx < 0) idx = 0;
+                const d = idx * m.step * (m.rtl ? 1 : -1);
+                setTrackTranslate(d, animated);
+            }
+            function move(delta) {
+                const m = metrics(); if (!m) return;
+                idx += m.rtl ? -delta : delta;
                 if (idx > m.max) idx = 0; else if (idx < 0) idx = m.max;
-                apply();
+                apply(true);
             }
-            window.resetShowcase = () => { idx = 0; apply(); };
+            function pointerDown(e){
+                const m = metrics(); if (!m) return;
+                e.preventDefault && e.preventDefault();
+                isDragging = true; moved = false;
+                startX = e.clientX; startY = e.clientY;
+                lastDx = 0;
+                dragStartOffset = idx * m.step * (m.rtl ? 1 : -1);
+                document.body.style.userSelect = 'none';
+                m.w.classList.add('dragging');
+                m.t.style.transition = 'none';
+                m.w.setPointerCapture?.(e.pointerId);
+            }
+            function pointerMove(e){
+                if (!isDragging) return;
+                const m = metrics(); if (!m) return;
+                const dx = e.clientX - startX;
+                lastDx = dx;
+                const dy = e.clientY - startY;
+                if (!moved) {
+                    if (Math.abs(dx) < 6) return;
+                    if (Math.abs(dy) > Math.abs(dx)) { pointerUp(e, true); return; }
+                    moved = true;
+                }
+                const maxOffset = m.max * m.step;
+                const sign = m.rtl ? 1 : -1;
+                let base = dragStartOffset - dx;
+                if (sign === 1) base = dragStartOffset + dx;
+                base = Math.max(0, Math.min(maxOffset, base));
+                const tr = sign === 1 ? base : -base;
+                setTrackTranslate(tr, false);
+                e.preventDefault();
+            }
+            function pointerUp(e, cancelled=false){
+                if (!isDragging) return;
+                const m = metrics();
+                isDragging = false;
+                if (m) {
+                    m.w.classList.remove('dragging');
+                    const dx = (typeof e.clientX === 'number') ? (e.clientX - startX) : lastDx;
+                    if (!cancelled) {
+                        const sign = m.rtl ? 1 : -1;
+                        if (Math.abs(dx) > 24) {
+                            const offset = sign === 1 ? (dragStartOffset + dx) : (dragStartOffset - dx);
+                            const nextIdx = Math.max(0, Math.min(m.max, Math.round(offset / m.step)));
+                            idx = nextIdx;
+                            preventClickUntil = Date.now() + 350;
+                        }
+                    }
+                }
+                document.body.style.userSelect = '';
+                apply(true);
+            }
+            window.resetShowcase = () => { idx = 0; apply(true); };
             document.addEventListener('DOMContentLoaded', () => {
                 const p = document.getElementById('showcasePrev'), n = document.getElementById('showcaseNext');
                 if (p) p.addEventListener('click', (e) => { e.preventDefault(); move(-1); });
                 if (n) n.addEventListener('click', (e) => { e.preventDefault(); move(1); });
-                apply();
+                const w = wrapper();
+                if (w) {
+                    w.addEventListener('pointerdown', pointerDown);
+                    w.addEventListener('pointermove', pointerMove);
+                    w.addEventListener('pointerup', pointerUp);
+                    w.addEventListener('pointercancel', (e) => pointerUp(e, true));
+                    w.addEventListener('pointerleave', (e) => { if (isDragging) pointerUp(e); });
+
+                    w.addEventListener('mousedown', (e) => pointerDown(e));
+                    window.addEventListener('mousemove', (e) => pointerMove(e));
+                    window.addEventListener('mouseup', (e) => pointerUp(e));
+
+                    w.addEventListener('touchstart', (e) => {
+                        const t = e.touches && e.touches[0];
+                        if (!t) return;
+                        pointerDown({ clientX: t.clientX, clientY: t.clientY, preventDefault: () => {}, pointerId: 1 });
+                    }, { passive: true });
+                    w.addEventListener('touchmove', (e) => {
+                        const t = e.touches && e.touches[0];
+                        if (!t) return;
+                        pointerMove({ clientX: t.clientX, clientY: t.clientY, preventDefault: () => e.preventDefault(), pointerId: 1 });
+                    }, { passive: false });
+                    w.addEventListener('touchend', (e) => {
+                        const t = e.changedTouches && e.changedTouches[0];
+                        if (!t) return;
+                        pointerUp({ clientX: t.clientX, clientY: t.clientY, pointerId: 1 });
+                    }, { passive: true });
+                    w.addEventListener('dragstart', (e) => e.preventDefault());
+
+                    // Yedek hareket algısı: sürükleme algılanmazsa en azından kart adımı kadar kaydır
+                    let mouseStartX = null;
+                    w.addEventListener('mousedown', (e) => { mouseStartX = e.clientX; });
+                    window.addEventListener('mouseup', (e) => {
+                        if (mouseStartX === null) return;
+                        const dx = e.clientX - mouseStartX;
+                        if (Math.abs(dx) > 40) {
+                            if (dx < 0) move(1); else move(-1);
+                            preventClickUntil = Date.now() + 350;
+                        }
+                        mouseStartX = null;
+                    });
+                }
+                const t = track();
+                if (t) {
+                    t.addEventListener('click', (e) => {
+                        if (moved || Date.now() < preventClickUntil) {
+                            e.preventDefault();
+                            e.stopPropagation();
+                        }
+                    }, true);
+                }
+                apply(true);
             });
-            window.addEventListener('resize', apply);
+            window.addEventListener('resize', () => apply(false));
         })();
 
         document.addEventListener('DOMContentLoaded', loadFeaturedProjectsFromAPI);

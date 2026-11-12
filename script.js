@@ -10,6 +10,26 @@ window.API_URL = API_URL;
 let currentLang = localStorage.getItem("selectedLang") || "tr";
 window.currentLang = currentLang; // Global Kapsama Tanımla
 let UI_TRANSLATIONS = {}; // Veritabanındaki `site_settings` tablosundan dinamik dolacak
+const UI_PAGINATION_FALLBACKS = {
+    tr: {
+        'projects.pagination_prev': 'Önceki',
+        'projects.pagination_next': 'Sonraki',
+        'projects.pagination_page': '{current} / {total}',
+        'projects.pagination_summary': '{total} projeden {start}-{end} arası gösteriliyor'
+    },
+    en: {
+        'projects.pagination_prev': 'Previous',
+        'projects.pagination_next': 'Next',
+        'projects.pagination_page': '{current} / {total}',
+        'projects.pagination_summary': 'Showing {start}-{end} of {total} projects'
+    },
+    ar: {
+        'projects.pagination_prev': 'السابق',
+        'projects.pagination_next': 'التالي',
+        'projects.pagination_page': '{current} / {total}',
+        'projects.pagination_summary': 'عرض {start}-{end} من أصل {total} مشروعًا'
+    }
+};
 
 // Tekrarlı API çağrılarını azaltmak için basit bellek önbelleği
 const __apiCache = new Map();
@@ -70,6 +90,12 @@ function getTypeLabel(typeKey, lang = currentLang) {
 window.loadTranslationsFromDB = async function() {
     try {
         UI_TRANSLATIONS = await fetchJsonCached(`${API_URL}/translations`, {}, { ttlMs: 5 * 60 * 1000, force: false });
+        Object.keys(UI_PAGINATION_FALLBACKS).forEach((lng) => {
+            UI_TRANSLATIONS[lng] = UI_TRANSLATIONS[lng] || {};
+            Object.entries(UI_PAGINATION_FALLBACKS[lng]).forEach(([k, v]) => {
+                if (!UI_TRANSLATIONS[lng][k]) UI_TRANSLATIONS[lng][k] = v;
+            });
+        });
         window.UI_TRANSLATIONS = UI_TRANSLATIONS;
     } catch (e) {
         console.error("Veritabanından çeviriler çekilemedi:", e);
