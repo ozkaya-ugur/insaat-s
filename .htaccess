@@ -20,6 +20,17 @@
   </FilesMatch>
 </IfModule>
 
+# ---------- Temiz adresler: /kurumsal -> kurumsal.html, /sayfa/slug -> sayfa.php ----------
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteRule ^sayfa/([^/]+)/([a-z]{2})/?$ sayfa.php?slug=$1&lang=$2 [L,QSA]
+  RewriteRule ^sayfa/([^/]+)/?$ sayfa.php?slug=$1 [L,QSA]
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteCond %{DOCUMENT_ROOT}/$1.html -f
+  RewriteRule ^([a-z0-9-]+)/?$ $1.html [L]
+</IfModule>
+
 # ---------- Dizin listeleme kapalı ----------
 Options -Indexes
 

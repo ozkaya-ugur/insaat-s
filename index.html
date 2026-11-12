@@ -13,9 +13,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Poppins:wght@200;300;400;500;600;700&family=Raleway:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/michele-m/soria-font@master/soria.css">
-    <link rel="stylesheet" href="style.css?v=202611122111.0">
+    <link rel="stylesheet" href="style.css?v=202611122121.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css?v=202611122111">
+    <link rel="stylesheet" href="style.css?v=202611122121">
 </head>
 <body>
 
@@ -217,13 +217,13 @@
     <div id="site-footer"></div>
 
     <!-- Ortak Bileşen Scriptleri -->
-    <script src="components/header.js?v=202611122111"></script>
-    <script src="components/footer.js?v=202611122111"></script>
+    <script src="components/header.js?v=202611122121"></script>
+    <script src="components/footer.js?v=202611122121"></script>
     
     <!-- Animasyon & Proje Scriptleri -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
-    <script src="script.js?v=202611122111"></script>
+    <script src="script.js?v=202611122121"></script>
 
     <!-- ANA SAYFA METİNLERİNİ PANELDEN GELEN AYARLARLA GÜNCELLEME -->
     <script>
@@ -363,15 +363,11 @@
             }
             function pointerDown(e){
                 const m = metrics(); if (!m) return;
-                e.preventDefault && e.preventDefault();
+                if (e.button !== undefined && e.button !== 0) return;
                 isDragging = true; moved = false;
                 startX = e.clientX; startY = e.clientY;
                 lastDx = 0;
                 dragStartOffset = idx * m.step * (m.rtl ? 1 : -1);
-                document.body.style.userSelect = 'none';
-                m.w.classList.add('dragging');
-                m.t.style.transition = 'none';
-                m.w.setPointerCapture?.(e.pointerId);
             }
             function pointerMove(e){
                 if (!isDragging) return;
@@ -383,6 +379,10 @@
                     if (Math.abs(dx) < 6) return;
                     if (Math.abs(dy) > Math.abs(dx)) { pointerUp(e, true); return; }
                     moved = true;
+                    document.body.style.userSelect = 'none';
+                    m.w.classList.add('dragging');
+                    m.t.style.transition = 'none';
+                    try { if (e.pointerId !== undefined) m.w.setPointerCapture(e.pointerId); } catch (_) {}
                 }
                 const maxOffset = m.max * m.step;
                 const sign = m.rtl ? 1 : -1;
@@ -397,6 +397,7 @@
                 if (!isDragging) return;
                 const m = metrics();
                 isDragging = false;
+                if (!moved) return;
                 if (m) {
                     m.w.classList.remove('dragging');
                     const dx = (typeof e.clientX === 'number') ? (e.clientX - startX) : lastDx;
@@ -422,48 +423,14 @@
                 if (w) {
                     w.addEventListener('pointerdown', pointerDown);
                     w.addEventListener('pointermove', pointerMove);
-                    w.addEventListener('pointerup', pointerUp);
+                    w.addEventListener('pointerup', (e) => pointerUp(e));
                     w.addEventListener('pointercancel', (e) => pointerUp(e, true));
-                    w.addEventListener('pointerleave', (e) => { if (isDragging) pointerUp(e); });
-
-                    w.addEventListener('mousedown', (e) => pointerDown(e));
-                    window.addEventListener('mousemove', (e) => pointerMove(e));
-                    window.addEventListener('mouseup', (e) => pointerUp(e));
-
-                    w.addEventListener('touchstart', (e) => {
-                        const t = e.touches && e.touches[0];
-                        if (!t) return;
-                        pointerDown({ clientX: t.clientX, clientY: t.clientY, preventDefault: () => {}, pointerId: 1 });
-                    }, { passive: true });
-                    w.addEventListener('touchmove', (e) => {
-                        const t = e.touches && e.touches[0];
-                        if (!t) return;
-                        pointerMove({ clientX: t.clientX, clientY: t.clientY, preventDefault: () => e.preventDefault(), pointerId: 1 });
-                    }, { passive: false });
-                    w.addEventListener('touchend', (e) => {
-                        const t = e.changedTouches && e.changedTouches[0];
-                        if (!t) return;
-                        pointerUp({ clientX: t.clientX, clientY: t.clientY, pointerId: 1 });
-                    }, { passive: true });
                     w.addEventListener('dragstart', (e) => e.preventDefault());
-
-                    // Yedek hareket algısı: sürükleme algılanmazsa en azından kart adımı kadar kaydır
-                    let mouseStartX = null;
-                    w.addEventListener('mousedown', (e) => { mouseStartX = e.clientX; });
-                    window.addEventListener('mouseup', (e) => {
-                        if (mouseStartX === null) return;
-                        const dx = e.clientX - mouseStartX;
-                        if (Math.abs(dx) > 40) {
-                            if (dx < 0) move(1); else move(-1);
-                            preventClickUntil = Date.now() + 350;
-                        }
-                        mouseStartX = null;
-                    });
                 }
                 const t = track();
                 if (t) {
                     t.addEventListener('click', (e) => {
-                        if (moved || Date.now() < preventClickUntil) {
+                        if (Date.now() < preventClickUntil) {
                             e.preventDefault();
                             e.stopPropagation();
                         }
