@@ -372,6 +372,38 @@ async function initApp() {
         }
     }
 
+    // 8b. MOBİL: PROJE KÜNYESİ & MİMARİ VİZYON AKORDİYONU (masaüstünde butonlar CSS ile gizli)
+    const mAccDefs = [
+        { el: document.querySelector(".detail-hero-content-wrap .project-specs-bar-floating"), key: "detail.spec_title", text: "PROJE KÜNYESİ", icon: "fa-list-check", open: false },
+        { el: document.querySelector(".project-description-section .desc-main"), key: "detail.vision_tag", text: "MİMARİ VİZYON", icon: "fa-compass-drafting", open: true }
+    ];
+    mAccDefs.forEach(def => {
+        if (!def.el || def.el.classList.contains("m-acc-panel")) return;
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "m-acc-btn";
+        btn.innerHTML = `<i class="fa-solid ${def.icon}"></i><span data-i18n="${def.key}"></span><i class="fa-solid fa-chevron-down m-acc-chevron"></i>`;
+        btn.querySelector("span").textContent = (window.UI_TRANSLATIONS && window.UI_TRANSLATIONS[def.key]) || def.text;
+        def.el.classList.add("m-acc-panel");
+        def.el.parentNode.insertBefore(btn, def.el);
+
+        const setOpen = (open) => {
+            def.el.classList.toggle("m-acc-open", open);
+            btn.classList.toggle("m-acc-open", open);
+            btn.setAttribute("aria-expanded", open ? "true" : "false");
+        };
+        setOpen(def.open);
+
+        btn.addEventListener("click", () => {
+            const open = !def.el.classList.contains("m-acc-open");
+            setOpen(open);
+            if (open) {
+                const top = btn.getBoundingClientRect().top + window.pageYOffset - 90;
+                window.scrollTo({ top: Math.max(top, 0), behavior: "smooth" });
+            }
+        });
+    });
+
     // 9. LIGHTBOX RESİM MOTORU
     const lightboxModal = document.getElementById("lightboxModal");
     const lightboxImage = document.getElementById("lightboxImage");

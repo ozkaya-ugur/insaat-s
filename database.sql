@@ -420,3 +420,4 @@ SOURCE sql/005_i18n_ui.sql;
 SOURCE sql/006_slider_slogan_analytics.sql;
 SOURCE sql/007_slogan_translations.sql;
 SOURCE sql/008_corp_content.sql;
+SOURCE sql/009_mobile_accordion_i18n.sql;
