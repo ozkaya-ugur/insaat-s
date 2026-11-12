@@ -4,6 +4,30 @@ require_once __DIR__ . '/../config.php';
 if (DEBUG) { ini_set('display_errors', 1); error_reporting(E_ALL); }
 else { ini_set('display_errors', 0); }
 
+// mbstring eklentisi kapalı olan sunucular için UTF-8 uyumlu yedek fonksiyonlar
+if (!function_exists('mb_substr')) {
+    function _u8_chars(string $s): array {
+        $r = preg_split('//u', $s, -1, PREG_SPLIT_NO_EMPTY);
+        return $r === false ? str_split($s) : $r;
+    }
+    function mb_strlen($s, $enc = null): int { return count(_u8_chars((string)$s)); }
+    function mb_substr($s, $start, $length = null, $enc = null): string {
+        return implode('', array_slice(_u8_chars((string)$s), (int)$start, $length === null ? null : (int)$length));
+    }
+}
+if (!function_exists('mb_strimwidth')) {
+    function mb_strimwidth($s, $start, $width, $trim = '', $enc = null): string {
+        $s = mb_substr((string)$s, (int)$start);
+        if (mb_strlen($s) <= $width) return $s;
+        return mb_substr($s, 0, max(0, $width - mb_strlen($trim))) . $trim;
+    }
+}
+if (!function_exists('mb_strtolower')) {
+    function mb_strtolower($s, $enc = null): string {
+        return strtolower(strtr((string)$s, ['Ç'=>'ç','Ğ'=>'ğ','İ'=>'i','I'=>'ı','Ö'=>'ö','Ş'=>'ş','Ü'=>'ü']));
+    }
+}
+
 function db(): PDO {
     static $pdo = null;
     if ($pdo === null) {
