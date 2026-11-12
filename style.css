@@ -4398,3 +4398,49 @@ body.detail-page-body {
 .slide-bg.slide-bg-video { background: #000; }
 .slide-bg.slide-bg-video video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .showcase-card .sc-slogan { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+
+/* ==========================================
+   HAKKIMIZDA & İLETİŞİM: BANNER–İÇERİK BOŞLUĞU
+   ========================================== */
+.page-banner.banner-kurumsal,
+.page-banner.banner-iletisim {
+    padding-bottom: 48px;
+}
+#about.animated-about-section,
+.contact-main-section.section-padding {
+    padding-top: 48px;
+}
+
+@media (max-width: 1024px) {
+    .page-banner.banner-kurumsal,
+    .page-banner.banner-iletisim { padding-bottom: 40px; }
+    #about.animated-about-section,
+    .contact-main-section.section-padding { padding-top: 40px; }
+}
+
+@media (max-width: 650px) {
+    .page-banner.banner-kurumsal,
+    .page-banner.banner-iletisim { padding: 130px 0 34px 0; }
+    #about.animated-about-section,
+    .contact-main-section.section-padding { padding-top: 34px; }
+}
+
+/* ==========================================
+   MOBİL: PROJE DETAY SEKMELERİ (AKORDİYON)
+   ========================================== */
+@media (max-width: 1024px) {
+    .vertical-tabs-layout { gap: 0; }
+    .vertical-tabs-nav { height: auto; gap: 10px; }
+    .vertical-tabs-content-wrap { height: auto; min-height: 0; }
+    .vertical-tabs-nav .v-tab-btn.active { transform: none; }
+    .vertical-tabs-nav .media-tab-content.active {
+        display: flex;
+        flex-direction: column;
+        height: auto;
+        opacity: 1;
+        width: 100%;
+        margin: 0 0 12px;
+        padding: 0;
+        animation: none;
+    }
+}

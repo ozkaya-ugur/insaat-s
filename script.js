@@ -319,20 +319,57 @@ async function initApp() {
         setInterval(() => changeDetailSlide("next"), 6000);
     }
 
-    // 8. DİKEY SEKME PANELİ
+    // 8. DİKEY SEKME PANELİ (mobilde akordiyon: içerik tıklanan başlığın hemen altında açılır)
     const vTabButtons = document.querySelectorAll(".v-tab-btn");
-    const mediaTabContents = document.querySelectorAll(".vertical-tabs-content-wrap .media-tab-content");
+    const mediaTabContents = document.querySelectorAll(".media-tab-content");
+    const vTabsNav = document.querySelector(".vertical-tabs-nav");
+    const vTabsWrap = document.querySelector(".vertical-tabs-content-wrap");
+    const vTabsMobile = window.matchMedia("(max-width: 1024px)");
+    const vTabsOrder = Array.from(mediaTabContents);
+
+    function vTabsIsMobile() {
+        return vTabsMobile.matches;
+    }
+
+    // Mobilde aktif paneli ilgili butonun altına taşır, masaüstünde yerine geri koyar.
+    function vTabsPlacePanel(scrollToPanel) {
+        if (!vTabsNav || !vTabsWrap) return;
+        const activeBtn = vTabsNav.querySelector(".v-tab-btn.active");
+        const activePanel = document.querySelector(".media-tab-content.active");
+
+        if (vTabsIsMobile()) {
+            if (activeBtn && activePanel && activePanel.previousElementSibling !== activeBtn) {
+                activeBtn.insertAdjacentElement("afterend", activePanel);
+            }
+            if (scrollToPanel && activePanel) {
+                const top = activePanel.getBoundingClientRect().top + window.pageYOffset - 90;
+                window.scrollTo({ top: Math.max(top, 0), behavior: "smooth" });
+            }
+        } else if (vTabsWrap.querySelectorAll(".media-tab-content").length !== vTabsOrder.length) {
+            vTabsOrder.forEach(panel => vTabsWrap.appendChild(panel));
+        }
+    }
 
     if (vTabButtons.length > 0) {
         vTabButtons.forEach(btn => {
             btn.addEventListener("click", () => {
                 const targetTab = btn.getAttribute("data-tab");
+                const isAlreadyOpen = btn.classList.contains("active") && vTabsIsMobile();
                 vTabButtons.forEach(b => b.classList.remove("active"));
                 mediaTabContents.forEach(c => c.classList.remove("active"));
                 btn.classList.add("active");
-                document.getElementById(targetTab)?.classList.add("active");
+                const panel = document.getElementById(targetTab);
+                if (panel) panel.classList.add("active");
+                vTabsPlacePanel(!isAlreadyOpen);
             });
         });
+
+        vTabsPlacePanel(false);
+        if (vTabsMobile.addEventListener) {
+            vTabsMobile.addEventListener("change", () => vTabsPlacePanel(false));
+        } else if (vTabsMobile.addListener) {
+            vTabsMobile.addListener(() => vTabsPlacePanel(false));
+        }
     }
 
     // 9. LIGHTBOX RESİM MOTORU
