@@ -465,7 +465,6 @@ async function initApp() {
     // 10. İLETİŞİM HARİTASI VE FORMLAR
     const locationCards = document.querySelectorAll(".office-location-card");
     const mapIframe = document.getElementById("contactMapIframe");
-    const projectInquiryForm = document.getElementById("projectInquiryForm");
 
     const mapUrls = {
         sakarya: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3023.1119794695914!2d30.379201576550734!3d40.770549936052725!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x14ccb2fb167ca9f1%3A0x6b6c0852d43cb8d1!2sSerdivan%2C%20Sakarya!5e0!3m2!1str!2str!4v1700000000000!5m2!1str!2str",
@@ -483,63 +482,65 @@ async function initApp() {
         });
     }
 
-    if (projectInquiryForm) {
-        projectInquiryForm.addEventListener("submit", async (e) => {
-            e.preventDefault();
-
-            const nameEl = document.getElementById("inquiryName");
-            const phoneEl = document.getElementById("inquiryPhone");
-            const noteEl = document.getElementById("inquiryNote");
-            const submitBtn = projectInquiryForm.querySelector("button[type='submit']");
-            const submitText = submitBtn ? submitBtn.querySelector("span") : null;
-            const originalText = submitText ? submitText.textContent : "SATIŞ DANIŞMANI ARASIN";
-
-            const fullName = (nameEl?.value || "").trim();
-            const phone = (phoneEl?.value || "").trim();
-            const note = (noteEl?.value || "").trim();
-            const projectTitle = (document.getElementById("detailProjectTitle")?.textContent || "").trim();
-
-            if (!fullName || !phone) {
-                alert("Lütfen ad soyad ve telefon alanlarını doldurun.");
-                return;
-            }
-
-            const payload = {
-                source: "proje_detay",
-                fullName,
-                phone,
-                project: projectTitle || "Proje Detay Talebi",
-                note
-            };
-
-            try {
-                if (submitBtn) submitBtn.disabled = true;
-                if (submitText) submitText.textContent = "GÖNDERİLİYOR...";
-
-                const response = await fetch(`${API_URL}/contact`, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(payload)
-                });
-                const data = await response.json().catch(() => ({}));
-
-                if (!response.ok || !data?.ok) {
-                    throw new Error(data?.error || "Mesaj gönderilemedi.");
-                }
-
-                const lang = localStorage.getItem("selectedLang") || window.currentLang || "tr";
-                const q = new URLSearchParams({ tip: "proje-detay", lang });
-                if (data?.id) q.set("ref", String(data.id));
-                window.location.href = `tesekkur.html?${q.toString()}`;
-            } catch (err) {
-                alert(err?.message || "Mesaj gönderilirken bir hata oluştu.");
-            } finally {
-                if (submitBtn) submitBtn.disabled = false;
-                if (submitText) submitText.textContent = originalText;
-            }
-        });
-    }
 }
+
+// PROJE DETAY TALEP FORMU — sayfa yüklenir yüklenmez (initApp beklenmeden) devrede
+document.addEventListener("submit", async (e) => {
+    const form = e.target;
+    if (!form || form.id !== "projectInquiryForm") return;
+    e.preventDefault();
+    if (form.dataset.sending === "1") return;
+
+    const nameEl = document.getElementById("inquiryName");
+    const phoneEl = document.getElementById("inquiryPhone");
+    const noteEl = document.getElementById("inquiryNote");
+    const submitBtn = form.querySelector("button[type='submit']");
+    const submitText = submitBtn ? submitBtn.querySelector("span") : null;
+    const originalText = submitText ? submitText.textContent : "SATIŞ DANIŞMANI ARASIN";
+
+    const fullName = (nameEl?.value || "").trim();
+    const phone = (phoneEl?.value || "").trim();
+    const note = (noteEl?.value || "").trim();
+    const projectTitle = (document.getElementById("detailProjectTitle")?.textContent || "").trim();
+    const slug = new URLSearchParams(location.search).get("slug") || new URLSearchParams(location.search).get("id") || "";
+
+    if (!fullName || !phone) {
+        alert("Lütfen ad soyad ve telefon alanlarını doldurun.");
+        return;
+    }
+
+    const payload = {
+        source: "proje_detay",
+        fullName,
+        phone,
+        project: [projectTitle, slug && !projectTitle.toLowerCase().includes(slug) ? `(${slug})` : ""].filter(Boolean).join(" ") || "Proje Detay Talebi",
+        note
+    };
+
+    form.dataset.sending = "1";
+    if (submitBtn) submitBtn.disabled = true;
+    if (submitText) submitText.textContent = "GÖNDERİLİYOR...";
+    try {
+        const response = await fetch(`${API_URL}/contact`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+        });
+        const data = await response.json().catch(() => ({}));
+        if (!response.ok || !data?.ok) throw new Error(data?.error || "Mesaj gönderilemedi.");
+
+        const lang = localStorage.getItem("selectedLang") || window.currentLang || "tr";
+        const q = new URLSearchParams({ tip: "proje-detay", lang });
+        if (data?.id) q.set("ref", String(data.id));
+        window.location.href = `tesekkur.html?${q.toString()}`;
+    } catch (err) {
+        console.error("Proje talep formu hatası:", err);
+        alert(err?.message || "Mesaj gönderilirken bir hata oluştu.");
+        form.dataset.sending = "";
+        if (submitBtn) submitBtn.disabled = false;
+        if (submitText) submitText.textContent = originalText;
+    }
+});
 
 // API'DEN DİNAMİK SLIDER VE KONTROL BUTONLARINI RENDER EDEN MOTOR
 async function fetchSliders() {

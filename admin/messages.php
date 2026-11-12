@@ -18,8 +18,8 @@ if (isset($_GET['export'])) {
     header('Content-Disposition: attachment; filename="mesajlar-' . date('Ymd') . '.csv"');
     $o = fopen('php://output', 'w'); fwrite($o, "\xEF\xBB\xBF");
     fputcsv($o, ['ID','Ad','Telefon','E-posta','Proje/Konu','Mesaj','Kaynak','Tarih']);
-    $sql = 'SELECT * FROM messages ' . ($filter ? 'WHERE source = ? ' : '') . 'ORDER BY id DESC';
-    $params = $filter ? [$filter] : [];
+    if ($filter === 'iletisim') { $sql = "SELECT * FROM messages WHERE source NOT IN ('kentsel_donusum','proje_detay') ORDER BY id DESC"; $params = []; }
+    else { $sql = 'SELECT * FROM messages ' . ($filter ? 'WHERE source = ? ' : '') . 'ORDER BY id DESC'; $params = $filter ? [$filter] : []; }
     foreach (q($sql, $params)->fetchAll() as $m) {
         $clean = fn($v) => preg_match('/^[=+\-@]/', (string)$v) ? "'" . $v : $v;
         fputcsv($o, [$m['id'], $clean($m['full_name']), $clean($m['phone']), $clean($m['email']), $clean($m['project']), $clean($m['message']), $m['source'], $m['created_at']]);
@@ -41,6 +41,8 @@ if (isset($_GET['view'])) {
               <?= e($m['full_name']) ?>
               <?php if ($isKd): ?>
                 <span class="pill" style="background:rgba(197,160,89,0.25);color:var(--gold);margin-left:10px">Kentsel Dönüşüm Başvurusu</span>
+              <?php elseif ($m['source'] === 'proje_detay'): ?>
+                <span class="pill" style="background:rgba(111,168,220,0.2);color:#6fa8dc;margin-left:10px">Proje Detay Talebi</span>
               <?php endif; ?>
             </h2>
             <a class="btn ghost sm" href="messages.php<?= $filter ? '?filter=' . urlencode($filter) : '' ?>">← Listeye dön</a>
@@ -63,12 +65,13 @@ if (isset($_GET['view'])) {
 }
 
 $page = max(1, (int)($_GET['p'] ?? 1)); $per = 25;
-$whereSql = $filter ? 'WHERE source = ? ' : '';
-$whereParams = $filter ? [$filter] : [];
+if ($filter === 'iletisim') { $whereSql = "WHERE source NOT IN ('kentsel_donusum','proje_detay') "; $whereParams = []; }
+else { $whereSql = $filter ? 'WHERE source = ? ' : ''; $whereParams = $filter ? [$filter] : []; }
 
 $total = (int)q("SELECT COUNT(*) FROM messages $whereSql", $whereParams)->fetchColumn();
 $countKd = (int)q("SELECT COUNT(*) FROM messages WHERE source = 'kentsel_donusum'")->fetchColumn();
-$countContact = (int)q("SELECT COUNT(*) FROM messages WHERE source <> 'kentsel_donusum'")->fetchColumn();
+$countPd = (int)q("SELECT COUNT(*) FROM messages WHERE source = 'proje_detay'")->fetchColumn();
+$countContact = (int)q("SELECT COUNT(*) FROM messages WHERE source NOT IN ('kentsel_donusum','proje_detay')")->fetchColumn();
 
 $rows = q("SELECT * FROM messages $whereSql ORDER BY id DESC LIMIT $per OFFSET " . (($page - 1) * $per), $whereParams)->fetchAll();
 ?>
@@ -76,9 +79,12 @@ $rows = q("SELECT * FROM messages $whereSql ORDER BY id DESC LIMIT $per OFFSET "
   <!-- Filtre Butonları -->
   <div class="row between" style="margin-bottom:16px">
     <div class="row" style="gap:8px">
-      <a class="btn sm <?= $filter === '' ? '' : 'ghost' ?>" href="messages.php">Tümü (<?= $countKd + $countContact ?>)</a>
+      <a class="btn sm <?= $filter === '' ? '' : 'ghost' ?>" href="messages.php">Tümü (<?= $countKd + $countPd + $countContact ?>)</a>
       <a class="btn sm <?= $filter === 'kentsel_donusum' ? '' : 'ghost' ?>" href="messages.php?filter=kentsel_donusum">
         <i class="fa-solid fa-recycle" style="color:var(--gold)"></i> Kentsel Dönüşüm Başvuruları (<?= $countKd ?>)
+      </a>
+      <a class="btn sm <?= $filter === 'proje_detay' ? '' : 'ghost' ?>" href="messages.php?filter=proje_detay">
+        <i class="fa-solid fa-building" style="color:#6fa8dc"></i> Proje Talepleri (<?= $countPd ?>)
       </a>
       <a class="btn sm <?= $filter === 'iletisim' ? '' : 'ghost' ?>" href="messages.php?filter=iletisim">İletişim Formu (<?= $countContact ?>)</a>
     </div>
@@ -112,6 +118,8 @@ $rows = q("SELECT * FROM messages $whereSql ORDER BY id DESC LIMIT $per OFFSET "
         <td>
           <?php if ($isKd): ?>
             <span class="pill" style="background:rgba(197,160,89,0.25);color:var(--gold)">Kentsel Dönüşüm</span>
+          <?php elseif ($m['source'] === 'proje_detay'): ?>
+            <span class="pill" style="background:rgba(111,168,220,0.2);color:#6fa8dc">Proje Talebi</span>
           <?php else: ?>
             <span class="pill" style="background:rgba(255,255,255,0.06);color:var(--dim)">İletişim</span>
           <?php endif; ?>
