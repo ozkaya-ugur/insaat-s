@@ -53,10 +53,16 @@ const TYPE_TRANSLATIONS = {
 };
 
 function getStatusLabel(statusKey, lang = currentLang) {
+    const dict = (window.UI_TRANSLATIONS && (window.UI_TRANSLATIONS[lang] || window.UI_TRANSLATIONS['tr'])) || {};
+    const dbKey = `status.${statusKey}`;
+    if (dict[dbKey]) return dict[dbKey];
     return STATUS_TRANSLATIONS[statusKey]?.[lang] || STATUS_TRANSLATIONS[statusKey]?.['tr'] || statusKey;
 }
 
 function getTypeLabel(typeKey, lang = currentLang) {
+    const dict = (window.UI_TRANSLATIONS && (window.UI_TRANSLATIONS[lang] || window.UI_TRANSLATIONS['tr'])) || {};
+    const dbKey = `type.${typeKey}`;
+    if (dict[dbKey]) return dict[dbKey];
     return TYPE_TRANSLATIONS[typeKey]?.[lang] || TYPE_TRANSLATIONS[typeKey]?.['tr'] || typeKey;
 }
 

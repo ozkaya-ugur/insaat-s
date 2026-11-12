@@ -84,15 +84,15 @@
 
                 <!-- SEGMENTED GÖRÜNÜM DEĞİŞTİRİCİ -->
                 <div class="view-segmented-control">
-                    <button class="view-btn active" data-view="grid" title="Kart Görünümü">
+                    <button class="view-btn active" data-view="grid" title="Kart Görünümü" data-i18n-title="projects.view_grid_title">
                         <i class="fa-solid fa-border-all"></i>
                         <span data-i18n="projects.view_grid">KART</span>
                     </button>
-                    <button class="view-btn" data-view="list" title="Liste Görünümü">
+                    <button class="view-btn" data-view="list" title="Liste Görünümü" data-i18n-title="projects.view_list_title">
                         <i class="fa-solid fa-list-ul"></i>
                         <span data-i18n="projects.view_list">LİSTE</span>
                     </button>
-                    <button class="view-btn" data-view="map" title="Harita Görünümü">
+                    <button class="view-btn" data-view="map" title="Harita Görünümü" data-i18n-title="projects.view_map_title">
                         <i class="fa-solid fa-map-location-dot"></i>
                         <span data-i18n="projects.view_map">HARİTA</span>
                     </button>
@@ -119,7 +119,7 @@
                 <div class="projects-grid-layout" id="projectGridContainer">
                     <div style="grid-column: 1/-1; text-align: center; padding: 50px; color: #888;">
                         <i class="fa-solid fa-spinner fa-spin" style="font-size: 24px; color: #d4af37;"></i>
-                        <p style="margin-top: 10px;">Projeler dinamik yükleniyor...</p>
+                        <p style="margin-top: 10px;" data-i18n="projects.loading">Projeler dinamik yükleniyor...</p>
                     </div>
                 </div>
             </div>
@@ -140,8 +140,8 @@
                     <!-- DİNAMİK ALT PANEL -->
                     <div class="map-bottom-projects-panel" id="mapProjectsPanel">
                         <div class="panel-header-bottom">
-                            <span class="panel-tag" id="panelCityTag">LOKASYON: SAKARYA</span>
-                            <h3 id="panelCityTitle">Sakarya Projelerimiz</h3>
+                            <span class="panel-tag" id="panelCityTag" data-i18n="projects.map_location_default">LOKASYON: SAKARYA</span>
+                            <h3 id="panelCityTitle" data-i18n="projects.map_city_projects_default">Sakarya Projelerimiz</h3>
                         </div>
                         <div class="map-bottom-cards-grid" id="panelCardsContainer"></div>
                     </div>
@@ -258,12 +258,7 @@
             const curLang = localStorage.getItem('selectedLang') || window.currentLang || 'tr';
 
             if (projects.length === 0) {
-                const emptyMsg = {
-                    tr: 'Aradığınız kriterlere uygun proje bulunamadı.',
-                    en: 'No projects found matching your search criteria.',
-                    ar: 'لم يتم العثور على مشاريع تطابق معايير البحث الخاصة بكم.',
-                    de: 'Keine Projekte gefunden, die Ihren Suchkriterien entsprechen.'
-                }[curLang] || 'Aradığınız kriterlere uygun proje bulunamadı.';
+                const emptyMsg = (window.UI_TRANSLATIONS?.[curLang]?.['projects.empty'] || 'Aradığınız kriterlere uygun proje bulunamadı.');
                 gridContainer.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: #888; padding: 40px;">${emptyMsg}</p>`;
                 return;
             }
@@ -306,12 +301,7 @@
 
             const curLang = localStorage.getItem('selectedLang') || window.currentLang || 'tr';
 
-            const detailLabel = {
-                tr: 'DETAY',
-                en: 'DETAILS',
-                ar: 'تفاصيل',
-                de: 'DETAILS'
-            }[curLang] || 'DETAY';
+            const detailLabel = (window.UI_TRANSLATIONS?.[curLang]?.['projects.detail_btn'] || 'DETAY');
 
             listContainer.innerHTML = projects.map((proj, index) => {
                 const numStr = String(index + 1).padStart(2, '0');
@@ -424,8 +414,14 @@
             const titleEl = document.getElementById('panelCityTitle');
             const cardsContainer = document.getElementById('panelCardsContainer');
 
-            if (tagEl) tagEl.innerText = `LOKASYON: ${cityName.toUpperCase()}`;
-            if (titleEl) titleEl.innerText = `${cityName} Projelerimiz`;
+            if (tagEl) {
+                const tpl = window.UI_TRANSLATIONS?.[localStorage.getItem('selectedLang') || window.currentLang || 'tr']?.['projects.map_location_prefix'] || 'LOKASYON: {city}';
+                tagEl.innerText = tpl.replace('{city}', cityName.toUpperCase());
+            }
+            if (titleEl) {
+                const tpl2 = window.UI_TRANSLATIONS?.[localStorage.getItem('selectedLang') || window.currentLang || 'tr']?.['projects.map_city_projects'] || '{city} Projelerimiz';
+                titleEl.innerText = tpl2.replace('{city}', cityName);
+            }
 
             // Seçilen şehir için esnek eşleşme
             const filteredProjects = allProjects.filter(p => {
@@ -440,7 +436,8 @@
             if (!cardsContainer) return;
 
             if (filteredProjects.length === 0) {
-                cardsContainer.innerHTML = `<p style="color:#888; grid-column:1/-1; padding:15px;">${cityName} bölgesinde henüz kayıtlı projemiz bulunmamaktadır.</p>`;
+                const emptyCityTpl = window.UI_TRANSLATIONS?.[localStorage.getItem('selectedLang') || window.currentLang || 'tr']?.['projects.map_empty_city'] || '{city} bölgesinde henüz kayıtlı projemiz bulunmamaktadır.';
+                cardsContainer.innerHTML = `<p style="color:#888; grid-column:1/-1; padding:15px;">${emptyCityTpl.replace('{city}', cityName)}</p>`;
                 return;
             }
 

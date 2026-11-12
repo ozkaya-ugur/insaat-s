@@ -66,7 +66,7 @@
 
                         <div class="office-card-footer">
                             <a href="https://maps.app.goo.gl/oX1cxtbX3oBYonRL7" target="_blank" class="office-map-btn" id="offSakaryaMapLink">
-                                <span>HARİTADA GÖR</span>
+                                <span data-i18n="contact.map_view">HARİTADA GÖR</span>
                                 <i class="fa-solid fa-arrow-up-right-from-square"></i>
                             </a>
                             <a href="tel:+900000000000" class="office-phone-btn" id="offSakaryaPhone">
@@ -89,7 +89,7 @@
 
                         <div class="office-card-footer">
                             <a href="https://maps.app.goo.gl/YbWe7CuVY7bmeg9M8" target="_blank" class="office-map-btn" id="offIstanbulMapLink">
-                                <span>HARİTADA GÖR</span>
+                                <span data-i18n="contact.map_view">HARİTADA GÖR</span>
                                 <i class="fa-solid fa-arrow-up-right-from-square"></i>
                             </a>
                             <a href="tel:+900000000000" class="office-phone-btn" id="offIstanbulPhone">
@@ -100,19 +100,19 @@
 
                     <!-- SOSYAL MEDYA KUTUSU -->
                     <div class="social-contact-card">
-                        <span class="f-col-label">BİZİ TAKİP EDİN & SOSYAL MEDYA</span>
+                        <span class="f-col-label" data-i18n="contact.follow_social">BİZİ TAKİP EDİN & SOSYAL MEDYA</span>
                         <div class="social-links-grid">
                             <a href="https://instagram.com/buyapitr" target="_blank" class="social-box-btn" id="socialInstagram">
                                 <i class="fa-brands fa-instagram"></i>
-                                <span>INSTAGRAM</span>
+                                <span data-i18n="contact.social_instagram">INSTAGRAM</span>
                             </a>
                             <a href="https://facebook.com/buyapiinsaat" target="_blank" class="social-box-btn" id="socialFacebook">
                                 <i class="fa-brands fa-facebook-f"></i>
-                                <span>FACEBOOK</span>
+                                <span data-i18n="contact.social_facebook">FACEBOOK</span>
                             </a>
                             <a href="#" target="_blank" class="social-box-btn whatsapp" id="socialWhatsapp">
                                 <i class="fa-brands fa-whatsapp"></i>
-                                <span>WHATSAPP</span>
+                                <span data-i18n="contact.social_whatsapp">WHATSAPP</span>
                             </a>
                         </div>
                     </div>
@@ -121,44 +121,44 @@
 
                 <!-- SAĞ KOLON: İLETİŞİM FORMU -->
                 <div class="contact-form-card glass-content-card">
-                    <span class="section-tag">BİZE ULAŞIN</span>
+                    <span class="section-tag" data-i18n="contact.reach_us">BİZE ULAŞIN</span>
                     <h2 class="section-title" id="contactFormTitle">Projenizi Birlikte Başlatalım</h2>
                     <p class="lead-text" id="contactFormDesc">Hayalinizdeki konut, iş merkezi veya mimari yatırımlarınız için ekibimize mesaj bırakabilirsiniz.</p>
 
                     <form class="luxury-contact-form" id="contactForm">
                         <div class="form-row-two">
                             <div class="form-group">
-                                <label for="fullName">ADINIZ VE SOYADINIZ *</label>
-                                <input type="text" id="fullName" placeholder="Örn: Ahmet Yılmaz" required>
+                                <label for="fullName" data-i18n="contact.form_name">ADINIZ VE SOYADINIZ *</label>
+                                <input type="text" id="fullName" placeholder="Örn: Ahmet Yılmaz" data-i18n-ph="contact.ph_name" required>
                             </div>
                             <div class="form-group">
-                                <label for="phoneNum">TELEFON NUMARASI *</label>
-                                <input type="tel" id="phoneNum" placeholder="05XX XXX XX XX" required>
+                                <label for="phoneNum" data-i18n="contact.form_phone">TELEFON NUMARASI *</label>
+                                <input type="tel" id="phoneNum" placeholder="05XX XXX XX XX" data-i18n-ph="contact.ph_phone" required>
                             </div>
                         </div>
 
                         <div class="form-row-two">
                             <div class="form-group">
-                                <label for="emailAddr">E-POSTA ADRESİ *</label>
-                                <input type="email" id="emailAddr" placeholder="ahmet@sirket.com" required>
+                                <label for="emailAddr" data-i18n="contact.form_email">E-POSTA ADRESİ *</label>
+                                <input type="email" id="emailAddr" placeholder="ahmet@sirket.com" data-i18n-ph="contact.ph_email" required>
                             </div>
                             <div class="form-group">
-                                <label for="projectSelect">İLGİLENDİĞİNİZ PROJE</label>
+                                <label for="projectSelect" data-i18n="contact.form_project">İLGİLENDİĞİNİZ PROJE</label>
                                 <select id="projectSelect">
-                                    <option value="genel">Genel Bilgi Talep Ediyorum</option>
+                                    <option value="genel" data-i18n-opt="contact.project_general">Genel Bilgi Talep Ediyorum</option>
                                 </select>
                             </div>
                         </div>
 
                         <div class="form-group">
-                            <label for="messageText">MESAJINIZ *</label>
-                            <textarea id="messageText" rows="4" placeholder="Talebiniz veya mesajınız hakkında detay belirtebilirsiniz..." required></textarea>
+                            <label for="messageText" data-i18n="contact.form_message">MESAJINIZ *</label>
+                            <textarea id="messageText" rows="4" placeholder="Talebiniz veya mesajınız hakkında detay belirtebilirsiniz..." data-i18n-ph="contact.ph_message" required></textarea>
                         </div>
 
                         <div id="contactFormNotice" class="form-notice" aria-live="polite"></div>
 
                         <button type="submit" class="refined-submit-btn" id="submitBtn">
-                            <span>MESAJI GÖNDER</span>
+                            <span data-i18n="contact.submit">MESAJI GÖNDER</span>
                             <i class="fa-solid fa-arrow-right-long"></i>
                         </button>
                     </form>
@@ -248,7 +248,7 @@
                 const res = await fetch(`${CONTACT_API_BASE}/projects?lang=${curLang}`);
                 if (res.ok) {
                     const projects = await res.json();
-                    selectEl.innerHTML = '<option value="genel">Genel Bilgi Talep Ediyorum</option>';
+                    selectEl.innerHTML = '<option value="genel" data-i18n-opt="contact.project_general">Genel Bilgi Talep Ediyorum</option>';
                     projects.forEach(p => {
                         const opt = document.createElement("option");
                         opt.value = p.slug;
@@ -282,10 +282,10 @@
                 e.preventDefault();
 
                 const submitBtn = document.getElementById("submitBtn");
-                const originalLabel = submitBtn?.querySelector("span")?.innerText || "MESAJI GÖNDER";
+                const originalLabel = submitBtn?.querySelector("span")?.innerText || (window.UI_TRANSLATIONS?.[window.currentLang || "tr"]?.["contact.submit"] || "MESAJI GÖNDER");
                 if (submitBtn) {
                     submitBtn.disabled = true;
-                    submitBtn.querySelector("span").innerText = "GÖNDERİLİYOR...";
+                    submitBtn.querySelector("span").innerText = (window.UI_TRANSLATIONS?.[window.currentLang || "tr"]?.["contact.sending"] || "GÖNDERİLİYOR...");
                 }
 
                 const payload = {
@@ -298,7 +298,7 @@
                 };
 
                 if (!payload.name || !payload.email || !payload.message) {
-                    setNotice('error', 'Lütfen zorunlu alanları doldurun.');
+                    setNotice('error', (window.UI_TRANSLATIONS?.[window.currentLang || 'tr']?.['contact.notice_required'] || 'Lütfen zorunlu alanları doldurun.'));
                     if (submitBtn) {
                         submitBtn.disabled = false;
                         submitBtn.querySelector("span").innerText = originalLabel;
@@ -306,7 +306,7 @@
                     return;
                 }
 
-                setNotice('info', 'Mesajınız gönderiliyor...');
+                setNotice('info', (window.UI_TRANSLATIONS?.[window.currentLang || 'tr']?.['contact.notice_sending'] || 'Mesajınız gönderiliyor...'));
 
                 try {
                     const res = await fetch(`${CONTACT_API_BASE}/contact`, {
@@ -319,7 +319,7 @@
                     try { data = await res.json(); } catch (_) {}
 
                     if (!res.ok || data.ok !== true) {
-                        throw new Error(data?.error || data?.message || `Gönderim başarısız (HTTP ${res.status}).`);
+                        throw new Error(data?.error || data?.message || (window.UI_TRANSLATIONS?.[window.currentLang || 'tr']?.['contact.notice_send_fail'] || `Gönderim başarısız (HTTP ${res.status}).`));
                     }
 
                     const ref = data?.id ? encodeURIComponent(String(data.id)) : '';
@@ -329,7 +329,7 @@
                     window.location.href = `tesekkur.html?${q.toString()}`;
                 } catch (err) {
                     console.error('[İletişim Formu] Gönderim hatası:', err);
-                    setNotice('error', err.message || 'Mesaj gönderilemedi. Lütfen tekrar deneyin.');
+                    setNotice('error', err.message || (window.UI_TRANSLATIONS?.[window.currentLang || 'tr']?.['contact.notice_send_error'] || 'Mesaj gönderilemedi. Lütfen tekrar deneyin.'));
                 } finally {
                     if (submitBtn) {
                         submitBtn.disabled = false;

@@ -165,8 +165,7 @@ foreach ($projectUrls as $idx => $url) {
     // Kapak Görseli
     $cover = '';
     if (!empty($images[0])) {
-        $ext = pathinfo(parse_url($images[0], PHP_URL_PATH), PATHINFO_EXTENSION) ?: 'png';
-        $cover = downloadImageLocally($images[0], "cover_{$slug}.{$ext}");
+        $cover = downloadImageLocally($images[0], "cover_{$slug}.webp");
     }
 
     // İngilizce & Almanca & Arapça Çeviriler (Yabancı diller için akıllı başlık/altbaşlık)
@@ -237,21 +236,18 @@ foreach ($projectUrls as $idx => $url) {
         echo "  -> Eklendi (ID: $pId): $title\n";
     }
 
-    // Galeri Görsellerini `project_media` tablosuna işle
+    // Galeri Görsellerini `project_media` tablosuna işle (idempotent: önce temizle, sonra yeniden yaz)
     if (!empty($images) && $pId > 0) {
-        // Mevcut medyaları temizlemeden önce kontrol et
-        $existingMediaCount = (int)q('SELECT COUNT(*) FROM project_media WHERE project_id = ?', [$pId])->fetchColumn();
-        if ($existingMediaCount === 0) {
-            foreach ($images as $mIdx => $imgUrl) {
-                $ext = pathinfo(parse_url($imgUrl, PHP_URL_PATH), PATHINFO_EXTENSION) ?: 'png';
-                $localMedia = downloadImageLocally($imgUrl, "gallery_{$slug}_{$mIdx}.{$ext}");
-                $kind = ($mIdx < 2) ? 'hero' : 'render';
-                q('INSERT INTO project_media (project_id, kind, file_path, caption, sort_order) VALUES (?, ?, ?, ?, ?)', [
-                    $pId, $kind, $localMedia, "$title Detay " . ($mIdx + 1), $mIdx + 1
-                ]);
-            }
-            echo "     " . count($images) . " adet galeri görseli kaydedildi.\n";
+        q('DELETE FROM project_media WHERE project_id = ?', [$pId]);
+
+        foreach ($images as $mIdx => $imgUrl) {
+            $localMedia = downloadImageLocally($imgUrl, "gallery_{$slug}_{$mIdx}.webp");
+            $kind = ($mIdx < 2) ? 'hero' : 'render';
+            q('INSERT INTO project_media (project_id, kind, file_path, caption, sort_order) VALUES (?, ?, ?, ?, ?)', [
+                $pId, $kind, $localMedia, "$title Detay " . ($mIdx + 1), $mIdx + 1
+            ]);
         }
+        echo "     " . count($images) . " adet galeri görseli kaydedildi.\n";
     }
 }
 

@@ -344,7 +344,7 @@
             <div class="inquiry-card-wrapper glass-content-card">
                 <div class="inquiry-info-wrap">
                     <span class="section-tag" data-i18n="detail.inquiry_tag">DOĞRUDAN TEMAS</span>
-                    <h2 class="section-title" id="inquirySectionTitle">Proje Hakkında Detaylı Bilgi Alın</h2>
+                    <h2 class="section-title" id="inquirySectionTitle" data-i18n="detail.inquiry_title">Proje Hakkında Detaylı Bilgi Alın</h2>
                     <p class="lead-text" data-i18n="detail.inquiry_lead">Özel ödeme planları, güncel konum seçimi ve mimari pafta detayları için satış ofisi temsilcilerimiz size ulaşsın.</p>
 
                     <div class="inquiry-direct-links">
@@ -416,6 +416,12 @@
     <!-- KESİN VE ZORLAYICI (FORCE) DİNAMİK YÜKLEYİCİ -->
     <script>
         function renderProjectNotFound(missingKey) {
+            const lang = localStorage.getItem('selectedLang') || window.currentLang || 'tr';
+            const dict = (window.UI_TRANSLATIONS && (window.UI_TRANSLATIONS[lang] || window.UI_TRANSLATIONS['tr'])) || {};
+            const dictNotFoundTitle = dict['detail.not_found_title'] || 'Aradığınız proje bulunamadı';
+            const dictNotFoundDesc = dict['detail.not_found_desc'] || '"{key}" için eşleşen kayıt bulunamadı.';
+            const dictNotFoundBtn = dict['detail.not_found_btn'] || 'Tüm Projeler';
+
             let robots = document.querySelector('meta[name="robots"]');
             if (!robots) {
                 robots = document.createElement('meta');
@@ -430,9 +436,9 @@
                 || document.body;
             wrap.innerHTML = `
                 <section class="project-not-found" style="padding:40px;text-align:center;">
-                    <h1>Aradığınız proje bulunamadı</h1>
-                    <p>"${missingKey}" için eşleşen kayıt bulunamadı.</p>
-                    <a class="btn btn-gold" href="projeler.html">Tüm Projeler</a>
+                    <h1>${dictNotFoundTitle}</h1>
+                    <p>${dictNotFoundDesc.replace('{key}', missingKey)}</p>
+                    <a class="btn btn-gold" href="projeler.html">${dictNotFoundBtn}</a>
                 </section>
             `;
         }

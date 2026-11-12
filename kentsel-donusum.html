@@ -1003,104 +1003,104 @@
                     <!-- 1. Mülk & Bina Bilgileri -->
                     <div class="kd-form-group-title">
                         <i class="fa-solid fa-map-pin"></i>
-                        <span>1. Mülk & Bina Bilgileri</span>
+                        <span data-i18n="urban.form_group_property">1. Mülk & Bina Bilgileri</span>
                     </div>
 
                     <div class="kd-form-grid-3">
                         <div class="kd-input-box">
-                            <label>İl *</label>
+                            <label data-i18n="urban.city">İl *</label>
                             <input type="text" id="kdCity" value="Sakarya" required>
                         </div>
                         <div class="kd-input-box">
-                            <label>İlçe *</label>
+                            <label data-i18n="urban.district">İlçe *</label>
                             <select id="kdDistrict" required>
-                                <option value="">İlçe Seçiniz</option>
-                                <option value="Serdivan" selected>Serdivan</option>
-                                <option value="Adapazarı">Adapazarı</option>
-                                <option value="Erenler">Erenler</option>
-                                <option value="Sapanca">Sapanca</option>
-                                <option value="Arifiye">Arifiye</option>
-                                <option value="Hendek">Hendek</option>
-                                <option value="Akyazı">Akyazı</option>
-                                <option value="Karasu">Karasu</option>
-                                <option value="Kadıköy / İstanbul">Kadıköy (İstanbul)</option>
-                                <option value="Diğer">Diğer</option>
+                                <option value="" data-i18n-opt="urban.select_district">İlçe Seçiniz</option>
+                                <option value="Serdivan" selected data-i18n-opt="urban.district_serdivan">Serdivan</option>
+                                <option value="Adapazarı" data-i18n-opt="urban.district_adapazari">Adapazarı</option>
+                                <option value="Erenler" data-i18n-opt="urban.district_erenler">Erenler</option>
+                                <option value="Sapanca" data-i18n-opt="urban.district_sapanca">Sapanca</option>
+                                <option value="Arifiye" data-i18n-opt="urban.district_arifiye">Arifiye</option>
+                                <option value="Hendek" data-i18n-opt="urban.district_hendek">Hendek</option>
+                                <option value="Akyazı" data-i18n-opt="urban.district_akyazi">Akyazı</option>
+                                <option value="Karasu" data-i18n-opt="urban.district_karasu">Karasu</option>
+                                <option value="Kadıköy / İstanbul" data-i18n-opt="urban.district_kadikoy">Kadıköy (İstanbul)</option>
+                                <option value="Diğer" data-i18n-opt="urban.other">Diğer</option>
                             </select>
                         </div>
                         <div class="kd-input-box">
-                            <label>Mahalle / Cadde *</label>
-                            <input type="text" id="kdNeighborhood" placeholder="ör. Arabacıalanı Mh." required>
+                            <label data-i18n="urban.neighborhood">Mahalle / Cadde *</label>
+                            <input type="text" id="kdNeighborhood" placeholder="ör. Arabacıalanı Mh." data-i18n-ph="urban.ph_neighborhood" required>
                         </div>
                     </div>
 
                     <div class="kd-form-grid-3">
                         <div class="kd-input-box">
-                            <label>Ada / Parsel No (Varsa)</label>
-                            <input type="text" id="kdAdaParsel" placeholder="ör. 120 / 4">
+                            <label data-i18n="urban.ada_parsel">Ada / Parsel No (Varsa)</label>
+                            <input type="text" id="kdAdaParsel" placeholder="ör. 120 / 4" data-i18n-ph="urban.ph_ada_parsel">
                         </div>
                         <div class="kd-input-box">
-                            <label>Mevcut Bina Yaşı *</label>
+                            <label data-i18n="urban.building_age">Mevcut Bina Yaşı *</label>
                             <select id="kdBuildingAge" required>
-                                <option value="">Seçiniz</option>
-                                <option value="0-10 Yıl">0 - 10 Yıl</option>
-                                <option value="11-20 Yıl">11 - 20 Yıl</option>
-                                <option value="21-30 Yıl">21 - 30 Yıl</option>
-                                <option value="30+ Yıl">30 Yıldan Fazla (Riskli)</option>
+                                <option value="" data-i18n-opt="urban.select">Seçiniz</option>
+                                <option value="0-10 Yıl" data-i18n-opt="urban.age_0_10">0 - 10 Yıl</option>
+                                <option value="11-20 Yıl" data-i18n-opt="urban.age_11_20">11 - 20 Yıl</option>
+                                <option value="21-30 Yıl" data-i18n-opt="urban.age_21_30">21 - 30 Yıl</option>
+                                <option value="30+ Yıl" data-i18n-opt="urban.age_30_plus">30 Yıldan Fazla (Riskli)</option>
                             </select>
                         </div>
                         <div class="kd-input-box">
-                            <label>Mevcut Kat Sayısı *</label>
-                            <input type="number" id="kdFloors" min="1" max="50" placeholder="ör. 4" required>
+                            <label data-i18n="urban.floors">Mevcut Kat Sayısı *</label>
+                            <input type="number" id="kdFloors" min="1" max="50" placeholder="ör. 4" data-i18n-ph="urban.ph_floors" required>
                         </div>
                     </div>
 
                     <div class="kd-form-grid-2">
                         <div class="kd-input-box">
-                            <label>Toplam Daire / Bağımsız Bölüm Sayısı *</label>
-                            <input type="number" id="kdUnits" min="1" placeholder="ör. 8 Daire + 2 Dükkan" required>
+                            <label data-i18n="urban.units">Toplam Daire / Bağımsız Bölüm Sayısı *</label>
+                            <input type="number" id="kdUnits" min="1" placeholder="ör. 8 Daire + 2 Dükkan" data-i18n-ph="urban.ph_units" required>
                         </div>
                         <div class="kd-input-box">
-                            <label>Tahmini Arsa / Taban Alanı (m²)</label>
-                            <input type="text" id="kdLandArea" placeholder="ör. 850 m²">
+                            <label data-i18n="urban.land_area">Tahmini Arsa / Taban Alanı (m²)</label>
+                            <input type="text" id="kdLandArea" placeholder="ör. 850 m²" data-i18n-ph="urban.ph_land_area">
                         </div>
                     </div>
 
                     <!-- 2. İletişim & Başvuru Sahibi -->
                     <div class="kd-form-group-title">
                         <i class="fa-solid fa-user-shield"></i>
-                        <span>2. Başvuru Sahibi Bilgileri</span>
+                        <span data-i18n="urban.form_group_owner">2. Başvuru Sahibi Bilgileri</span>
                     </div>
 
                     <div class="kd-form-grid-3">
                         <div class="kd-input-box">
-                            <label>Adınız Soyadınız *</label>
-                            <input type="text" id="kdFullName" placeholder="Ahmet Yılmaz" required>
+                            <label data-i18n="urban.full_name">Adınız Soyadınız *</label>
+                            <input type="text" id="kdFullName" placeholder="Ahmet Yılmaz" data-i18n-ph="urban.ph_full_name" required>
                         </div>
                         <div class="kd-input-box">
-                            <label>Telefon Numaranız *</label>
-                            <input type="tel" id="kdPhone" placeholder="05XX XXX XX XX" required>
+                            <label data-i18n="urban.phone">Telefon Numaranız *</label>
+                            <input type="tel" id="kdPhone" placeholder="05XX XXX XX XX" data-i18n-ph="urban.ph_phone" required>
                         </div>
                         <div class="kd-input-box">
-                            <label>E-posta Adresiniz</label>
-                            <input type="email" id="kdEmail" placeholder="ahmet@example.com">
+                            <label data-i18n="urban.email">E-posta Adresiniz</label>
+                            <input type="email" id="kdEmail" placeholder="ahmet@example.com" data-i18n-ph="urban.ph_email">
                         </div>
                     </div>
 
                     <div class="kd-input-box">
-                        <label>Binadaki Konumunuz / Rolünüz *</label>
+                        <label data-i18n="urban.role">Binadaki Konumunuz / Rolünüz *</label>
                         <select id="kdRole" required>
-                            <option value="">Seçiniz</option>
-                            <option value="Kat Maliki (Ev / Dükkan Sahibi)">Kat Maliki (Ev / Dükkan Sahibi)</option>
-                            <option value="Bina / Apartman Yöneticisi">Bina / Apartman Yöneticisi</option>
-                            <option value="Hak Sahipleri Yetkili Temsilcisi">Hak Sahipleri Yetkili Temsilcisi</option>
-                            <option value="Mirasçı / Paydaş">Mirasçı / Paydaş</option>
-                            <option value="Kiracı / İkamet Eden">Kiracı / İkamet Eden</option>
+                            <option value="" data-i18n-opt="urban.select">Seçiniz</option>
+                            <option value="Kat Maliki (Ev / Dükkan Sahibi)" data-i18n-opt="urban.role_owner">Kat Maliki (Ev / Dükkan Sahibi)</option>
+                            <option value="Bina / Apartman Yöneticisi" data-i18n-opt="urban.role_manager">Bina / Apartman Yöneticisi</option>
+                            <option value="Hak Sahipleri Yetkili Temsilcisi" data-i18n-opt="urban.role_representative">Hak Sahipleri Yetkili Temsilcisi</option>
+                            <option value="Mirasçı / Paydaş" data-i18n-opt="urban.role_heir">Mirasçı / Paydaş</option>
+                            <option value="Kiracı / İkamet Eden" data-i18n-opt="urban.role_tenant">Kiracı / İkamet Eden</option>
                         </select>
                     </div>
 
                     <div class="kd-input-box">
-                        <label>Eklemek İstediğiniz Notlar veya Özel Durumlar</label>
-                        <textarea id="kdNotes" rows="3" placeholder="Binanın mevcut hasar durumu, hak sahipleri arasındaki uzlaşma seviyesi veya görüşmek istediğiniz özel detayları belirtebilirsiniz..."></textarea>
+                        <label data-i18n="urban.notes">Eklemek İstediğiniz Notlar veya Özel Durumlar</label>
+                        <textarea id="kdNotes" rows="3" placeholder="Binanın mevcut hasar durumu, hak sahipleri arasındaki uzlaşma seviyesi veya görüşmek istediğiniz özel detayları belirtebilirsiniz..." data-i18n-ph="urban.ph_notes"></textarea>
                     </div>
 
                     <!-- Honeypot güvenlik alanı -->
@@ -1108,7 +1108,7 @@
 
                     <div class="kd-submit-btn-wrap">
                         <button type="submit" class="kd-submit-btn" id="kdSubmitBtn">
-                            <span>KENTSEL DÖNÜŞÜM BAŞVURUSU YAP</span>
+                            <span data-i18n="urban.submit">KENTSEL DÖNÜŞÜM BAŞVURUSU YAP</span>
                             <i class="fa-solid fa-arrow-right"></i>
                         </button>
                     </div>
@@ -1320,9 +1320,9 @@
             if (!kdProjects.length) {
                 container.innerHTML = `
                     <div class="empty-state urban-empty" role="status" aria-live="polite" style="grid-column:1/-1;text-align:center;padding:40px;">
-                        <h3>Kentsel dönüşüm projelerimiz yakında burada yer alacak.</h3>
-                        <p>Güncel projeleri görmek için Projeler sayfasını ziyaret edebilirsiniz.</p>
-                        <a class="btn btn-gold" href="projeler.html?type=kentsel">Projeleri Gör</a>
+                        <h3>${(window.UI_TRANSLATIONS?.[curLang]?.['urban.empty_title'] || 'Kentsel dönüşüm projelerimiz yakında burada yer alacak.')}</h3>
+                        <p>${(window.UI_TRANSLATIONS?.[curLang]?.['urban.empty_desc'] || 'Güncel projeleri görmek için Projeler sayfasını ziyaret edebilirsiniz.')}</p>
+                        <a class="btn btn-gold" href="projeler.html?type=kentsel">${(window.UI_TRANSLATIONS?.[curLang]?.['urban.empty_btn'] || 'Projeleri Gör')}</a>
                     </div>
                 `;
                 return;
@@ -1398,7 +1398,9 @@
 
                 const originalBtnHtml = submitBtn.innerHTML;
                 submitBtn.disabled = true;
-                submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> <span>BAŞVURUNUZ İLETİLİYOR...</span>';
+                const lang = localStorage.getItem('selectedLang') || window.currentLang || 'tr';
+                const dict = (window.UI_TRANSLATIONS && (window.UI_TRANSLATIONS[lang] || window.UI_TRANSLATIONS['tr'])) || {};
+                submitBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> <span>${dict['urban.sending'] || 'BAŞVURUNUZ İLETİLİYOR...'}</span>`;
 
                 const payload = {
                     source: "kentsel_donusum",
@@ -1434,11 +1436,11 @@
                         if (data?.id) q.set('ref', String(data.id));
                         window.location.href = `tesekkur.html?${q.toString()}`;
                     } else {
-                        alert(data.error || "Başvuru iletilirken bir sorun oluştu. Lütfen bilgilerinizi kontrol edip tekrar deneyin.");
+                        alert(data.error || (dict["urban.submit_error"] || "Başvuru iletilirken bir sorun oluştu. Lütfen bilgilerinizi kontrol edip tekrar deneyin."));
                     }
                 } catch (err) {
                     console.error('Kentsel dönüşüm başvuru gönderim hatası:', err);
-                    alert("Başvuru gönderilemedi. Lütfen internet bağlantınızı kontrol edip tekrar deneyin.");
+                    alert((dict["urban.submit_error_network"] || "Başvuru gönderilemedi. Lütfen internet bağlantınızı kontrol edip tekrar deneyin."));
                 } finally {
                     submitBtn.disabled = false;
                     submitBtn.innerHTML = originalBtnHtml;
