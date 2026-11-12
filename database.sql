@@ -51,6 +51,27 @@ CREATE TABLE IF NOT EXISTS projects (
 ) ENGINE=InnoDB;
 
 -- Galeri: render, plan, site (şantiye), video
+CREATE TABLE IF NOT EXISTS pages (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  slug VARCHAR(160) NOT NULL UNIQUE,
+  title_tr VARCHAR(200) NOT NULL,
+  title_en VARCHAR(200) DEFAULT '',
+  title_ar VARCHAR(200) DEFAULT '',
+  content_tr MEDIUMTEXT NULL,
+  content_en MEDIUMTEXT NULL,
+  content_ar MEDIUMTEXT NULL,
+  page_type VARCHAR(40) DEFAULT 'standart',
+  banner_image VARCHAR(255) DEFAULT '',
+  show_in_menu TINYINT(1) NOT NULL DEFAULT 1,
+  is_active TINYINT(1) NOT NULL DEFAULT 1,
+  sort_order INT DEFAULT 0,
+  seo_title VARCHAR(200) DEFAULT '',
+  seo_desc VARCHAR(300) DEFAULT '',
+  seo_keywords VARCHAR(300) DEFAULT '',
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 CREATE TABLE IF NOT EXISTS project_media (
   id INT AUTO_INCREMENT PRIMARY KEY,
   project_id INT NOT NULL,

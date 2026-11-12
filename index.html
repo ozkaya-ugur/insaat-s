@@ -41,14 +41,14 @@
     <!-- Sinematik Hero Slider -->
     <section class="hero-slider">
         <div class="slide active">
-            <div class="slide-bg" style="background-image: url('images/banner-1.png');"></div>
+            <div class="slide-bg" id="heroBg1" style="background-image: url('images/banner-1.png');"></div>
             <div class="slide-overlay"></div>
             <div class="slide-content-wrap">
                 <div class="container">
                     <div class="slide-content">
-                        <span class="hero-tag">SERDİVAN / SAKARYA</span>
-                        <h1 class="hero-title">BUYAPI INTENSE</h1>
-                        <p class="hero-desc">Teknik inovasyon ve lüks yaşamın minimalist sentezi.</p>
+                        <span class="hero-tag" id="heroTag1">SERDİVAN / SAKARYA</span>
+                        <h1 class="hero-title" id="heroTitle1">BUYAPI INTENSE</h1>
+                        <p class="hero-desc" id="heroDesc1">Teknik inovasyon ve lüks yaşamın minimalist sentezi.</p>
                         <a href="projeler.html" class="hero-btn">
                             <span>PROJEYİ İNCELE</span> 
                             <i class="fa-solid fa-arrow-right-long"></i>
@@ -59,14 +59,14 @@
         </div>
 
         <div class="slide">
-            <div class="slide-bg" style="background-image: url('images/banner-2.png');"></div>
+            <div class="slide-bg" id="heroBg2" style="background-image: url('images/banner-2.png');"></div>
             <div class="slide-overlay"></div>
             <div class="slide-content-wrap">
                 <div class="container">
                     <div class="slide-content">
-                        <span class="hero-tag">TİCARİ & PLAZA</span>
-                        <h1 class="hero-title">WORK INN</h1>
-                        <p class="hero-desc">İş dünyasına yön veren anıtsal ve vizyoner mimari.</p>
+                        <span class="hero-tag" id="heroTag2">TİCARİ & PLAZA</span>
+                        <h1 class="hero-title" id="heroTitle2">WORK INN</h1>
+                        <p class="hero-desc" id="heroDesc2">İş dünyasına yön veren anıtsal ve vizyoner mimari.</p>
                         <a href="projeler.html" class="hero-btn">
                             <span>PROJEYİ İNCELE</span> 
                             <i class="fa-solid fa-arrow-right-long"></i>
@@ -77,14 +77,14 @@
         </div>
 
         <div class="slide">
-            <div class="slide-bg" style="background-image: url('images/banner-3.png');"></div>
+            <div class="slide-bg" id="heroBg3" style="background-image: url('images/banner-3.png');"></div>
             <div class="slide-overlay"></div>
             <div class="slide-content-wrap">
                 <div class="container">
                     <div class="slide-content">
-                        <span class="hero-tag">LÜKS REZİDANS</span>
-                        <h1 class="hero-title">BUYAPI SILENCE</h1>
-                        <p class="hero-desc">Doğa ile entegre, rafine ve özgün detaylar.</p>
+                        <span class="hero-tag" id="heroTag3">LÜKS REZİDANS</span>
+                        <h1 class="hero-title" id="heroTitle3">BUYAPI SILENCE</h1>
+                        <p class="hero-desc" id="heroDesc3">Doğa ile entegre, rafine ve özgün detaylar.</p>
                         <a href="projeler.html" class="hero-btn">
                             <span>PROJEYİ İNCELE</span> 
                             <i class="fa-solid fa-arrow-right-long"></i>
@@ -95,14 +95,14 @@
         </div>
 
         <div class="slide">
-            <div class="slide-bg" style="background-image: url('images/banner-4.png');"></div>
+            <div class="slide-bg" id="heroBg4" style="background-image: url('images/banner-4.png');"></div>
             <div class="slide-overlay"></div>
             <div class="slide-content-wrap">
                 <div class="container">
                     <div class="slide-content">
-                        <span class="hero-tag">ENDÜSTRİYEL GÜÇ</span>
-                        <h1 class="hero-title">POMEGA ENERJİ</h1>
-                        <p class="hero-desc">Büyük ölçekli, yüksek mühendislik odaklı sanayi yatırımı.</p>
+                        <span class="hero-tag" id="heroTag4">ENDÜSTRİYEL GÜÇ</span>
+                        <h1 class="hero-title" id="heroTitle4">POMEGA ENERJİ</h1>
+                        <p class="hero-desc" id="heroDesc4">Büyük ölçekli, yüksek mühendislik odaklı sanayi yatırımı.</p>
                         <a href="projeler.html" class="hero-btn">
                             <span>PROJEYİ İNCELE</span> 
                             <i class="fa-solid fa-arrow-right-long"></i>
@@ -136,8 +136,8 @@
         <div class="container">
             <div class="showcase-header-nav">
                 <div>
-                    <span class="section-tag" data-i18n="home.featured_tag">Öne Çıkan</span>
-                    <h2 class="section-title" data-i18n="home.featured_title">Satıştaki Projelerimiz</h2>
+                    <span class="section-tag" id="homeFeaturedTag" data-i18n="home.featured_tag">Öne Çıkan</span>
+                    <h2 class="section-title" id="homeFeaturedTitle" data-i18n="home.featured_title">Satıştaki Projelerimiz</h2>
                 </div>
                 <div class="showcase-arrows">
                     <button id="showcasePrev"><i class="fa-solid fa-arrow-left"></i></button>
@@ -204,7 +204,7 @@
             <!-- YENİLENMİŞ PRESTİJLİ CATALOG CTA -->
             <div class="catalog-footer-action">
                 <a href="projeler.html" class="refined-catalog-btn">
-                    <span class="btn-text" data-i18n="home.view_all_projects">TÜM PROJELERİ İNCELEYİN</span>
+                    <span class="btn-text" id="homeCtaText" data-i18n="home.view_all_projects">TÜM PROJELERİ İNCELEYİN</span>
                     <span class="btn-icon-circle">
                         <i class="fa-solid fa-arrow-right-long"></i>
                     </span>
@@ -224,6 +224,49 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
     <script src="script.js"></script>
+
+    <!-- ANA SAYFA METİNLERİNİ PANELDEN GELEN AYARLARLA GÜNCELLEME -->
+    <script>
+        async function loadHomeContentSettings() {
+            const curLang = localStorage.getItem('selectedLang') || window.currentLang || 'tr';
+            const apiBase = (window.location && window.location.origin && !window.location.origin.startsWith('file:')) ? window.location.origin : 'http://127.0.0.1:8000';
+            try {
+                const res = await fetch(`${apiBase}/api/settings?lang=${curLang}&t=${Date.now()}`);
+                if (!res.ok) return;
+                const s = await res.json();
+
+                const slides = document.querySelectorAll('.hero-slider .slide');
+                for (let i = 1; i <= 4; i++) {
+                    const slide = slides[i - 1];
+                    const tag = slide ? slide.querySelector('.hero-tag') : document.getElementById(`heroTag${i}`);
+                    const title = slide ? slide.querySelector('.hero-title') : document.getElementById(`heroTitle${i}`);
+                    const desc = slide ? slide.querySelector('.hero-desc') : document.getElementById(`heroDesc${i}`);
+                    const bg = slide ? slide.querySelector('.slide-bg') : document.getElementById(`heroBg${i}`);
+                    if (tag && s[`home_slide_${i}_tag`]) tag.innerText = s[`home_slide_${i}_tag`];
+                    if (title && s[`home_slide_${i}_title`]) title.innerText = s[`home_slide_${i}_title`];
+                    if (desc && s[`home_slide_${i}_desc`]) desc.innerText = s[`home_slide_${i}_desc`];
+                    const img = s[`home_slide_${i}_image`];
+                    if (bg && img) {
+                        const url = /^https?:\/\//i.test(img) ? img : (img.startsWith('/') ? img : `/${img}`);
+                        bg.style.backgroundImage = `url('${url}')`;
+                    }
+                }
+
+                const ft = document.getElementById('homeFeaturedTag');
+                const fh = document.getElementById('homeFeaturedTitle');
+                const cta = document.getElementById('homeCtaText');
+                if (ft && s.home_featured_tag) { ft.innerText = s.home_featured_tag; ft.removeAttribute('data-i18n'); }
+                if (fh && s.home_featured_title) { fh.innerText = s.home_featured_title; fh.removeAttribute('data-i18n'); }
+                if (cta && s.home_cta_text) { cta.innerText = s.home_cta_text; cta.removeAttribute('data-i18n'); }
+            } catch (e) {
+                console.warn('Ana sayfa ayarları çekilemedi:', e);
+            }
+        }
+
+        window.applyHomeContentSettings = loadHomeContentSettings;
+        document.addEventListener('DOMContentLoaded', loadHomeContentSettings);
+        window.addEventListener('languageChanged', loadHomeContentSettings);
+    </script>
 
     <!-- VERİTABANINDAN ÖNE ÇIKAN/SATIŞTAKİ PROJELERİ DİNAMİK YÜKLEME SCRIPTI -->
     <script>

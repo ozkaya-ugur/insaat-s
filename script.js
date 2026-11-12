@@ -481,6 +481,11 @@ async function fetchSliders() {
 
         sliderContainer.innerHTML = slidesHTML + controlsHTML;
         initHeroSliderControl();
+
+        // Panelden girilen ana sayfa metinleri/görselleri slider yeniden çizildikten sonra tekrar uygulanır
+        if (typeof window.applyHomeContentSettings === 'function') {
+            await window.applyHomeContentSettings();
+        }
     } catch (err) {
         console.error("Slider çekilirken hata:", err);
     }

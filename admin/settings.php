@@ -45,7 +45,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-    // 3. Ofis Bilgileri & Haritalar
+    // 3. Ana Sayfa İçerikleri (Hero slaytları + öne çıkan bölümü)
+    $homeKeys = ['home_featured_tag', 'home_featured_title', 'home_cta_text'];
+    for ($i = 1; $i <= 4; $i++) {
+        $homeKeys[] = "home_slide_{$i}_tag";
+        $homeKeys[] = "home_slide_{$i}_title";
+        $homeKeys[] = "home_slide_{$i}_desc";
+        $homeKeys[] = "home_slide_{$i}_image"; // dil bağımsız
+    }
+
+    foreach ($homeKeys as $hk) {
+        if (!isset($_POST[$hk])) continue;
+        q('INSERT INTO site_settings (s_key,s_value) VALUES (?,?) ON DUPLICATE KEY UPDATE s_value=VALUES(s_value)', [$hk, trim($_POST[$hk])]);
+        if (str_ends_with($hk, '_image')) continue; // görseller dile göre çoğaltılmaz
+        foreach ($activeLangs as $al) {
+            $langKey = "{$hk}_{$al['code']}";
+            if (isset($_POST[$langKey])) {
+                q('INSERT INTO site_settings (s_key,s_value) VALUES (?,?) ON DUPLICATE KEY UPDATE s_value=VALUES(s_value)', [$langKey, trim($_POST[$langKey])]);
+            }
+        }
+    }
+
+    // 4. Ofis Bilgileri & Haritalar
     $officeKeys = [
         'office_sakarya_badge', 'office_sakarya_city', 'office_sakarya_title', 'office_sakarya_address', 'office_sakarya_map_link', 'office_sakarya_embed',
         'office_istanbul_badge', 'office_istanbul_city', 'office_istanbul_title', 'office_istanbul_address', 'office_istanbul_map_link', 'office_istanbul_embed'
@@ -161,6 +182,58 @@ admin_header('Site & Sayfa Ayarları', 'settings');
         </div>
       </div>
     <?php }); ?>
+  </div>
+
+  <!-- 2b. ANA SAYFA İÇERİK YÖNETİMİ (ÇOK DİLLİ) -->
+  <div class="card">
+    <div class="row between" style="margin-bottom:14px">
+      <h2><i class="fa-solid fa-house" style="color:var(--gold)"></i> Ana Sayfa İçerik Yönetimi</h2>
+      <span class="muted">/index.html hero slaytları ve öne çıkan projeler başlıkları</span>
+    </div>
+
+    <?php echo lang_tabs('home_page_tabs', function($langCode, $isDefault) { ?>
+      <?php $suffix = $isDefault ? '' : "_{$langCode}"; ?>
+      <?php for ($i = 1; $i <= 4; $i++): ?>
+        <h3 style="font-size:1rem;color:var(--gold);margin:16px 0 10px"><i class="fa-solid fa-images"></i> Hero Slayt <?= $i ?> (<?= strtoupper($langCode) ?>)</h3>
+        <div class="grid g2" style="margin-bottom:10px">
+          <div class="field">
+            <label>Üst Etiket</label>
+            <input type="text" name="home_slide_<?= $i ?>_tag<?= $suffix ?>" value="<?= e(setting("home_slide_{$i}_tag{$suffix}")) ?>" placeholder="SERDİVAN / SAKARYA">
+          </div>
+          <div class="field">
+            <label>Başlık</label>
+            <input type="text" name="home_slide_<?= $i ?>_title<?= $suffix ?>" value="<?= e(setting("home_slide_{$i}_title{$suffix}")) ?>" placeholder="BUYAPI INTENSE">
+          </div>
+        </div>
+        <div class="field" style="margin-bottom:10px">
+          <label>Açıklama</label>
+          <textarea name="home_slide_<?= $i ?>_desc<?= $suffix ?>" style="min-height:50px"><?= e(setting("home_slide_{$i}_desc{$suffix}")) ?></textarea>
+        </div>
+        <?php if ($isDefault): ?>
+          <div class="field" style="margin-bottom:14px">
+            <label>Arka Plan Görseli (dosya yolu veya tam adres)</label>
+            <input type="text" name="home_slide_<?= $i ?>_image" value="<?= e(setting("home_slide_{$i}_image")) ?>" placeholder="images/banner-1.png">
+          </div>
+        <?php endif; ?>
+      <?php endfor; ?>
+
+      <h3 style="font-size:1rem;color:var(--gold);margin:16px 0 10px"><i class="fa-solid fa-star"></i> Öne Çıkan Projeler Bölümü (<?= strtoupper($langCode) ?>)</h3>
+      <div class="grid g2" style="margin-bottom:10px">
+        <div class="field">
+          <label>Bölüm Üst Etiketi</label>
+          <input type="text" name="home_featured_tag<?= $suffix ?>" value="<?= e(setting("home_featured_tag{$suffix}")) ?>" placeholder="Öne Çıkan">
+        </div>
+        <div class="field">
+          <label>Bölüm Başlığı</label>
+          <input type="text" name="home_featured_title<?= $suffix ?>" value="<?= e(setting("home_featured_title{$suffix}")) ?>" placeholder="Satıştaki Projelerimiz">
+        </div>
+      </div>
+      <div class="field" style="margin-bottom:14px">
+        <label>Tüm Projeler Butonu Metni</label>
+        <input type="text" name="home_cta_text<?= $suffix ?>" value="<?= e(setting("home_cta_text{$suffix}")) ?>" placeholder="TÜM PROJELERİ İNCELEYİN">
+      </div>
+    <?php }); ?>
+    <p class="hint">Boş bırakılan alanlarda sayfanın kendi varsayılan metni görünür. Görsel alanı yalnızca Türkçe sekmesinde bulunur ve tüm dillerde geçerlidir.</p>
   </div>
 
   <!-- 3. OFİSLER & HARİTA DETAYLARI -->
