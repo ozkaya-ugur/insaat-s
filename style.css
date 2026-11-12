@@ -4478,3 +4478,6 @@ body.detail-page-body {
 .projects-pagination-controls{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap}
 .projects-page-numbers{display:flex;gap:6px;flex-wrap:wrap;justify-content:center}
 .projects-page-numbers .page-num.active{background:var(--accent-gold);color:#000;border-color:var(--accent-gold)}
+
+/* İl seçilmeden ilçe filtresi pasif */
+.custom-select-box.is-disabled{opacity:.45;pointer-events:none}

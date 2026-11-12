@@ -86,7 +86,7 @@ $returnQs = http_build_query($qs);
 $where = [];
 $params = [];
 if ($fCity !== '') { $where[] = 'city_key = ?'; $params[] = $fCity; }
-if ($fDist !== '') { $where[] = 'SUBSTRING_INDEX(loc, " / ", 1) = ?'; $params[] = $fDist; }
+if ($fDist !== '') { $where[] = 'COALESCE(NULLIF(district, ""), SUBSTRING_INDEX(loc, " / ", 1)) = ?'; $params[] = $fDist; }
 if ($fQ !== '') {
     $where[] = '(title_tr LIKE ? OR slug LIKE ? OR loc LIKE ? OR cat LIKE ?)';
     $like = '%' . $fQ . '%';
@@ -100,8 +100,8 @@ $totalAll = (int)q('SELECT COUNT(*) c FROM projects')->fetch()['c'];
 $cityOptions = q('SELECT city_key, COUNT(*) c FROM projects GROUP BY city_key ORDER BY c DESC')->fetchAll();
 // İlçe listesi: seçili ile göre (il seçilmemişse tüm ilçeler)
 $distRows = $fCity !== ''
-    ? q('SELECT DISTINCT SUBSTRING_INDEX(loc, " / ", 1) d FROM projects WHERE city_key=? AND loc IS NOT NULL AND loc<>"" ORDER BY d', [$fCity])->fetchAll()
-    : q('SELECT DISTINCT SUBSTRING_INDEX(loc, " / ", 1) d FROM projects WHERE loc IS NOT NULL AND loc<>"" ORDER BY d')->fetchAll();
+    ? q('SELECT DISTINCT COALESCE(NULLIF(district, ""), SUBSTRING_INDEX(loc, " / ", 1)) d FROM projects WHERE city_key=? AND COALESCE(district, loc) <> "" ORDER BY d', [$fCity])->fetchAll()
+    : q('SELECT DISTINCT COALESCE(NULLIF(district, ""), SUBSTRING_INDEX(loc, " / ", 1)) d FROM projects WHERE COALESCE(district, loc) <> "" ORDER BY d')->fetchAll();
 
 admin_header('Projeler', 'projects');
 ?>
@@ -130,9 +130,13 @@ admin_header('Projeler', 'projects');
         <?php endforeach; ?>
       </select>
     </div>
-    <div class="field">
+    <div class="field search">
       <label>Ara</label>
-      <input type="search" name="q" value="<?= e($fQ) ?>" placeholder="Proje adı, slug veya lokasyon">
+      <div class="search-box">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input type="search" name="q" id="projectsSearch" value="<?= e($fQ) ?>" placeholder="Proje adı, slug veya lokasyon ara">
+        <?php if ($fQ !== ''): ?><button type="button" class="clear" id="projectsSearchClear" title="Aramayı temizle"><i class="fa-solid fa-xmark"></i></button><?php endif; ?>
+      </div>
     </div>
     <div class="projects-filter-actions">
       <button class="btn sm" type="submit"><i class="fa-solid fa-filter"></i> Filtrele</button>
@@ -155,7 +159,7 @@ admin_header('Projeler', 'projects');
           </td>
           <td><?php if ($r['cover_image']): ?><img class="thumb" src="<?= e(strpos($r['cover_image'], 'uploads/') === 0 ? '../' . $r['cover_image'] : rtrim(SITE_URL, '/') . '/' . $r['cover_image']) ?>" alt=""><?php endif; ?></td>
           <td><strong><?= e($r['title_tr']) ?></strong><br><span class="muted"><?= e($r['slug']) ?></span></td>
-          <td><?= e($r['loc']) ?></td>
+          <td><?= e($r['loc']) ?><?php if (!empty($r['district'])): ?><br><span class="muted"><?= e($r['district']) ?></span><?php endif; ?></td>
           <td>
             <span class="badge b-<?= e($r['status']) ?>"><?= e(PROJECT_STATUS[$r['status']] ?? $r['status']) ?></span>
             <?php if (!empty($r['is_new'])): ?><span class="badge b-devam-eden" title="Yeni Proje">Yeni</span><?php endif; ?>
@@ -273,6 +277,13 @@ admin_header('Projeler', 'projects');
   // İl değişince ilçe listesi sunucuda yeniden üretilir
   const citySel = document.getElementById('filterCity');
   if (citySel) citySel.addEventListener('change', () => citySel.form.submit());
+
+  const clearBtn = document.getElementById('projectsSearchClear');
+  if (clearBtn) clearBtn.addEventListener('click', () => {
+    const inp = document.getElementById('projectsSearch');
+    if (inp) inp.value = '';
+    clearBtn.closest('form').submit();
+  });
 })();
 </script>
 <?php admin_footer();

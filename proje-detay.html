@@ -15,7 +15,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Poppins:wght@200;300;400;500;600;700&family=Raleway:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/michele-m/soria-font@master/soria.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css?v=202611122101">
+    <link rel="stylesheet" href="style.css?v=202611122111">
 </head>
 <body class="detail-page-body">
 
@@ -115,7 +115,7 @@
                 <p class="lead-text" id="descLead">Buyapı Intense, Serdivan’ın en değerli noktasında yükselen anıtsal bir mimarlık eseridir.</p>
                 <p id="descFull">Statik mükemmellik, akıllı ev teknolojileri, geniş peyzaj alanları ve özgün cephe mimarisi ile geleceğin konut standartlarını günümüze taşıyoruz. Her detayında ince mühendislik çözümleri yer alan projemiz, yatırımcılarına yüksek prestij sunuyor.</p>
 
-                <div class="project-features-grid">
+                <div class="project-features-grid" id="projectFeaturesGrid">
                     <div class="feature-item">
                         <i class="fa-solid fa-house-signal"></i>
                         <div>
@@ -410,12 +410,12 @@
     <div id="site-footer"></div>
 
     <!-- KÜTÜPHANELER -->
-    <script src="components/header.js?v=202611122101"></script>
-    <script src="components/footer.js?v=202611122101"></script>
+    <script src="components/header.js?v=202611122111"></script>
+    <script src="components/footer.js?v=202611122111"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="components/highmaps.js"></script>
     <script src="components/tr-all.js"></script>
-    <script src="script.js?v=202611122101"></script>
+    <script src="script.js?v=202611122111"></script>
 
     <!-- KESİN VE ZORLAYICI (FORCE) DİNAMİK YÜKLEYİCİ -->
     <script>
@@ -463,6 +463,33 @@
             if (!d) return '';
             const msg = text ? `?text=${encodeURIComponent(text)}` : '';
             return `https://wa.me/${d}${msg}`;
+        }
+
+        // Projeye özel özellik kutuları
+        function renderProjectFeatures(proj, dict) {
+            const grid = document.getElementById('projectFeaturesGrid');
+            if (!grid) return;
+            const list = Array.isArray(proj.features) ? proj.features : [];
+            if (!list.length) return;
+            const lang = (localStorage.getItem('selectedLang') || window.currentLang || 'tr').toLowerCase();
+            const pickText = (row, base) => {
+                const v = (row[base + '_' + lang] || '').toString().trim();
+                if (v) return v;
+                return (row[base + '_tr'] || '').toString().trim();
+            };
+            grid.innerHTML = list.map(f => {
+                const icon = /^fa-[a-z0-9-]+$/.test((f.icon || '')) ? f.icon : 'fa-circle-check';
+                const title = pickText(f, 'title');
+                const sub = pickText(f, 'sub');
+                if (!title) return '';
+                return `<div class="feature-item">
+                    <i class="fa-solid ${icon}"></i>
+                    <div>
+                        <strong>${title}</strong>
+                        ${sub ? `<small>${sub}</small>` : ''}
+                    </div>
+                </div>`;
+            }).join('');
         }
 
         function resolveAssetUrl(rawPath) {
@@ -613,6 +640,9 @@
                 }
                 if (document.getElementById('descLead')) document.getElementById('descLead').innerText = proj.subtitle || proj.cat || '';
                 if (document.getElementById('descFull')) document.getElementById('descFull').innerText = proj.description || dict['detail.desc_fallback'] || 'Proje detayları hazırlanmaktadır.';
+
+                // 4b. PROJEYE ÖZEL ÖZELLİKLER (yoksa varsayılan kutular korunur)
+                renderProjectFeatures(proj, dict);
 
                 // 5. ARKA PLAN GÖRSELLERİ (HERO SLIDER - ÇOKLU GÖRSEL DESTEĞİ)
                 const heroSliderEl = document.querySelector('.detail-hero-slider');

@@ -555,6 +555,70 @@ function delete_upload(?string $path): void {
 
 function client_ip(): string { return substr($_SERVER['REMOTE_ADDR'] ?? '', 0, 45); }
 
+require_once __DIR__ . '/il-ilce.php';
+
+/**
+ * Bir ilin ilçe listesi.
+ */
+function districts_of(string $cityKey): array
+{
+    return TR_DISTRICTS[$cityKey] ?? [];
+}
+
+const PROJECT_FEATURE_ICONS = [
+    'fa-house-signal'      => 'Akıllı ev',
+    'fa-shield-halved'     => 'Güvenlik',
+    'fa-square-parking'    => 'Otopark',
+    'fa-leaf'              => 'Yeşil bina',
+    'fa-solar-panel'       => 'Güneş enerjisi',
+    'fa-bolt'              => 'Elektrik / enerji',
+    'fa-fire-flame-simple' => 'Isıtma',
+    'fa-snowflake'         => 'Soğutma / iklimlendirme',
+    'fa-water'             => 'Su / havuz',
+    'fa-swimming-pool'     => 'Yüzme havuzu',
+    'fa-dumbbell'          => 'Spor salonu',
+    'fa-spa'               => 'Spa / sağlıklı yaşam',
+    'fa-tree'              => 'Peyzaj',
+    'fa-seedling'          => 'Sürdürülebilirlik',
+    'fa-elevator'          => 'Asansör',
+    'fa-stairs'            => 'Merdiven',
+    'fa-building'          => 'Bina',
+    'fa-city'              => 'Şehir / karma kullanım',
+    'fa-warehouse'         => 'Depo / lojistik',
+    'fa-industry'          => 'Sanayi / üretim',
+    'fa-truck-fast'        => 'Sevkiyat',
+    'fa-boxes-stacked'     => 'Stok alanı',
+    'fa-gears'             => 'Teknik donanım',
+    'fa-wifi'              => 'İnternet altyapısı',
+    'fa-video'             => 'Kamera sistemi',
+    'fa-bell-concierge'    => 'Resepsiyon',
+    'fa-concierge-bell'    => 'Danışma',
+    'fa-car'               => 'Araç',
+    'fa-charging-station'  => 'Şarj istasyonu',
+    'fa-road'              => 'Yol / ulaşım',
+    'fa-location-dot'      => 'Konum',
+    'fa-map'               => 'Harita',
+    'fa-ruler-combined'    => 'Metraj',
+    'fa-compass-drafting'  => 'Mimari tasarım',
+    'fa-helmet-safety'     => 'Şantiye güvenliği',
+    'fa-hard-hat'          => 'İş güvenliği',
+    'fa-fire-extinguisher' => 'Yangın güvenliği',
+    'fa-door-open'         => 'Giriş',
+    'fa-key'               => 'Anahtar / kilit',
+    'fa-lock'              => 'Kilit',
+    'fa-child-reaching'    => 'Çocuk alanı',
+    'fa-futbol'            => 'Spor sahası',
+    'fa-store'             => 'Ticari alan',
+    'fa-utensils'          => 'Kafe / restoran',
+    'fa-bed'               => 'Konfor',
+    'fa-sun'               => 'Gün ışığı',
+    'fa-wind'              => 'Havalandırma',
+    'fa-recycle'           => 'Geri dönüşüm',
+    'fa-chart-line'        => 'Yatırım değeri',
+    'fa-star'              => 'Prestij',
+    'fa-circle-check'      => 'Genel',
+];
+
 const CITY_KEYS = [
     'tr-aa' => '01 Adana',
     'tr-ad' => '02 Adıyaman',

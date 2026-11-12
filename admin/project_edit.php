@@ -7,6 +7,13 @@ $p = $id ? q('SELECT * FROM projects WHERE id=?', [$id])->fetch() : null;
 if ($id && !$p) { flash('Proje bulunamadı.', 'err'); redirect('projects.php'); }
 if (!admin_can('projects', $p ? 'edit' : 'create')) admin_deny();
 
+// İl değişince ilçe listesi (JSON)
+if (isset($_GET['districts'])) {
+    header('Content-Type: application/json; charset=utf-8');
+    echo json_encode(districts_of((string)($_GET['il'] ?? '')), JSON_UNESCAPED_UNICODE);
+    exit;
+}
+
 $IMG = ['jpg','jpeg','png','webp','gif'];
 $KINDS = [
     'hero'   => 'Arka Plan Slider Görselleri (Hero)',
@@ -87,6 +94,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($dup) $slug .= '-' . substr(bin2hex(random_bytes(2)), 0, 4);
 
         $cityKey = $f('city_key', 'tr-sk');
+        $district = $f('district');
+        if ($district !== '' && !in_array($district, districts_of($cityKey), true)) $district = '';
+        $features = [];
+        $fIcons = (array)($_POST['feat_icon'] ?? []);
+        $fTitles = (array)($_POST['feat_title_tr'] ?? []);
+        foreach ($fTitles as $i => $t) {
+            $t = trim((string)$t);
+            if ($t === '') continue;
+            $features[] = [
+                'icon'     => preg_replace('/[^a-z0-9-]/', '', strtolower((string)($fIcons[$i] ?? 'fa-circle-check'))) ?: 'fa-circle-check',
+                'title_tr' => $t,
+                'title_en' => trim((string)($_POST['feat_title_en'][$i] ?? '')),
+                'title_ar' => trim((string)($_POST['feat_title_ar'][$i] ?? '')),
+                'sub_tr'   => trim((string)($_POST['feat_sub_tr'][$i] ?? '')),
+                'sub_en'   => trim((string)($_POST['feat_sub_en'][$i] ?? '')),
+                'sub_ar'   => trim((string)($_POST['feat_sub_ar'][$i] ?? '')),
+            ];
+            if (count($features) >= 12) break;
+        }
+        $featuresJson = $features ? json_encode($features, JSON_UNESCAPED_UNICODE) : null;
         $types = array_values(array_intersect(array_keys(PROJECT_TYPES), (array)($_POST['type'] ?? [])));
         $status = array_key_exists($f('status'), PROJECT_STATUS) ? $f('status') : 'devam-eden';
 
@@ -112,14 +139,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $slug, $title, $f('title_en'), $f('title_ar'), $f('title_de'),
             $f('subtitle_tr'), $f('slogan_tr'), $f('subtitle_en'), $f('slogan_en'), $f('subtitle_ar'), $f('slogan_ar'), $f('subtitle_de'),
             $f('description_tr'), $f('description_en'), $f('description_ar'), $f('description_de'),
-            $f('cat'), $f('loc'), $cityKey, implode(',', $types), $status,
+            $f('cat'), $f('loc'), $cityKey, $district, $featuresJson, implode(',', $types), $status,
             !empty($_POST['is_new']) ? 1 : 0, !empty($_POST['is_urban_renewal']) ? 1 : 0,
             $cover, $f('area'), $f('concept'), $f('delivery'), $catalog,
             $streetViewCode, $googleMapCode,
             !empty($_POST['is_featured']) ? 1 : 0, !empty($_POST['is_active']) ? 1 : 0, (int)$f('sort_order', '0'),
             $f('seo_title'), $f('seo_desc'), $f('seo_keywords'),
         ];
-        $cols = 'slug,title_tr,title_en,title_ar,title_de,subtitle_tr,slogan_tr,subtitle_en,slogan_en,subtitle_ar,slogan_ar,subtitle_de,description_tr,description_en,description_ar,description_de,cat,loc,city_key,type,status,is_new,is_urban_renewal,cover_image,area,concept,delivery,catalog_file,street_view_code,google_map_code,is_featured,is_active,sort_order,seo_title,seo_desc,seo_keywords';
+        $cols = 'slug,title_tr,title_en,title_ar,title_de,subtitle_tr,slogan_tr,subtitle_en,slogan_en,subtitle_ar,slogan_ar,subtitle_de,description_tr,description_en,description_ar,description_de,cat,loc,city_key,district,features,type,status,is_new,is_urban_renewal,cover_image,area,concept,delivery,catalog_file,street_view_code,google_map_code,is_featured,is_active,sort_order,seo_title,seo_desc,seo_keywords';
         if ($p) {
             $set = implode(',', array_map(fn($c) => "$c=?", explode(',', $cols)));
             q("UPDATE projects SET $set WHERE id=?", [...$data, $id]);
@@ -174,6 +201,14 @@ $prev = fn($path) => strpos($path, 'uploads/') === 0 ? '../' . $path : rtrim(SIT
             <option value="<?= e($k) ?>" <?= ($p['city_key'] ?? 'tr-sk') === $k ? 'selected' : '' ?>><?= e($n) ?> (<?= e($k) ?>)</option>
           <?php endforeach; ?>
         </select></div>
+      <div class="field"><label>İlçe</label>
+        <select name="district" id="districtSelect" data-city="<?= e($p['city_key'] ?? 'tr-sk') ?>">
+          <option value="">Seçilmedi</option>
+          <?php foreach (districts_of($p['city_key'] ?? 'tr-sk') as $d): ?>
+            <option value="<?= e($d) ?>" <?= ($p['district'] ?? '') === $d ? 'selected' : '' ?>><?= e($d) ?></option>
+          <?php endforeach; ?>
+        </select>
+        <div class="hint">İl değişince liste yenilenir.</div></div>
       <div class="field"><label>Durum</label>
         <select name="status"><?php foreach (PROJECT_STATUS as $k => $n): ?>
           <option value="<?= e($k) ?>" <?= ($p['status'] ?? 'devam-eden') === $k ? 'selected' : '' ?>><?= e($n) ?></option><?php endforeach; ?></select></div>
@@ -197,6 +232,45 @@ $prev = fn($path) => strpos($path, 'uploads/') === 0 ? '../' . $path : rtrim(SIT
       <label class="chk"><input type="checkbox" name="is_urban_renewal" value="1" <?= ($p['is_urban_renewal'] ?? 0) ? 'checked' : '' ?>><span>Kentsel Dönüşüm Projesi</span></label>
     </div>
     <p class="hint">"Yeni Proje" projeler sayfasındaki <b>Yeni Projeler</b> filtresinde, "Kentsel Dönüşüm Projesi" ise Kentsel Dönüşüm sayfasında listelenir.</p>
+  </div>
+
+  <!-- Projeye Özel Özellikler -->
+  <div class="card">
+    <div class="row between" style="margin-bottom:6px;flex-wrap:wrap;gap:10px">
+      <h2 style="margin:0"><i class="fa-solid fa-list-check" style="color:var(--gold)"></i> Projeye Özel Özellikler</h2>
+      <button type="button" class="btn ghost sm" id="featAdd"><i class="fa-solid fa-plus"></i> Özellik Ekle</button>
+    </div>
+    <p class="hint" style="margin:0 0 12px">Proje detay sayfasındaki özellik kutuları buradan yönetilir. Boş bırakılırsa sitede varsayılan dört kutu gösterilir. En fazla 12 özellik eklenebilir.</p>
+    <div id="featList" class="feat-list">
+      <?php
+      $featRows = [];
+      if (!empty($p['features'])) {
+          $decoded = json_decode((string)$p['features'], true);
+          if (is_array($decoded)) $featRows = $decoded;
+      }
+      foreach ($featRows as $fr): ?>
+        <div class="feat-row">
+          <div class="feat-icon-cell">
+            <span class="feat-preview"><i class="fa-solid <?= e($fr['icon'] ?? 'fa-circle-check') ?>"></i></span>
+            <select name="feat_icon[]" class="feat-icon-select">
+              <?php foreach (PROJECT_FEATURE_ICONS as $ik => $il): ?>
+                <option value="<?= e($ik) ?>" <?= ($fr['icon'] ?? '') === $ik ? 'selected' : '' ?>><?= e($il) ?> — <?= e($ik) ?></option>
+              <?php endforeach; ?>
+            </select>
+          </div>
+          <div class="feat-fields">
+            <input type="text" name="feat_title_tr[]" value="<?= e($fr['title_tr'] ?? '') ?>" placeholder="Başlık (TR) *">
+            <input type="text" name="feat_sub_tr[]" value="<?= e($fr['sub_tr'] ?? '') ?>" placeholder="Alt açıklama (TR)">
+            <input type="text" name="feat_title_en[]" value="<?= e($fr['title_en'] ?? '') ?>" placeholder="Title (EN)">
+            <input type="text" name="feat_sub_en[]" value="<?= e($fr['sub_en'] ?? '') ?>" placeholder="Subtitle (EN)">
+            <input type="text" name="feat_title_ar[]" value="<?= e($fr['title_ar'] ?? '') ?>" placeholder="العنوان (AR)">
+            <input type="text" name="feat_sub_ar[]" value="<?= e($fr['sub_ar'] ?? '') ?>" placeholder="الوصف (AR)">
+          </div>
+          <button type="button" class="btn danger sm feat-del" title="Özelliği kaldır"><i class="fa-solid fa-trash"></i></button>
+        </div>
+      <?php endforeach; ?>
+    </div>
+    <p class="hint" id="featEmpty" style="margin:8px 0 0;<?= $featRows ? 'display:none' : '' ?>">Henüz özellik eklenmedi.</p>
   </div>
 
   <!-- Kapak Görseli & Katalog (Sürükle - Bırak Destekli) -->
@@ -610,6 +684,76 @@ function initProjectMediaLibrary() {
 }
 
 initProjectMediaLibrary();
+
+// ---- İlçe listesi: il değişince sunucudan tazele ----
+(function () {
+  const city = document.querySelector('select[name="city_key"]');
+  const dist = document.getElementById('districtSelect');
+  if (!city || !dist) return;
+  city.addEventListener('change', async () => {
+    const keep = dist.value;
+    dist.innerHTML = '<option value="">Seçilmedi</option>';
+    try {
+      const r = await fetch('project_edit.php?districts=1&il=' + encodeURIComponent(city.value), { credentials: 'same-origin' });
+      const list = await r.json();
+      list.forEach(d => {
+        const o = document.createElement('option');
+        o.value = d; o.textContent = d;
+        if (d === keep) o.selected = true;
+        dist.appendChild(o);
+      });
+    } catch (_) {}
+  });
+})();
+
+// ---- Projeye özel özellikler ----
+(function () {
+  const list = document.getElementById('featList');
+  const addBtn = document.getElementById('featAdd');
+  const empty = document.getElementById('featEmpty');
+  if (!list || !addBtn) return;
+
+  const icons = <?= json_encode(PROJECT_FEATURE_ICONS, JSON_UNESCAPED_UNICODE) ?>;
+
+  function refreshEmpty() {
+    if (empty) empty.style.display = list.querySelector('.feat-row') ? 'none' : '';
+  }
+
+  function bindRow(row) {
+    const sel = row.querySelector('.feat-icon-select');
+    const prev = row.querySelector('.feat-preview i');
+    if (sel && prev) sel.addEventListener('change', () => { prev.className = 'fa-solid ' + sel.value; });
+    const del = row.querySelector('.feat-del');
+    if (del) del.addEventListener('click', () => { row.remove(); refreshEmpty(); });
+  }
+
+  list.querySelectorAll('.feat-row').forEach(bindRow);
+
+  addBtn.addEventListener('click', () => {
+    if (list.querySelectorAll('.feat-row').length >= 12) { alert('En fazla 12 özellik eklenebilir.'); return; }
+    const row = document.createElement('div');
+    row.className = 'feat-row';
+    const opts = Object.entries(icons).map(([k, v]) => `<option value="${k}">${v} — ${k}</option>`).join('');
+    row.innerHTML = `
+      <div class="feat-icon-cell">
+        <span class="feat-preview"><i class="fa-solid fa-circle-check"></i></span>
+        <select name="feat_icon[]" class="feat-icon-select">${opts}</select>
+      </div>
+      <div class="feat-fields">
+        <input type="text" name="feat_title_tr[]" placeholder="Başlık (TR) *">
+        <input type="text" name="feat_sub_tr[]" placeholder="Alt açıklama (TR)">
+        <input type="text" name="feat_title_en[]" placeholder="Title (EN)">
+        <input type="text" name="feat_sub_en[]" placeholder="Subtitle (EN)">
+        <input type="text" name="feat_title_ar[]" placeholder="العنوان (AR)">
+        <input type="text" name="feat_sub_ar[]" placeholder="الوصف (AR)">
+      </div>
+      <button type="button" class="btn danger sm feat-del" title="Özelliği kaldır"><i class="fa-solid fa-trash"></i></button>`;
+    list.appendChild(row);
+    bindRow(row);
+    refreshEmpty();
+    row.querySelector('input[name="feat_title_tr[]"]').focus();
+  });
+})();
 
 </script>
 <?php admin_footer();

@@ -97,6 +97,8 @@ try {
                 'cat'            => $r['cat'],
                 'loc'            => $r['loc'],
                 'cityKey'        => $r['city_key'],
+                'district'       => $r['district'] ?? '',
+                'features'       => !empty($r['features']) ? (json_decode((string)$r['features'], true) ?: []) : [],
                 'type'           => $r['type'],
                 'status'         => $r['status'],
                 'isNew'          => (int)($r['is_new'] ?? (($r['status'] ?? '') === 'yeni-proje' ? 1 : 0)),

@@ -163,3 +163,24 @@ tr:hover td{background:rgba(255,255,255,.02)}
 .projects-filter-actions{display:flex;gap:8px;align-items:center}
 .projects-table .drag-handle{touch-action:none;-webkit-user-select:none;user-select:none}
 .projects-table tr.dragging{position:relative;z-index:2}
+
+/* Projeye özel özellikler */
+.feat-list{display:flex;flex-direction:column;gap:10px}
+.feat-row{display:grid;grid-template-columns:220px 1fr auto;gap:10px;align-items:start;padding:10px;border:1px solid var(--line);border-radius:10px;background:var(--panel2)}
+.feat-icon-cell{display:flex;flex-direction:column;gap:6px}
+.feat-preview{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:8px;border:1px solid var(--line);color:var(--gold);background:rgba(197,160,89,.08)}
+.feat-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+.feat-fields input{width:100%}
+.feat-icon-select{width:100%}
+@media(max-width:820px){.feat-row{grid-template-columns:1fr}.feat-fields{grid-template-columns:1fr}}
+
+/* Projeler: arama alanı */
+.projects-filter .field.search{flex:2 1 260px}
+.projects-filter .search-box{position:relative;display:flex;align-items:center}
+.projects-filter .search-box i{position:absolute;left:12px;color:var(--dim);font-size:.85rem;pointer-events:none}
+.projects-filter .search-box input{padding-left:34px;border-radius:999px;height:40px}
+.projects-filter .search-box input::-webkit-search-cancel-button{-webkit-appearance:none}
+.projects-filter .search-box .clear{position:absolute;right:8px;border:0;background:none;color:var(--dim);cursor:pointer;padding:4px 6px;border-radius:50%}
+.projects-filter .search-box .clear:hover{color:var(--gold)}
+.projects-filter select{height:40px;border-radius:999px;padding-left:14px}
+.projects-filter-actions .btn{height:40px;border-radius:999px}
