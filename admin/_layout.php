@@ -22,7 +22,7 @@ function admin_header(string $title, string $active = ''): array {
 <title><?= e($title) ?> | BUYAPI Panel</title>
 <?= favicon_links_html('../') ?>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<link rel="stylesheet" href="assets/admin.css">
+<link rel="stylesheet" href="assets/admin.css?v=<?= @filemtime(__DIR__ . '/assets/admin.css') ?: 1 ?>">
 </head><body class="<?= admin_readonly() ? 'ro' : '' ?>">
 <aside class="side" id="side">
   <div class="brand">BUYAPI <small>YÖNETİM</small></div>
@@ -57,7 +57,7 @@ function admin_header(string $title, string $active = ''): array {
 
 function admin_footer(): void { ?>
 </main>
-<script src="assets/dropzone.js?v=1"></script>
+<script src="assets/dropzone.js?v=<?= @filemtime(__DIR__ . '/assets/dropzone.js') ?: 1 ?>"></script>
 <script>
 const lockForm = (f) => f.querySelectorAll('input,select,textarea,button').forEach(el => { if (!el.closest('[data-keep]')) el.disabled = true; });
 if (document.body.classList.contains('ro')) document.querySelectorAll('main form').forEach(lockForm);
