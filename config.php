@@ -13,8 +13,11 @@ const DB_PASS = '';
 // (host + port + alt dizin) otomatik olarak hesaplanır. Böylece yerel geliştirme,
 // önizleme ve canlı ortam aynı kodla doğru görsel yolu üretir.
 if (!defined('SITE_URL')) {
-    $__scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
-    $__host = $_SERVER['HTTP_HOST'] ?? 'localhost';
+    // Ters vekil (önizleme/yayın) arkasında gerçek adres X-Forwarded-* başlıklarında gelir.
+    $__fwdProto = strtolower(trim(explode(',', $_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '')[0]));
+    $__scheme = ($__fwdProto === 'https' || (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')) ? 'https' : 'http';
+    $__fwdHost = trim(explode(',', $_SERVER['HTTP_X_FORWARDED_HOST'] ?? '')[0]);
+    $__host = $__fwdHost !== '' ? $__fwdHost : ($_SERVER['HTTP_HOST'] ?? 'localhost');
     $__dir = rtrim(str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'] ?? '/')), '/');
     $__dir = preg_replace('#/(admin|api)$#', '', $__dir);
     define('SITE_URL', $__scheme . '://' . $__host . $__dir);

@@ -51,14 +51,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // ── 2. İstatistik Sayaçları ─────────────────────────────────────────────
     if ($section === 'stats') {
         $statKeys = [
-            'corp_stat_1_num', 'corp_stat_1_sym', 'corp_stat_1_lbl',
-            'corp_stat_2_num', 'corp_stat_2_sym', 'corp_stat_2_lbl',
-            'corp_stat_3_num', 'corp_stat_3_sym', 'corp_stat_3_lbl',
+            'corp_stat_1_num', 'corp_stat_1_sym', 'corp_stat_1_lbl', 'corp_stat_1_color',
+            'corp_stat_2_num', 'corp_stat_2_sym', 'corp_stat_2_lbl', 'corp_stat_2_color',
+            'corp_stat_3_num', 'corp_stat_3_sym', 'corp_stat_3_lbl', 'corp_stat_3_color',
         ];
         foreach ($statKeys as $k) {
             if (isset($_POST[$k])) {
+                $val = trim((string)$_POST[$k]);
+                if (str_ends_with($k, '_color')) {
+                    if ($val !== '' && !preg_match('/^#[0-9a-fA-F]{3,8}$/', $val)) {
+                        flash('Renk değeri #RRGGBB biçiminde olmalı.', 'err');
+                        redirect('about.php#stats');
+                    }
+                }
                 q('INSERT INTO site_settings (s_key,s_value) VALUES (?,?) ON DUPLICATE KEY UPDATE s_value=VALUES(s_value)',
-                    [$k, trim($_POST[$k])]);
+                    [$k, $val]);
             }
             foreach ($activeLangs as $al) {
                 $lk = "{$k}_{$al['code']}";
@@ -217,6 +224,15 @@ $bannerImg = setting('corp_banner_img');
             <input type="text" name="corp_stat_<?= $i ?>_lbl<?= $s ?>" placeholder="Etiket"
                    value="<?= e(setting("corp_stat_{$i}_lbl{$s}", ['YILLIK MİMARİ MİRAS','TAMAMLANAN İMZA ESER','TEKNİK MÜKEMMELLİK'][$i-1])) ?>">
           </div>
+          <?php if ($isDefault): ?>
+          <div class="field" style="margin-top:8px">
+            <label>Metin Rengi</label>
+            <div class="row" style="gap:8px;align-items:center">
+              <input type="color" name="corp_stat_<?= $i ?>_color" value="<?= e(setting("corp_stat_{$i}_color", '#c5a059')) ?>" style="width:56px;height:38px;padding:2px">
+              <span class="tab-hint" style="margin:0">Sayı, sembol ve etiket bu renkte görünür.</span>
+            </div>
+          </div>
+          <?php endif; ?>
         </div>
         <?php endforeach; ?>
       </div>

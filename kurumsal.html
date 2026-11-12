@@ -123,6 +123,16 @@
                 if (s.corp_stat_3_num) document.getElementById('corpStat3Num').innerText = s.corp_stat_3_num;
                 if (s.corp_stat_3_sym) document.getElementById('corpStat3Sym').innerText = s.corp_stat_3_sym;
                 if (s.corp_stat_3_lbl) document.getElementById('corpStat3Lbl').innerText = s.corp_stat_3_lbl;
+
+                // İstatistik metin renkleri (panelden)
+                [1, 2, 3].forEach(function (i) {
+                    const color = (s['corp_stat_' + i + '_color'] || '').trim();
+                    if (!/^#[0-9a-f]{3,8}$/i.test(color)) return;
+                    ['corpStat' + i + 'Num', 'corpStat' + i + 'Sym', 'corpStat' + i + 'Lbl'].forEach(function (id) {
+                        const el = document.getElementById(id);
+                        if (el) el.style.setProperty('color', color, 'important');
+                    });
+                });
             } catch (e) {
                 console.warn("Kurumsal ayarlar çekilemedi:", e);
             }
