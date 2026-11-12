@@ -1,0 +1,407 @@
+
+
+
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <link rel="shortcut icon" href="/Theme/3/Content/assets/images/favicon.svg" type="image/x-icon">
+    <!-- Font-awesome CSS -->
+    <link rel="stylesheet" href="/Theme/3/Content/assets/css/fontawesome/css/all.css">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="/Theme/3/Content/assets/css/bootstrap.min.css" />
+    <!-- Owl - Carousel CSS -->
+    <link rel="stylesheet" href="/Theme/3/Content/assets/owl/assets/owl.carousel.min.css">
+    <link rel="stylesheet" href="/Theme/3/Content/assets/owl/assets/owl.theme.default.min.css">
+    <!-- Padding & Margin CSS -->
+    <link rel="stylesheet" href="/Theme/3/Content/assets/css/margin.css">
+    <link rel="stylesheet" href="/Theme/3/Content/assets/css/padding.css">
+    <!-- Pop-up Image  CSS -->
+    <link rel="stylesheet" href="/Theme/3/Content/assets/css/fancybox.css" />
+    <!-- Aos CSS -->
+    <link rel="stylesheet" href="/Theme/3/Content/assets/css/aos.css">
+    <!-- My Style  -->
+    <link rel="stylesheet" href="/Theme/3/Content/assets/css/style.css">
+	
+	<script src="https://www.google.com/recaptcha/api.js">
+	</script>
+    
+    <link href="/Theme/3/Content/css/lightbox.min.css" rel="stylesheet" />
+    <title>BUYAPI - Buyapı Altınışık Konutları-1 | Değişimin Mimarı</title>
+    <meta name="description" content="Buyapı Altınışık Konutları-1">
+    <meta name="keywords" content="Buyapı Altınışık Konutları-1">
+
+</head>
+<body>
+    <nav>
+        <div class="build-nav">
+            <div class="bottom-hr">
+                <div class="logo">
+                    <a href="/tr-tr/Home">
+                        <img id="logo-white" style="display:none;" src="/Theme/3/Content/assets/images/l-white.svg" alt="logo.png" />
+                        <img id="logo-black" style="display:none;" src="/Theme/3/Content/assets/images/l-dark.svg" alt="logo.png" />
+                    </a>
+                </div>
+                <div class="menu-lg">
+                    <ul>
+
+
+    <li class="menu-page-item"><a class="mainmenu-a" href="/tr-tr/yazilar/projeler-2/">Projeler</a></li>
+    <li class="menu-page-item"><a class="mainmenu-a" href="/tr-tr/sayfalar/yazilar-1/iletisim-1/">İletişim</a></li>
+
+                        <li class="menu-button-item"><a href="javascript:void(0);" onclick="open_call()" class="lets-call-you">SİZİ ARAYALIM</a></li>
+                            <li class="menu-page-item"><a class="mainmenu-a" href="/en-US/Home">EN</a></li>
+                        <li class="mr0 menu-button-item">
+                            <a href="javascript:void(0);" onclick="open_menu_side()"><img src="/Theme/3/Content/assets/images/icon/menu.png" alt="menu.png7"></a>
+                        </li>
+                    </ul>
+                </div>
+                <div id="menu-side" class="sidenav">
+                    <a class="closebtn" id="closebtn-menu" href="javascript:void(0);" onclick="close_menu_side()"><img src="/Theme/3/Content/assets/images/icon/close.png" alt="close.png"></a>
+                    <ul class="menu-side-ul w-100">
+
+
+    <li class="sidenav-link"><a href="/#">Anasayfa</a></li>
+    <li class="sidenav-link"><a href="/tr-tr/sayfalar/yazilar-1/hakkimizda-2/">Hakkımızda</a></li>
+    <li class="sidenav-link"><a href="/tr-tr/yazilar/projeler-2/">Projeler</a></li>
+    <li class="sidenav-link"><a href="/tr-tr/sayfalar/yazilar-1/insan-kaynaklari-4/">İnsan Kaynakları</a></li>
+    <li class="sidenav-link"><a href="/tr-tr/sayfalar/yazilar-1/iletisim-1/">İletişim</a></li>
+
+                        	 <li class="d-lg-none sidenav-link">                            <li class="d-lg-none sidenav-link"><a href="/en-US/Home">EN</a></li>
+</li>
+					
+                        <li class="d-lg-none d-block">
+                            <a class="form-btn d-block" href="javascript:void(0);" onclick="call_button()">SİZİ ARAYALIM <img src="/Theme/3/Content/assets/images/icon/right-arrow-1.png" alt="right-arrow-1.png"></a>
+                        </li>
+						
+						
+                       
+                    </ul>
+                </div>
+                <div id="call-randevu" class="sidenav">
+                    <a class="closebtn" id="closebtn" href="javascript:void(0);" onclick="close_call()"><img src="/Theme/3/Content/assets/images/icon/close.png" alt="close.png"></a>
+
+
+<form action="/HomePage/InsertForm?url=%2F&amp;header=Anasayfa%20Bizi%20Aray%C4%B1n&amp;subject=Anasayfa%20Bizi%20Aray%C4%B1n&amp;whoSendMail=destek%40buyapi.com.tr" method="post">    <div class="row">
+        <div class="col-12 mb-2">
+            <h5 class="call-title">
+                SİZİ ARAYALIM
+            </h5>
+        </div>
+        <div class="col-12 mb-2">
+            <input type="hidden" id="ExternalFormHeader_1" name="ExternalFormHeader_1" value="Adınız">
+            <input class="form-txt" name="ExternalFormElement_1" id="ExternalFormElement_1" placeholder="Adınız" type="text" required="">
+        </div>
+        <div class="col-12 mb-2">
+            <input type="hidden" id="ExternalFormHeader_2" name="ExternalFormHeader_2" value="Soyadınız">
+            <input class="form-txt" name="ExternalFormElement_2" id="ExternalFormElement_2" placeholder="Soyadınız" type="text" required="">
+        </div>
+        <div class="col-12 mb-2">
+            <input type="hidden" id="ExternalFormHeader_3" name="ExternalFormHeader_3" value="Telefon">
+            <input class="form-txt" name="ExternalFormElement_3" id="ExternalFormElement_3" placeholder="Telefon" type="number" required="">
+        </div>
+        <div class="col-12 mb-2">
+            <input type="hidden" id="ExternalFormHeader_4" name="ExternalFormHeader_4" value="Email">
+            <input class="form-txt" name="ExternalFormElement_4" id="ExternalFormElement_4" placeholder="Email" type="email" required="">
+        </div>
+        <div class="col-12 mb-2">
+            <input type="hidden" id="ExternalFormHeader_5" name="ExternalFormHeader_5" value="Proje se&#231;iniz">
+            <select name="ExternalFormElement_5" id="ExternalFormElement_5" class="form-txt">
+                <option value="-1">
+                    Proje se&#231;iniz
+                </option>
+            <option value="Konut / Buyapı Silence">Konut / Buyapı Silence</option>
+            <option value="Konut / Buyapı İmaj">Konut / Buyapı İmaj</option>
+            <option value="Konut / Begon Villa">Konut / Begon Villa</option>
+            <option value="Konut / Buyapı Nova Plus">Konut / Buyapı Nova Plus</option>
+            <option value="Konut / Buyapı Diamond">Konut / Buyapı Diamond</option>
+            <option value="Konut / Buyapı Flex">Konut / Buyapı Flex</option>
+            <option value="Konut / Buyapı Garden">Konut / Buyapı Garden</option>
+            <option value="Konut / Sapanca Life">Konut / Sapanca Life</option>
+            <option value="Konut / Buyapı Prestige">Konut / Buyapı Prestige</option>
+            <option value="Konut / Buyapı Prime">Konut / Buyapı Prime</option>
+            <option value="Konut / Buyapı Sungate">Konut / Buyapı Sungate</option>
+            <option value="Konut / Buyapı Uptown">Konut / Buyapı Uptown</option>
+            <option value="Konut / Buyapı Vadi">Konut / Buyapı Vadi</option>
+            <option value="Konut / Buyapı Vision">Konut / Buyapı Vision</option>
+            <option value="Konut / Buyapı Eksen">Konut / Buyapı Eksen</option>
+            <option value="Konut / Buyapı Begonvil Apartmanı">Konut / Buyapı Begonvil Apartmanı</option>
+            <option value="Konut / G&#252;neş Apartmanı">Konut / G&#252;neş Apartmanı</option>
+            <option value="Konut / Konak Apartmanı">Konut / Konak Apartmanı</option>
+            <option value="Konut / Buyapı Intense">Konut / Buyapı Intense</option>
+            <option value="Konut / Buyapı Altınışık Konutları-1">Konut / Buyapı Altınışık Konutları-1</option>
+            <option value="Konut / Buyapı Altınışık Konutları-2">Konut / Buyapı Altınışık Konutları-2</option>
+            <option value="Ticari / MK Moda Atelier">Ticari / MK Moda Atelier</option>
+            <option value="Ticari / Honda Plaza">Ticari / Honda Plaza</option>
+            <option value="Ticari / &#199;ark Petrol">Ticari / &#199;ark Petrol</option>
+            <option value="Ticari / H&#252;nerli Orman &#220;r&#252;nleri">Ticari / H&#252;nerli Orman &#220;r&#252;nleri</option>
+            <option value="Ticari / Opera Garden">Ticari / Opera Garden</option>
+            <option value="Ticari / Saka Su">Ticari / Saka Su</option>
+            <option value="Ticari / Truva Granit">Ticari / Truva Granit</option>
+            <option value="Ticari / Yavuz Gıda Fındık Entegre Tesisleri">Ticari / Yavuz Gıda Fındık Entegre Tesisleri</option>
+            <option value="Ticari / Kia Plaza">Ticari / Kia Plaza</option>
+            <option value="Ticari / Hasbil Tarım">Ticari / Hasbil Tarım</option>
+            <option value="Ticari / Kontrolmatik Pomega Enerji">Ticari / Kontrolmatik Pomega Enerji</option>
+            <option value="Ticari / Hendek Fabrika">Ticari / Hendek Fabrika</option>
+            <option value="İş Merkezi / Buyapı Centrum">İş Merkezi / Buyapı Centrum</option>
+            <option value="İş Merkezi / İrfan P&#252;sk&#252;ll&#252; İş Merkezi">İş Merkezi / İrfan P&#252;sk&#252;ll&#252; İş Merkezi</option>
+            <option value="İş Merkezi / Firstgate İş Merkezi">İş Merkezi / Firstgate İş Merkezi</option>
+            <option value="İş Merkezi / Kemal Yener İş Merkezi">İş Merkezi / Kemal Yener İş Merkezi</option>
+            <option value="İş Merkezi / Buyapı Work Inn">İş Merkezi / Buyapı Work Inn</option>
+            <option value="İş Merkezi / Buyapı Centrum">İş Merkezi / Buyapı Centrum</option>
+            <option value="İş Merkezi / Buyapı Altınışık İş Merkezi">İş Merkezi / Buyapı Altınışık İş Merkezi</option>
+            <option value="İş Merkezi / Palm İş Merkezi">İş Merkezi / Palm İş Merkezi</option>
+            <option value="İş Merkezi / Buyapı Palm İş Merkezi">İş Merkezi / Buyapı Palm İş Merkezi</option>
+            <option value="İş Merkezi / Buyapı Time İş Merkezi">İş Merkezi / Buyapı Time İş Merkezi</option>
+
+                
+            </select>
+        </div>
+        <div class="col-12">
+            <button class="form-btn d-block" type="submit">
+                G&#246;nder
+                <img src="/Theme/3/Content/assets/images/icon/right-arrow-1.png" alt="right-arrow-1.png">
+            </button>
+        </div>
+    </div>
+</form>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    
+
+
+
+<section>
+    <div class="container-build">
+        <div class="row my-5">
+            <div class="col-lg-3">
+                <div class="title-inner mb-3">
+                    <h4>Buyapı Altınışık Konutları-1</h4>
+                </div>
+                <p>Serdivan&rsquo;da Avantajlı Bir Fırsat<br /><br /><strong data-path-to-node="3,0" data-index-in-node="0">Altınışık 1</strong>, modern mimarisi, merkezi konumu ve ticari alanlarıyla hem konforlu bir yaşam hem de g&uuml;&ccedil;l&uuml; bir yatırım fırsatı sunuyor. Estetik tasarımı ve fonksiyonel planlamasıyla <strong data-path-to-node="3,0" data-index-in-node="178">sadece bir yapı değil, yaşam kalitenizi artıracak prestijli bir alan vaat ediyor.</strong></p>
+<p>✨ %40 peşinat<br />✨ %0 faiz<br />✨ 12 ay taksit<br />✨ 1+1 ve 2+1 daire se&ccedil;enekleri</p>
+<p>Size uygun &ouml;deme planıyla yeni evinize bir adım daha yaklaşın.</p>
+                <ul class="project-category-ul mt-3">
+                        <li>
+                            <a href="javascript:void(0);" onclick="openTab('')">
+                                
+                            </a>
+                        </li>
+                </ul>
+            </div>
+            <div class="col-lg-9">
+                    <div class="tab" style="display:block;">
+                        <div class="owl-carousel owl-theme owl-project mt-lg-0 mt-4">
+                                <div class="item">
+                                    <a href="/Admin/Image/Orji/3/363a96a5-0b95-41d3-a532-78631c50c4f8.png" data-fancybox="galery">
+                                        <img src="/Admin/Image/Orji/3/363a96a5-0b95-41d3-a532-78631c50c4f8.png" class="w-100" alt="silence-1.jpg">
+                                    </a>
+                                </div>
+                                <div class="item">
+                                    <a href="/Admin/Image/Orji/3/ebae8338-9d62-44da-869d-b08bda12d271.png" data-fancybox="galery">
+                                        <img src="/Admin/Image/Orji/3/ebae8338-9d62-44da-869d-b08bda12d271.png" class="w-100" alt="silence-1.jpg">
+                                    </a>
+                                </div>
+                                <div class="item">
+                                    <a href="/Admin/Image/Orji/3/20c3dc8f-ac85-407c-b3eb-4c3ab61d427d.png" data-fancybox="galery">
+                                        <img src="/Admin/Image/Orji/3/20c3dc8f-ac85-407c-b3eb-4c3ab61d427d.png" class="w-100" alt="silence-1.jpg">
+                                    </a>
+                                </div>
+                                <div class="item">
+                                    <a href="/Admin/Image/Orji/3/d38813a5-60d5-49eb-bb74-5f49de5f6959.png" data-fancybox="galery">
+                                        <img src="/Admin/Image/Orji/3/d38813a5-60d5-49eb-bb74-5f49de5f6959.png" class="w-100" alt="silence-1.jpg">
+                                    </a>
+                                </div>
+                                <div class="item">
+                                    <a href="/Admin/Image/Orji/3/f1999005-fb25-4fd1-a75b-c124182df172.png" data-fancybox="galery">
+                                        <img src="/Admin/Image/Orji/3/f1999005-fb25-4fd1-a75b-c124182df172.png" class="w-100" alt="silence-1.jpg">
+                                    </a>
+                                </div>
+                                <div class="item">
+                                    <a href="/Admin/Image/Orji/3/62761c78-9430-4106-862f-67b196fb823a.png" data-fancybox="galery">
+                                        <img src="/Admin/Image/Orji/3/62761c78-9430-4106-862f-67b196fb823a.png" class="w-100" alt="silence-1.jpg">
+                                    </a>
+                                </div>
+                                <div class="item">
+                                    <a href="/Admin/Image/Orji/3/8ef2e93c-1feb-4610-a590-a1c58bf484bc.png" data-fancybox="galery">
+                                        <img src="/Admin/Image/Orji/3/8ef2e93c-1feb-4610-a590-a1c58bf484bc.png" class="w-100" alt="silence-1.jpg">
+                                    </a>
+                                </div>
+                                <div class="item">
+                                    <a href="/Admin/Image/Orji/3/3e6b548b-25c7-493e-8a74-06903ddfa939.png" data-fancybox="galery">
+                                        <img src="/Admin/Image/Orji/3/3e6b548b-25c7-493e-8a74-06903ddfa939.png" class="w-100" alt="silence-1.jpg">
+                                    </a>
+                                </div>
+                                <div class="item">
+                                    <a href="/Admin/Image/Orji/3/240c7efe-5f13-4471-a577-592f7a5cc285.png" data-fancybox="galery">
+                                        <img src="/Admin/Image/Orji/3/240c7efe-5f13-4471-a577-592f7a5cc285.png" class="w-100" alt="silence-1.jpg">
+                                    </a>
+                                </div>
+                                <div class="item">
+                                    <a href="/Admin/Image/Orji/3/2a0bf22d-0efb-4601-a0ac-76ec9f0219d2.png" data-fancybox="galery">
+                                        <img src="/Admin/Image/Orji/3/2a0bf22d-0efb-4601-a0ac-76ec9f0219d2.png" class="w-100" alt="silence-1.jpg">
+                                    </a>
+                                </div>
+                                <div class="item">
+                                    <a href="/Admin/Image/Orji/3/5b9dfc82-b357-47fc-adcc-c03a661050d7.png" data-fancybox="galery">
+                                        <img src="/Admin/Image/Orji/3/5b9dfc82-b357-47fc-adcc-c03a661050d7.png" class="w-100" alt="silence-1.jpg">
+                                    </a>
+                                </div>
+                        </div>
+                    </div>
+
+
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
+    <div class="slider">
+
+
+
+        <div id="footer-change-style" class="slider-footer">
+            <div class="footer-line footer-hr"></div>
+            <div class="row">
+                <div class="col-lg-3 col-12
+                            mb-lg-0 mb-4">
+                    <img style="display:none;" id="footer-logo-white" src="/Theme/3/Content/assets/images/footer-logo-tr-tr.svg" alt="footer-logo.png">
+                    <img style="display:none;" id="footer-logo-black" src="/Theme/3/Content/assets/images/footer-logo-dark-tr-tr.svg" alt="footer-logo.png">
+                </div>
+                <div class="col-lg-3 col-12
+                            px-lg-0 mb-lg-0 mb-4">
+
+
+
+<div class="build-text">&ldquo;Faaliyete başladığımız g&uuml;nden bu yana bir&ccedil;ok sıra dışı ve prestijli projeyi hayata ge&ccedil;irme başarısını g&ouml;stererek sekt&ouml;rde &ouml;nc&uuml; olduk ..&rdquo;</div>
+<p><a class="detail-button" href="../../../tr-tr/sayfalar/yazilar-1/hakkimizda-2/">DETAY</a></p>
+
+                </div>
+
+                <div class="col-lg-6 col-12 mb-lg-0 mb-4" id="footer-social-login">
+                    <div class="float-lg-end">
+                        <div class="box-social">
+                            <a href="https://www.instagram.com/buyapitr/">
+                                <img src="/Theme/3/Content/assets/images/icon/instagram-64.png" alt="instagram-64.png">
+                            </a>
+                        </div>
+                        <div class="box-social">
+                            <a href="https://www.facebook.com/buyapiinsaat/">
+                                <img src="/Theme/3/Content/assets/images/icon/facebook-64.png" alt="instagram-64.png">
+                            </a>
+                        </div>
+                        <div class="box-social">
+                            <a href="tel:4443343">
+                               444 33 43
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-6 col-12 mb-lg-0 mb-4" id="footer-category">
+
+
+
+<div class="float-lg-end">
+        <div class="box-orange">
+            <a href="/tr-tr/yazilar/projeler-2/konut-3/">
+                <span class="bg"></span>
+                <div class="box-title">Konut</div>
+                <div class="box-icon"><img src="/Admin/Image/Orji/3/9a45be61-8b99-429f-b13e-be08d29a9252.png" alt=""></div>
+            </a>
+        </div>
+        <div class="box-orange">
+            <a href="/tr-tr/yazilar/projeler-2/ticari-4/">
+                <span class="bg"></span>
+                <div class="box-title">Ticari</div>
+                <div class="box-icon"><img src="/Admin/Image/Orji/3/61505809-f66c-426a-bd90-39d972feb254.png" alt=""></div>
+            </a>
+        </div>
+        <div class="box-orange">
+            <a href="/tr-tr/yazilar/projeler-2/is-merkezi-5/">
+                <span class="bg"></span>
+                <div class="box-title">İş Merkezi</div>
+                <div class="box-icon"><img src="/Admin/Image/Orji/3/adc2800f-4f30-44ba-a4e1-e0efc558d0ea.png" alt=""></div>
+            </a>
+        </div>
+
+</div>
+
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Bootstrap JS -->
+    <script type="text/javascript" src="/Theme/3/Content/assets/js/bootstrap.bundle.min.js"></script>
+    <!-- jquery JS -->
+    <script type="text/javascript" src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <!-- Owl - Carousel JS -->
+    <script type="text/javascript" src="/Theme/3/Content/assets/owl/owl.carousel.min.js"></script>
+    <!-- Pop-up Image  JS -->
+    <script type="text/javascript" src="/Theme/3/Content/assets/js/fancybox.umd.js"></script>
+    <!-- Aos JS -->
+    <script type="text/javascript" src="/Theme/3/Content/assets/js/aos.js"></script>
+    <!-- My JS -->
+    <script type="text/javascript" src="/Theme/3/Content/assets/js/script.js"></script>
+
+	
+    
+    <script>
+        $(document).ready(function () {
+            EnableBlack();
+            $("#files").change(function () {
+                filename = this.files[0].name;
+                $("#lblSelectedFiles").text(filename);
+            });
+        });
+    </script>
+
+    <script>
+        function EnableWhite() {
+            $("#logo-white").attr("style", "display:block; width:145px;");
+            $("#logo-black").attr("style", "display:none");
+            $("#footer-logo-white").attr("style", "display:block; width:145px;");
+            $("#footer-logo-black").attr("style", "display:none");
+            $("#footer-social-login").attr("style", "display:none");
+            $("#footer-category").attr("style", "display:block");
+            $(".mainmenu-a").attr("class", "mainmenu-a");
+            $(".bottom-hr").attr("class", "bottom-hr");
+            $(".build-text").attr("class", "build-text");
+            $(".detail-button").attr("class", "detail-button");
+            $(".footer-line").attr("class", "footer-line footer-hr");
+            $(".build-nav").attr("class", "build-nav");
+            $("#footer-change-style").attr("class", "slider-footer");
+        }
+        function EnableBlack() {
+            $("#logo-white").attr("style", "display:none");
+            $("#logo-black").attr("style", "display:block; width:145px;");
+            $("#footer-logo-white").attr("style", "display:none");
+            $("#footer-logo-black").attr("style", "display:block; width:145px;");
+            $("#footer-social-login").attr("style", "display:block");
+            $("#footer-category").attr("style", "display:none");
+            $(".mainmenu-a").attr("class", "mainmenu-a text-dark");
+            $(".bottom-hr").attr("class", "bottom-hr border-dark");
+            $(".build-text").attr("class", "build-text text-dark");
+            $(".detail-button").attr("class", "detail-button text-dark");
+            $(".footer-line").attr("class", "footer-line footer-hr-inner");
+            $(".build-nav").attr("class", "build-nav position-static");
+            $("#footer-change-style").attr("class", "footer mt-5 container-build");
+        }
+    </script>
+	
+</body>
+
+
+</html>
+

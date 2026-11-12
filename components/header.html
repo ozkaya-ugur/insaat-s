@@ -1,0 +1,61 @@
+<header class="header">
+    <div class="header-inner">
+        <a href="index.html" class="brand-logo">
+            <img src="images/l-white.svg" alt="BUYAPI">
+        </a>
+        
+        <nav class="nav desktop-nav">
+            <a href="kurumsal.html" class="nav-link"><span data-i18n="nav.about">KURUMSAL</span></a>
+            <a href="projeler.html" class="nav-link"><span data-i18n="nav.projects">PROJELER</span></a>
+            <a href="harita.html" class="nav-link"><span data-i18n="nav.map">HARİTA</span></a>
+            <a href="iletisim.html" class="nav-link"><span data-i18n="nav.offices">OFİSLER</span></a>
+        </nav>
+
+        <div class="header-action desktop-action">
+            <!-- DİL SEÇİM BUTONLARI -->
+            <div class="header-lang-selector" style="display: flex; gap: 8px; align-items: center; margin-right: 15px;">
+                <button type="button" class="lang-btn" data-lang-btn="tr">TR</button>
+                <span style="color: rgba(255,255,255,0.3);">|</span>
+                <button type="button" class="lang-btn" data-lang-btn="en">EN</button>
+                <span style="color: rgba(255,255,255,0.3);">|</span>
+                <button type="button" class="lang-btn" data-lang-btn="ar">AR</button>
+            </div>
+
+            <a href="iletisim.html" class="nav-btn">
+                <span data-i18n="nav.contact">İLETİŞİM</span>
+                <i class="fa-solid fa-arrow-right-long"></i>
+            </a>
+        </div>
+
+        <!-- Mobil Hamburger Butonu -->
+        <button class="mobile-toggle-btn" id="mobileToggleBtn" aria-label="Menüyü Aç/Kapat">
+            <span></span>
+            <span></span>
+        </button>
+    </div>
+</header>
+
+<!-- Mobil Menü Overlay -->
+<div class="mobile-menu-overlay" id="mobileMenuOverlay">
+    <div class="mobile-menu-content">
+        <!-- Mobil Dil Seçici -->
+        <div class="mobile-lang-selector" style="display: flex; gap: 12px; margin-bottom: 25px; padding-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.1);">
+            <button type="button" class="lang-btn" data-lang-btn="tr">TR</button>
+            <button type="button" class="lang-btn" data-lang-btn="en">EN</button>
+            <button type="button" class="lang-btn" data-lang-btn="ar">AR</button>
+        </div>
+
+        <nav class="mobile-nav">
+            <a href="kurumsal.html" class="mobile-nav-link" data-i18n="nav.about">KURUMSAL</a>
+            <a href="projeler.html" class="mobile-nav-link" data-i18n="nav.projects">PROJELER</a>
+            <a href="harita.html" class="mobile-nav-link" data-i18n="nav.map">HARİTA</a>
+            <a href="iletisim.html" class="mobile-nav-link" data-i18n="nav.offices">OFİSLER</a>
+            <a href="iletisim.html" class="mobile-nav-btn"><span data-i18n="nav.contact">İLETİŞİM</span> <i class="fa-solid fa-arrow-right"></i></a>
+        </nav>
+
+        <div class="mobile-menu-footer">
+            <p>&copy; 2026 BUYAPI İNŞAAT A.Ş.</p>
+            <a href="tel:4443343"><i class="fa-solid fa-phone"></i> 444 33 43</a>
+        </div>
+    </div>
+</div>

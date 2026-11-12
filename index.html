@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BUYAPI | Mimari & İnşaat Mühendisliği</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Poppins:wght@200;300;400;500;600;700&family=Raleway:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/michele-m/soria-font@master/soria.css">
+    <link rel="stylesheet" href="style.css?v=8.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- AKIŞKAN IŞIK HAVUZLARI -->
+    <div class="fluid-mesh-bg">
+        <div class="mesh-orb mesh-1"></div>
+        <div class="mesh-orb mesh-2"></div>
+        <div class="mesh-orb mesh-3"></div>
+    </div>
+
+    <!-- Minimal Preloader -->
+    <div class="loader">
+        <div class="loader-inner">
+            <img src="images/l-white.svg" alt="BUYAPI Logo" class="loader-logo">
+            <div class="loader-line"><div class="loader-progress"></div></div>
+            <span class="loader-sub">Değişimin Mimarı</span>
+        </div>
+    </div>
+
+    <!-- Ortak Header Yükleme Alanı -->
+    <div id="site-header"></div>
+
+    <!-- Sinematik Hero Slider -->
+    <section class="hero-slider">
+        <div class="slide active">
+            <div class="slide-bg" style="background-image: url('images/banner-1.png');"></div>
+            <div class="slide-overlay"></div>
+            <div class="slide-content-wrap">
+                <div class="container">
+                    <div class="slide-content">
+                        <span class="hero-tag">SERDİVAN / SAKARYA</span>
+                        <h1 class="hero-title">BUYAPI INTENSE</h1>
+                        <p class="hero-desc">Teknik inovasyon ve lüks yaşamın minimalist sentezi.</p>
+                        <a href="projeler.html" class="hero-btn">
+                            <span>PROJEYİ İNCELE</span> 
+                            <i class="fa-solid fa-arrow-right-long"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <div class="slide-bg" style="background-image: url('images/banner-2.png');"></div>
+            <div class="slide-overlay"></div>
+            <div class="slide-content-wrap">
+                <div class="container">
+                    <div class="slide-content">
+                        <span class="hero-tag">TİCARİ & PLAZA</span>
+                        <h1 class="hero-title">WORK INN</h1>
+                        <p class="hero-desc">İş dünyasına yön veren anıtsal ve vizyoner mimari.</p>
+                        <a href="projeler.html" class="hero-btn">
+                            <span>PROJEYİ İNCELE</span> 
+                            <i class="fa-solid fa-arrow-right-long"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <div class="slide-bg" style="background-image: url('images/banner-3.png');"></div>
+            <div class="slide-overlay"></div>
+            <div class="slide-content-wrap">
+                <div class="container">
+                    <div class="slide-content">
+                        <span class="hero-tag">LÜKS REZİDANS</span>
+                        <h1 class="hero-title">BUYAPI SILENCE</h1>
+                        <p class="hero-desc">Doğa ile entegre, rafine ve özgün detaylar.</p>
+                        <a href="projeler.html" class="hero-btn">
+                            <span>PROJEYİ İNCELE</span> 
+                            <i class="fa-solid fa-arrow-right-long"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <div class="slide-bg" style="background-image: url('images/banner-4.png');"></div>
+            <div class="slide-overlay"></div>
+            <div class="slide-content-wrap">
+                <div class="container">
+                    <div class="slide-content">
+                        <span class="hero-tag">ENDÜSTRİYEL GÜÇ</span>
+                        <h1 class="hero-title">POMEGA ENERJİ</h1>
+                        <p class="hero-desc">Büyük ölçekli, yüksek mühendislik odaklı sanayi yatırımı.</p>
+                        <a href="projeler.html" class="hero-btn">
+                            <span>PROJEYİ İNCELE</span> 
+                            <i class="fa-solid fa-arrow-right-long"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="slider-controls">
+            <div class="container controls-inner">
+                <div class="slide-counter">
+                    <span id="currentNum">01</span> <small>/</small> <span>04</span>
+                </div>
+                <div class="slider-dots">
+                    <span class="dot active"></span>
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                </div>
+                <div class="slider-arrows">
+                    <button id="prevSlide"><i class="fa-solid fa-chevron-left"></i></button>
+                    <button id="nextSlide"><i class="fa-solid fa-chevron-right"></i></button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Öne Çıkan Satıştaki Projelerimiz -->
+    <section id="projects" class="projects section-padding">
+        <div class="container">
+            <div class="showcase-header-nav">
+                <div>
+                    <span class="section-tag" data-i18n="home.featured_tag">Öne Çıkan</span>
+                    <h2 class="section-title" data-i18n="home.featured_title">Satıştaki Projelerimiz</h2>
+                </div>
+                <div class="showcase-arrows">
+                    <button id="showcasePrev"><i class="fa-solid fa-arrow-left"></i></button>
+                    <button id="showcaseNext"><i class="fa-solid fa-arrow-right"></i></button>
+                </div>
+            </div>
+
+            <!-- ÖNE ÇIKAN PROJELER SLIDER KARTLARI -->
+            <div class="showcase-slider-wrapper">
+                <div class="showcase-track" id="showcaseTrack">
+                    <!-- 1. KART -->
+                    <a href="proje-detay.html?id=intense" class="showcase-card">
+                        <span class="status-badge devam-eden">DEVAM EDİYOR</span>
+                        <div class="card-image-wrap">
+                            <img src="images/banner-1.png" alt="Buyapı Intense">
+                        </div>
+                        <div class="card-glass-overlay"></div>
+                        <div class="card-inner-content">
+                            <span class="sc-num">01</span>
+                            <div class="sc-details">
+                                <span class="sc-cat">SERDİVAN / SAKARYA</span>
+                                <h3>Buyapı Intense</h3>
+                                <p>Teknik İnovasyon & Lüks Konut</p>
+                            </div>
+                        </div>
+                    </a>
+
+                    <!-- 2. KART -->
+                    <a href="proje-detay.html?id=workinn" class="showcase-card">
+                        <span class="status-badge tamamlanan">TAMAMLANDI</span>
+                        <div class="card-image-wrap">
+                            <img src="images/banner-2.png" alt="Buyapı Work Inn">
+                        </div>
+                        <div class="card-glass-overlay"></div>
+                        <div class="card-inner-content">
+                            <span class="sc-num">02</span>
+                            <div class="sc-details">
+                                <span class="sc-cat">SERDİVAN / SAKARYA</span>
+                                <h3>Buyapı Work Inn</h3>
+                                <p>Anıtsal İş Merkezi & Plaza</p>
+                            </div>
+                        </div>
+                    </a>
+
+                    <!-- 3. KART -->
+                    <a href="proje-detay.html?id=silence" class="showcase-card">
+                        <span class="status-badge devam-eden">DEVAM EDİYOR</span>
+                        <div class="card-image-wrap">
+                            <img src="images/banner-3.png" alt="Buyapı Silence">
+                        </div>
+                        <div class="card-glass-overlay"></div>
+                        <div class="card-inner-content">
+                            <span class="sc-num">03</span>
+                            <div class="sc-details">
+                                <span class="sc-cat">SAPANCA / SAKARYA</span>
+                                <h3>Buyapı Silence</h3>
+                                <p>Doğayla Entegre Lüks Rezidans</p>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+
+            <!-- YENİLENMİŞ PRESTİJLİ CATALOG CTA -->
+            <div class="catalog-footer-action">
+                <a href="projeler.html" class="refined-catalog-btn">
+                    <span class="btn-text" data-i18n="home.view_all_projects">TÜM PROJELERİ İNCELEYİN</span>
+                    <span class="btn-icon-circle">
+                        <i class="fa-solid fa-arrow-right-long"></i>
+                    </span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Ortak Footer Yükleme Alanı -->
+    <div id="site-footer"></div>
+
+    <!-- Ortak Bileşen Scriptleri -->
+    <script src="components/header.js"></script>
+    <script src="components/footer.js"></script>
+    
+    <!-- Animasyon & Proje Scriptleri -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="script.js"></script>
+
+    <!-- VERİTABANINDAN ÖNE ÇIKAN/SATIŞTAKİ PROJELERİ DİNAMİK YÜKLEME SCRIPTI -->
+    <script>
+        async function loadFeaturedProjectsFromAPI() {
+            const track = document.getElementById('showcaseTrack');
+            if (!track) return;
+
+            try {
+                const curLang = localStorage.getItem('selectedLang') || 'tr';
+                const apiBase = (window.location && window.location.origin && !window.location.origin.startsWith('file:')) ? window.location.origin : 'http://127.0.0.1:8000';
+                const response = await fetch(`${apiBase}/api/projects/featured?lang=${curLang}&t=${Date.now()}`);
+                if (!response.ok) throw new Error('API yanıt vermedi');
+
+                const projects = await response.json();
+
+                if (projects && projects.length > 0) {
+                    track.innerHTML = ''; // Statik yedek kartları temizleyip API verilerini basar
+
+                    projects.forEach((proj, index) => {
+                        const numStr = String(index + 1).padStart(2, '0');
+                        const statusClass = (proj.status || '').toLowerCase().includes('tamam') ? 'tamamlanan' : 'devam-eden';
+                        
+                        // Görsel yolunu kontrol et ve ayarla
+                        const imagePath = proj.coverImage 
+                            ? (proj.coverImage.startsWith('http') ? proj.coverImage : `${apiBase}/${proj.coverImage}`) 
+                            : 'images/banner-1.png';
+
+                        const cardHTML = `
+                            <a href="proje-detay.html?id=${proj.slug || proj.id}" class="showcase-card">
+                                <span class="status-badge ${statusClass}">${(proj.status || 'DEVAM EDİYOR').toUpperCase()}</span>
+                                <div class="card-image-wrap">
+                                    <img src="${imagePath}" alt="${proj.title}">
+                                </div>
+                                <div class="card-glass-overlay"></div>
+                                <div class="card-inner-content">
+                                    <span class="sc-num">${numStr}</span>
+                                    <div class="sc-details">
+                                        <span class="sc-cat">${(proj.loc || 'SAKARYA').toUpperCase()}</span>
+                                        <h3>${proj.title}</h3>
+                                        <p>${proj.subtitle || proj.cat || 'Prestijli Mimari Proje'}</p>
+                                    </div>
+                                </div>
+                            </a>
+                        `;
+                        track.insertAdjacentHTML('beforeend', cardHTML);
+                    });
+                }
+            } catch (err) {
+                console.log('API bağlantı hatası:', err);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', loadFeaturedProjectsFromAPI);
+
+        // Dil Değiştiğinde Öne Çıkan Projeleri ve Başlıkları Yeniden Güncelle
+        window.addEventListener('languageChanged', () => {
+            loadFeaturedProjectsFromAPI();
+            if (typeof window.applyTranslations === 'function') {
+                window.applyTranslations(window.currentLang);
+            }
+        });
+    </script>
+</body>
+</html>

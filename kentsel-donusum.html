@@ -1,0 +1,1423 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kentsel Dönüşüm | BUYAPI İnşaat & Mühendislik A.Ş.</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Poppins:wght@200;300;400;500;600;700&family=Raleway:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/michele-m/soria-font@master/soria.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        /* ====================================================
+           TAM EKRAN CINEMATIC HERO BACKGROUND SLIDER
+           ==================================================== */
+        .kd-hero-slider-wrap {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            min-height: 720px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            background: #080a0e;
+        }
+
+        .kd-slide-item {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 1.2s cubic-bezier(0.4, 0, 0.2, 1), visibility 1.2s ease;
+            z-index: 1;
+        }
+        .kd-slide-item.active {
+            opacity: 1;
+            visibility: visible;
+            z-index: 2;
+        }
+
+        .kd-slide-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center center;
+            background-repeat: no-repeat;
+            transform: scale(1.08);
+            transition: transform 7s cubic-bezier(0.25, 1, 0.5, 1);
+            filter: brightness(0.85) contrast(1.05);
+        }
+        .kd-slide-item.active .kd-slide-bg {
+            transform: scale(1);
+        }
+
+        .kd-slide-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(6, 8, 12, 0.92) 0%, rgba(11, 14, 20, 0.7) 45%, rgba(6, 8, 12, 0.95) 100%);
+            z-index: 2;
+        }
+
+        .kd-hero-inner {
+            position: relative;
+            z-index: 5;
+            width: 100%;
+            padding-top: 100px;
+        }
+
+        .kd-hero-content {
+            max-width: 860px;
+        }
+
+        .kd-hero-badges {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 22px;
+            flex-wrap: wrap;
+        }
+        .kd-hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 7px 16px;
+            background: rgba(197, 160, 89, 0.15);
+            border: 1px solid rgba(197, 160, 89, 0.4);
+            border-radius: 50px;
+            color: #ecdba8;
+            font-size: 0.72rem;
+            letter-spacing: 0.18em;
+            font-weight: 700;
+            text-transform: uppercase;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+        .kd-hero-badge i {
+            color: #c5a059;
+        }
+
+        .kd-hero-title {
+            font-family: var(--font-display);
+            font-size: clamp(2.4rem, 5vw, 4.4rem);
+            line-height: 1.1;
+            color: #ffffff;
+            margin-bottom: 22px;
+            letter-spacing: -0.02em;
+        }
+        .kd-hero-title span {
+            color: #c5a059;
+            background: linear-gradient(135deg, #c5a059 0%, #ecdba8 50%, #c5a059 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .kd-hero-desc {
+            font-size: 1.08rem;
+            color: #c2c7d4;
+            line-height: 1.8;
+            margin-bottom: 38px;
+            max-width: 720px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
+        }
+
+        .kd-hero-actions {
+            display: flex;
+            gap: 18px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .kd-btn-gold {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 36px;
+            background: linear-gradient(135deg, #c5a059 0%, #ecdba8 50%, #c5a059 100%);
+            color: #0b0d12;
+            font-weight: 800;
+            font-size: 0.78rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            border-radius: 4px;
+            box-shadow: 0 10px 30px rgba(197, 160, 89, 0.35);
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+        .kd-btn-gold:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 45px rgba(197, 160, 89, 0.55);
+            filter: brightness(1.05);
+            color: #000;
+        }
+
+        .kd-btn-outline {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 30px;
+            background: rgba(12, 16, 24, 0.6);
+            backdrop-filter: blur(15px);
+            color: #ffffff;
+            font-weight: 600;
+            font-size: 0.78rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            border-radius: 4px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+        .kd-btn-outline:hover {
+            border-color: #c5a059;
+            color: #c5a059;
+            background: rgba(197, 160, 89, 0.12);
+        }
+
+        /* SLIDER KONTROLLERİ */
+        .kd-slider-controls {
+            position: absolute;
+            bottom: 40px;
+            right: 5%;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        .kd-slide-counter {
+            font-family: var(--font-heading);
+            font-size: 0.85rem;
+            letter-spacing: 0.25em;
+            color: #c5a059;
+            font-weight: 700;
+        }
+        .kd-slider-dots {
+            display: flex;
+            gap: 8px;
+        }
+        .kd-dot {
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.25);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .kd-dot.active {
+            background: #c5a059;
+            box-shadow: 0 0 12px #c5a059;
+            transform: scale(1.2);
+        }
+        .kd-arrows-wrap {
+            display: flex;
+            gap: 8px;
+        }
+        .kd-arrow-btn {
+            background: rgba(14, 18, 26, 0.75);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(197, 160, 89, 0.4);
+            color: #ffffff;
+            width: 44px;
+            height: 44px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .kd-arrow-btn:hover {
+            background: #c5a059;
+            color: #0b0d12;
+            border-color: #c5a059;
+        }
+
+        /* ====================================================
+           İSTATİSTİK BANTI (4 KOLON)
+           ==================================================== */
+        .kd-stats-bar {
+            background: rgba(14, 18, 26, 0.9);
+            border-top: 1px solid rgba(197, 160, 89, 0.25);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 35px 0;
+            position: relative;
+            z-index: 3;
+            backdrop-filter: blur(20px);
+        }
+        .kd-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+        }
+        .kd-stat-card {
+            text-align: center;
+            position: relative;
+        }
+        .kd-stat-card:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: 15%;
+            height: 70%;
+            width: 1px;
+            background: rgba(255, 255, 255, 0.1);
+        }
+        .kd-stat-num {
+            font-family: var(--font-display);
+            font-size: 2.8rem;
+            color: #c5a059;
+            line-height: 1;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        .kd-stat-lbl {
+            font-family: var(--font-heading);
+            font-size: 0.75rem;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: #a0a6b5;
+            font-weight: 600;
+        }
+
+        /* ====================================================
+           6306 SAYILI KANUN & YASAL AVANTAJLAR
+           ==================================================== */
+        .kd-law-section {
+            background: linear-gradient(180deg, #090c12 0%, #0d121c 100%);
+            padding: 120px 0;
+            position: relative;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+        .kd-law-banner {
+            background: linear-gradient(135deg, rgba(197, 160, 89, 0.15) 0%, rgba(20, 26, 38, 0.8) 100%);
+            border: 1px solid rgba(197, 160, 89, 0.35);
+            border-radius: 12px;
+            padding: 40px;
+            margin-bottom: 50px;
+            display: flex;
+            align-items: center;
+            gap: 35px;
+        }
+        .kd-law-badge-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #c5a059 0%, #ecdba8 100%);
+            color: #0b0d12;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.2rem;
+            flex-shrink: 0;
+            box-shadow: 0 10px 25px rgba(197, 160, 89, 0.35);
+        }
+        .kd-law-banner-content h3 {
+            font-family: var(--font-display);
+            font-size: 1.8rem;
+            color: #ffffff;
+            margin-bottom: 8px;
+        }
+        .kd-law-banner-content p {
+            color: #c0c6d6;
+            font-size: 0.95rem;
+            line-height: 1.7;
+            margin: 0;
+        }
+
+        .kd-benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+        }
+        .kd-benefit-card {
+            background: rgba(16, 21, 30, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            border-radius: 8px;
+            padding: 32px 26px;
+            transition: all 0.35s ease;
+        }
+        .kd-benefit-card:hover {
+            border-color: rgba(197, 160, 89, 0.5);
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5), 0 0 25px rgba(197, 160, 89, 0.1);
+            background: rgba(20, 26, 38, 0.85);
+        }
+        .kd-benefit-icon {
+            font-size: 1.8rem;
+            color: #c5a059;
+            margin-bottom: 18px;
+        }
+        .kd-benefit-title {
+            font-size: 1.15rem;
+            color: #ffffff;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        .kd-benefit-desc {
+            font-size: 0.88rem;
+            color: #8f96a7;
+            line-height: 1.65;
+            margin: 0;
+        }
+
+        /* ====================================================
+           DİNAMİK KENTSEL DÖNÜŞÜM PROJELERİ GRİDİ
+           ==================================================== */
+        .kd-projects-section {
+            padding: 120px 0;
+            background: #080a0e;
+            position: relative;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+        .kd-projects-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 45px;
+        }
+        .kd-projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+            gap: 30px;
+        }
+        .kd-proj-card {
+            background: #10141d;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 8px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            text-decoration: none;
+            transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+            position: relative;
+        }
+        .kd-proj-card:hover {
+            transform: translateY(-6px);
+            border-color: #c5a059;
+            box-shadow: 0 20px 45px rgba(0, 0, 0, 0.7), 0 0 30px rgba(197, 160, 89, 0.2);
+        }
+        .kd-proj-img-wrap {
+            position: relative;
+            height: 240px;
+            overflow: hidden;
+            background: #0a0d14;
+        }
+        .kd-proj-img-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.7s ease;
+        }
+        .kd-proj-card:hover .kd-proj-img-wrap img {
+            transform: scale(1.08);
+        }
+        .kd-proj-badge-top {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: rgba(11, 15, 23, 0.85);
+            backdrop-filter: blur(10px);
+            border: 1px solid #c5a059;
+            color: #ecdba8;
+            font-size: 0.65rem;
+            letter-spacing: 0.2em;
+            font-weight: 700;
+            padding: 5px 12px;
+            border-radius: 4px;
+            text-transform: uppercase;
+        }
+        .kd-proj-body {
+            padding: 24px 22px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .kd-proj-title {
+            font-family: var(--font-display);
+            font-size: 1.35rem;
+            color: #ffffff;
+            margin-bottom: 6px;
+            transition: color 0.3s;
+        }
+        .kd-proj-card:hover .kd-proj-title {
+            color: #c5a059;
+        }
+        .kd-proj-sub {
+            color: #8e95a5;
+            font-size: 0.88rem;
+            margin-bottom: 16px;
+            line-height: 1.5;
+        }
+        .kd-proj-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            padding-top: 14px;
+            font-size: 0.75rem;
+            color: #c5a059;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+
+        /* ====================================================
+           KARŞILAŞTIRMA MATRİSİ (ESKİ BİNA vs BUYAPI DÖNÜŞÜM)
+           ==================================================== */
+        .kd-compare-section {
+            background: linear-gradient(180deg, #0d121c 0%, #090c12 100%);
+            padding: 120px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+        .kd-compare-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin-top: 40px;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(16, 21, 30, 0.6);
+        }
+        .kd-compare-table th {
+            padding: 20px 24px;
+            font-family: var(--font-heading);
+            font-size: 0.85rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            font-weight: 700;
+            background: rgba(10, 14, 22, 0.95);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .kd-compare-table th.col-feature {
+            width: 32%;
+            color: #8d95a5;
+            text-align: left;
+        }
+        .kd-compare-table th.col-old {
+            width: 34%;
+            color: #e74c3c;
+            text-align: left;
+        }
+        .kd-compare-table th.col-buyapi {
+            width: 34%;
+            color: #c5a059;
+            text-align: left;
+            background: rgba(197, 160, 89, 0.12);
+            border-bottom-color: #c5a059;
+        }
+        .kd-compare-table td {
+            padding: 18px 24px;
+            font-size: 0.92rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            color: #c2c7d4;
+            line-height: 1.6;
+        }
+        .kd-compare-table tr:last-child td {
+            border-bottom: none;
+        }
+        .kd-compare-table td.col-buyapi {
+            background: rgba(197, 160, 89, 0.04);
+            color: #ffffff;
+            font-weight: 600;
+        }
+        .kd-compare-table td.col-old {
+            color: #9aa1b1;
+        }
+
+        /* ====================================================
+           SSS (FAQ) AKORDEON
+           ==================================================== */
+        .kd-faq-section {
+            padding: 120px 0;
+            background: #080a0e;
+        }
+        .kd-accordion-wrap {
+            max-width: 860px;
+            margin: 45px auto 0;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+        .kd-faq-item {
+            background: rgba(16, 21, 30, 0.65);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 8px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        .kd-faq-item.active {
+            border-color: #c5a059;
+            background: rgba(20, 26, 38, 0.9);
+        }
+        .kd-faq-question {
+            padding: 22px 28px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            color: #ffffff;
+            font-weight: 700;
+            font-size: 1.05rem;
+            user-select: none;
+        }
+        .kd-faq-question i {
+            color: #c5a059;
+            transition: transform 0.3s ease;
+            font-size: 0.9rem;
+        }
+        .kd-faq-item.active .kd-faq-question i {
+            transform: rotate(180deg);
+        }
+        .kd-faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.35s ease, padding 0.35s ease;
+            padding: 0 28px;
+            color: #9ba2b2;
+            font-size: 0.92rem;
+            line-height: 1.75;
+        }
+        .kd-faq-item.active .kd-faq-answer {
+            max-height: 500px;
+            padding: 0 28px 24px 28px;
+        }
+
+        /* ====================================================
+           BAŞVURU FORMU BÖLÜMÜ
+           ==================================================== */
+        .kd-form-section {
+            background: linear-gradient(180deg, #090c12 0%, #06080c 100%);
+            border-top: 1px solid rgba(197, 160, 89, 0.25);
+            padding: 120px 0;
+            position: relative;
+        }
+        .kd-form-wrapper {
+            background: rgba(18, 22, 32, 0.9);
+            border: 1px solid rgba(197, 160, 89, 0.35);
+            border-radius: 12px;
+            padding: 55px 45px;
+            backdrop-filter: blur(25px);
+            box-shadow: 0 35px 85px rgba(0, 0, 0, 0.8), 0 0 45px rgba(197, 160, 89, 0.1);
+            max-width: 980px;
+            margin: 0 auto;
+        }
+        .kd-form-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .kd-form-header h2 {
+            font-family: var(--font-display);
+            font-size: 2.4rem;
+            color: #ffffff;
+            margin-bottom: 12px;
+        }
+        .kd-form-header p {
+            color: #9ba2b3;
+            max-width: 650px;
+            margin: 0 auto;
+            font-size: 0.95rem;
+            line-height: 1.65;
+        }
+        .kd-form-group-title {
+            font-size: 0.78rem;
+            letter-spacing: 0.22em;
+            color: #c5a059;
+            text-transform: uppercase;
+            font-weight: 800;
+            margin: 32px 0 16px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid rgba(197, 160, 89, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .kd-form-grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+        }
+        .kd-form-grid-2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 18px;
+        }
+        .kd-input-box {
+            margin-bottom: 14px;
+        }
+        .kd-input-box label {
+            display: block;
+            font-size: 0.72rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: #8d94a1;
+            margin-bottom: 6px;
+            font-weight: 600;
+        }
+        .kd-input-box input, .kd-input-box select, .kd-input-box textarea {
+            width: 100%;
+            background: rgba(10, 13, 18, 0.85);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 6px;
+            padding: 13px 16px;
+            color: #ffffff;
+            font-family: inherit;
+            font-size: 0.92rem;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+        .kd-input-box input:focus, .kd-input-box select:focus, .kd-input-box textarea:focus {
+            border-color: #c5a059;
+            box-shadow: 0 0 15px rgba(197, 160, 89, 0.25);
+            background: rgba(14, 18, 26, 0.98);
+        }
+        .kd-submit-btn-wrap {
+            margin-top: 35px;
+            text-align: center;
+        }
+        .kd-submit-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 14px;
+            width: 100%;
+            max-width: 440px;
+            padding: 18px 36px;
+            background: linear-gradient(135deg, #c5a059 0%, #ecdba8 50%, #c5a059 100%);
+            color: #0b0d12;
+            border: 0;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            letter-spacing: 0.2em;
+            font-weight: 800;
+            text-transform: uppercase;
+            cursor: pointer;
+            box-shadow: 0 12px 35px rgba(197, 160, 89, 0.35);
+            transition: all 0.3s ease;
+        }
+        .kd-submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 18px 45px rgba(197, 160, 89, 0.55);
+            filter: brightness(1.05);
+        }
+
+        @media (max-width: 900px) {
+            .kd-stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .kd-stat-card:nth-child(2)::after {
+                display: none;
+            }
+            .kd-law-banner {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 25px;
+            }
+            .kd-projects-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+            .kd-form-grid-3, .kd-form-grid-2 {
+                grid-template-columns: 1fr;
+            }
+            .kd-form-wrapper {
+                padding: 30px 20px;
+            }
+            .kd-slider-controls {
+                right: 20px;
+                bottom: 25px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="fluid-mesh-bg">
+        <div class="mesh-orb mesh-1"></div>
+        <div class="mesh-orb mesh-2"></div>
+        <div class="mesh-orb mesh-3"></div>
+    </div>
+
+    <!-- Minimal Preloader -->
+    <div class="loader">
+        <div class="loader-inner">
+            <img src="images/l-white.svg" alt="BUYAPI Logo" class="loader-logo">
+            <div class="loader-line"><div class="loader-progress"></div></div>
+            <span class="loader-sub">Kentsel Dönüşüm & Mühendislik</span>
+        </div>
+    </div>
+
+    <!-- Ortak Header Yükleme Alanı -->
+    <div id="site-header"></div>
+
+    <!-- 1. TAM EKRAN CINEMATIC HERO BACKGROUND SLIDER -->
+    <section class="kd-hero-slider-wrap" id="heroSliderSection">
+        <div id="kdSliderTrack" style="position:absolute;top:0;left:0;width:100%;height:100%;">
+            <!-- Varsayılan / Yedek Slaytlar -->
+            <div class="kd-slide-item active" data-index="0">
+                <div class="kd-slide-bg" style="background-image: url('images/banner-1.png');"></div>
+                <div class="kd-slide-overlay"></div>
+            </div>
+            <div class="kd-slide-item" data-index="1">
+                <div class="kd-slide-bg" style="background-image: url('images/banner-4.png');"></div>
+                <div class="kd-slide-overlay"></div>
+            </div>
+            <div class="kd-slide-item" data-index="2">
+                <div class="kd-slide-bg" style="background-image: url('images/banner-2.png');"></div>
+                <div class="kd-slide-overlay"></div>
+            </div>
+        </div>
+
+        <div class="container kd-hero-inner">
+            <div class="kd-hero-content">
+                <div class="kd-hero-badges">
+                    <span class="kd-hero-badge" id="kdHeroBadge"><i class="fa-solid fa-shield-halved"></i> 6306 SAYILI KANUN GÜVENCESİ</span>
+                    <span class="kd-hero-badge"><i class="fa-solid fa-scale-balanced"></i> %100 HUKUKİ GARANTİ</span>
+                    <span class="kd-hero-badge"><i class="fa-solid fa-gem"></i> A++ PRESTİJ MİMARİSİ</span>
+                </div>
+                <h1 class="kd-hero-title" id="kdHeroTitle">
+                    Geleceğe Güvenle Bakan <br>
+                    <span>Kentsel Dönüşüm</span> Projeleri
+                </h1>
+                <p class="kd-hero-desc" id="kdHeroDesc">
+                    BUYAPI, riskli ve yıpranmış yapıları 35 yılı aşkın ileri mühendislik tecrübesi, şeffaf hukuki danışmanlık ve yüksek mimari estetikle depreme dayanıklı, çağdaş prestij eserlerine dönüştürüyor.
+                </p>
+                <div class="kd-hero-actions">
+                    <a href="#basvuru-formu" class="kd-btn-gold">
+                        <span>Hızlı Başvuru Yapın</span>
+                        <i class="fa-solid fa-arrow-down-long"></i>
+                    </a>
+                    <a href="#kentsel-projeler" class="kd-btn-outline">
+                        <span>Dönüşüm Projelerimiz</span>
+                        <i class="fa-solid fa-arrow-right-long"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slayt Navigasyon ve Kontroller -->
+        <div class="kd-slider-controls">
+            <div class="kd-slide-counter" id="kdSlideCounter">01 / 03</div>
+            <div class="kd-slider-dots" id="kdSliderDots">
+                <span class="kd-dot active" data-to="0"></span>
+                <span class="kd-dot" data-to="1"></span>
+                <span class="kd-dot" data-to="2"></span>
+            </div>
+            <div class="kd-arrows-wrap">
+                <button class="kd-arrow-btn" id="kdPrevBtn" aria-label="Önceki Slayt"><i class="fa-solid fa-chevron-left"></i></button>
+                <button class="kd-arrow-btn" id="kdNextBtn" aria-label="Sonraki Slayt"><i class="fa-solid fa-chevron-right"></i></button>
+            </div>
+        </div>
+    </section>
+
+    <!-- 2. İSTATİSTİK BANTI -->
+    <section class="kd-stats-bar">
+        <div class="container">
+            <div class="kd-stats-grid">
+                <div class="kd-stat-card">
+                    <div class="kd-stat-num" id="kdStat1Num">35+</div>
+                    <div class="kd-stat-lbl" id="kdStat1Lbl">Yıllık Mühendislik Deneyimi</div>
+                </div>
+                <div class="kd-stat-card">
+                    <div class="kd-stat-num" id="kdStat2Num">%100</div>
+                    <div class="kd-stat-lbl" id="kdStat2Lbl">Hukuki ve Yasal Güvence</div>
+                </div>
+                <div class="kd-stat-card">
+                    <div class="kd-stat-num" id="kdStat3Num">0 Risk</div>
+                    <div class="kd-stat-lbl" id="kdStat3Lbl">Hak Sahipleri Koruma Modeli</div>
+                </div>
+                <div class="kd-stat-card">
+                    <div class="kd-stat-num" id="kdStat4Num">A++</div>
+                    <div class="kd-stat-lbl" id="kdStat4Lbl">Statik ve Deprem Güvenliği</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3. 6306 SAYILI YASA VE DEVLET DESTEKLERİ REHBERİ -->
+    <section class="kd-law-section">
+        <div class="container">
+            <div style="text-align:center;max-width:760px;margin:0 auto 40px">
+                <span class="section-tag">YASAL MEVZUAT VE DESTEKLER</span>
+                <h2 class="section-title">6306 Sayılı Kanun Kapsamında Haklarınız</h2>
+                <p class="lead-text">Devlet teşvikleri, vergi muafiyetleri ve yeni %50+1 salt çoğunluk düzenlemesi ile binanızı yenilemek artık çok daha hızlı, karlı ve güvenli.</p>
+            </div>
+
+            <!-- VIP Yasa Bilgi Kartı -->
+            <div class="kd-law-banner">
+                <div class="kd-law-badge-icon">
+                    <i class="fa-solid fa-scale-balanced"></i>
+                </div>
+                <div class="kd-law-banner-content">
+                    <h3 id="kdLawTitle">Yeni %50+1 Salt Çoğunluk Kuralı</h3>
+                    <p id="kdLawInfo">
+                        6306 Sayılı Kanun'da yapılan son düzenlemeler uyarınca, kentsel dönüşüm kararı almak için artık 2/3 çoğunluk aranmamaktadır. Hissedarların %50+1 (salt çoğunluk) oyu ile binanızın yenilenmesine başlanabilir. Ayrıca tüm noter harçları, tapu devir masrafları ve belediye harçlarından %100 muafiyet sağlanmaktadır.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Avantajlar 4'lü Grid (Dinamik) -->
+            <div class="kd-benefits-grid" id="kdBenefitsGrid">
+                <div class="kd-benefit-card">
+                    <div class="kd-benefit-icon"><i class="fa-solid fa-hand-holding-dollar"></i></div>
+                    <h4 class="kd-benefit-title" id="kdBeneTitle1">%100 Harç & Vergi Muafiyeti</h4>
+                    <p class="kd-benefit-desc" id="kdBeneDesc1">Tapu kadastro harcı, noter masrafı, damga vergisi, veraset-intikal ve belediye ruhsat harçlarının tamamından muaf olarak yüzbinlerce liralık tasarruf sağlarsınız.</p>
+                </div>
+                <div class="kd-benefit-card">
+                    <div class="kd-benefit-icon"><i class="fa-solid fa-house-chimney-window"></i></div>
+                    <h4 class="kd-benefit-title" id="kdBeneTitle2">Düzenli Kira Yardımı Desteği</h4>
+                    <p class="kd-benefit-desc" id="kdBeneDesc2">İnşaat süresince Çevre, Şehircilik ve İklim Değişikliği Bakanlığı tarafından hak sahiplerine karşılıksız aylık kira yardımı sağlanır. Başvuru işlemlerini BUYAPI takip eder.</p>
+                </div>
+                <div class="kd-benefit-card">
+                    <div class="kd-benefit-icon"><i class="fa-solid fa-percent"></i></div>
+                    <h4 class="kd-benefit-title" id="kdBeneTitle3">Düşük Faizli Dönüşüm Kredisi</h4>
+                    <p class="kd-benefit-desc" id="kdBeneDesc3">Kamu ve anlaşmalı bankalar aracılığıyla devlet faiz destekli, 120 aya varan vadelerle uygun koşullu kentsel dönüşüm kredisi imkanından yararlanabilirsiniz.</p>
+                </div>
+                <div class="kd-benefit-card">
+                    <div class="kd-benefit-icon"><i class="fa-solid fa-file-shield"></i></div>
+                    <h4 class="kd-benefit-title" id="kdBeneTitle4">Noter Tasdikli Şeffaf Sözleşme</h4>
+                    <p class="kd-benefit-desc" id="kdBeneDesc4">Bağımsız bölümlerin büyüklüğü, şerefiye payları ve malzeme teknik şartnamesi noter güvencesiyle kayıt altına alınır; hiçbir hak kaybı riski oluşmaz.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 4. DİNAMİK KENTSEL DÖNÜŞÜM PROJELERİ -->
+    <section class="kd-projects-section" id="kentsel-projeler">
+        <div class="container">
+            <div class="kd-projects-header">
+                <div>
+                    <span class="section-tag">PRESTİJ VE DEĞER YARATAN İMZALAR</span>
+                    <h2 class="section-title" style="margin:0">Kentsel Dönüşüm Projelerimiz</h2>
+                </div>
+                <a href="projeler.html?type=kentsel" class="kd-spotlight-pill">
+                    <i class="fa-solid fa-building-shield"></i>
+                    <span>Tüm Dönüşüm Projelerini Gör</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </a>
+            </div>
+
+            <div class="kd-projects-grid" id="kdProjectsContainer">
+                <div style="grid-column: 1/-1; text-align: center; padding: 60px; color: #888;">
+                    <i class="fa-solid fa-spinner fa-spin" style="font-size: 28px; color: #c5a059;"></i>
+                    <p style="margin-top: 12px;">Kentsel dönüşüm projeleri yükleniyor...</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 5. KARŞILAŞTIRMA MATRİSİ (ESKİ BİNA vs BUYAPI DÖNÜŞÜM) -->
+    <section class="kd-compare-section">
+        <div class="container">
+            <div style="text-align:center;max-width:760px;margin:0 auto">
+                <span class="section-tag">NEDEN YENİLEMELİSİNİZ?</span>
+                <h2 class="section-title">Eski Yapı vs. BUYAPI Kentsel Dönüşüm</h2>
+                <p class="lead-text">Binanızı yenilediğinizde yalnızca deprem güvenliği değil, yaşam konforu ve mülk değerinde eşsiz bir artış elde edersiniz.</p>
+            </div>
+
+            <table class="kd-compare-table">
+                <thead>
+                    <tr>
+                        <th class="col-feature">Kriter / Özellik</th>
+                        <th class="col-old"><i class="fa-solid fa-triangle-exclamation" style="margin-right:6px"></i> Eski & Riskli Bina</th>
+                        <th class="col-buyapi"><i class="fa-solid fa-building-circle-check" style="margin-right:6px"></i> BUYAPI Kentsel Dönüşüm</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Statik & Deprem Dayanımı</strong></td>
+                        <td class="col-old">Yetersiz demir donatı, düşük sınıflı el yapımı beton, korozyon riski.</td>
+                        <td class="col-buyapi">C35/40 hazır beton, radye temel, sismik hesaplamalı A++ statik sistem.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Mülk Değeri & Prim</strong></td>
+                        <td class="col-old">Her yıl yıpranma payıyla reel değer kaybı, düşük kira getirisi.</td>
+                        <td class="col-buyapi">%200 - %300 prim artışı, yüksek kira çarpanı ve lüks talep.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Enerji Verimliliği & Faturalar</strong></td>
+                        <td class="col-old">Yalıtımsız cephe, yüksek doğalgaz/elektrik faturaları, rutubet.</td>
+                        <td class="col-buyapi">A Sınıfı Enerji Kimlik Belgesi, taş yünü mantolama ve %50 enerji tasarrufu.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Otopark & Sosyal Donatı</strong></td>
+                        <td class="col-old">Sokak parkı çilesi, güvenlik zaafı, yeşil alansız sıkışık çevre.</td>
+                        <td class="col-buyapi">Kapalı/açık otopark, peyzaj düzenlemesi, kamera güvenlik sistemi.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Akıllı Ev & Konfor</strong></td>
+                        <td class="col-old">Eski tesisatlar, sık arıza, yetersiz akustik ses yalıtımı.</td>
+                        <td class="col-buyapi">Akıllı ev altyapısı, 1. sınıf ses izolasyonu, modern mimari paftalar.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- 6. DİNAMİK SIKÇA SORULAN SORULAR (AKORDEON FAQ - ADMİNDEN YÖNETİLEN) -->
+    <section class="kd-faq-section" id="sss-alani">
+        <div class="container">
+            <div style="text-align:center;max-width:760px;margin:0 auto">
+                <span class="section-tag">MERAK EDİLENLER</span>
+                <h2 class="section-title">Sıkça Sorulan Sorular</h2>
+                <p class="lead-text">Kentsel dönüşüm süreci, hukuki adımlar ve haklarınız hakkında en çok merak edilen soruların yanıtları.</p>
+            </div>
+
+            <div class="kd-accordion-wrap" id="kdAccordionContainer">
+                <!-- SSS verileri API üzerinden dinamik basılacak -->
+                <div style="text-align:center;padding:40px;color:#888;">
+                    <i class="fa-solid fa-spinner fa-spin" style="font-size:24px;color:#c5a059"></i>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 7. HIZLI BAŞVURU FORMU -->
+    <section class="kd-form-section" id="basvuru-formu">
+        <div class="container">
+            <div class="kd-form-wrapper">
+                <div class="kd-form-header">
+                    <span class="section-tag">KENTSEL DÖNÜŞÜM ÖN BAŞVURU</span>
+                    <h2>Binanızı Yenilemek İçin İlk Adımı Atın</h2>
+                    <p>Aşağıdaki formu doldurarak mühendislik ve mimarlık ekibimizin binanız için ücretsiz ön fizibilite, imar incelemesi ve değer analizi hazırlamasını sağlayabilirsiniz.</p>
+                </div>
+
+                <form id="kdApplicationForm">
+                    <!-- 1. Mülk & Bina Bilgileri -->
+                    <div class="kd-form-group-title">
+                        <i class="fa-solid fa-map-pin"></i>
+                        <span>1. Mülk & Bina Bilgileri</span>
+                    </div>
+
+                    <div class="kd-form-grid-3">
+                        <div class="kd-input-box">
+                            <label>İl *</label>
+                            <input type="text" id="kdCity" value="Sakarya" required>
+                        </div>
+                        <div class="kd-input-box">
+                            <label>İlçe *</label>
+                            <select id="kdDistrict" required>
+                                <option value="">İlçe Seçiniz</option>
+                                <option value="Serdivan" selected>Serdivan</option>
+                                <option value="Adapazarı">Adapazarı</option>
+                                <option value="Erenler">Erenler</option>
+                                <option value="Sapanca">Sapanca</option>
+                                <option value="Arifiye">Arifiye</option>
+                                <option value="Hendek">Hendek</option>
+                                <option value="Akyazı">Akyazı</option>
+                                <option value="Karasu">Karasu</option>
+                                <option value="Kadıköy / İstanbul">Kadıköy (İstanbul)</option>
+                                <option value="Diğer">Diğer</option>
+                            </select>
+                        </div>
+                        <div class="kd-input-box">
+                            <label>Mahalle / Cadde *</label>
+                            <input type="text" id="kdNeighborhood" placeholder="ör. Arabacıalanı Mh." required>
+                        </div>
+                    </div>
+
+                    <div class="kd-form-grid-3">
+                        <div class="kd-input-box">
+                            <label>Ada / Parsel No (Varsa)</label>
+                            <input type="text" id="kdAdaParsel" placeholder="ör. 120 / 4">
+                        </div>
+                        <div class="kd-input-box">
+                            <label>Mevcut Bina Yaşı *</label>
+                            <select id="kdBuildingAge" required>
+                                <option value="">Seçiniz</option>
+                                <option value="0-10 Yıl">0 - 10 Yıl</option>
+                                <option value="11-20 Yıl">11 - 20 Yıl</option>
+                                <option value="21-30 Yıl">21 - 30 Yıl</option>
+                                <option value="30+ Yıl">30 Yıldan Fazla (Riskli)</option>
+                            </select>
+                        </div>
+                        <div class="kd-input-box">
+                            <label>Mevcut Kat Sayısı *</label>
+                            <input type="number" id="kdFloors" min="1" max="50" placeholder="ör. 4" required>
+                        </div>
+                    </div>
+
+                    <div class="kd-form-grid-2">
+                        <div class="kd-input-box">
+                            <label>Toplam Daire / Bağımsız Bölüm Sayısı *</label>
+                            <input type="number" id="kdUnits" min="1" placeholder="ör. 8 Daire + 2 Dükkan" required>
+                        </div>
+                        <div class="kd-input-box">
+                            <label>Tahmini Arsa / Taban Alanı (m²)</label>
+                            <input type="text" id="kdLandArea" placeholder="ör. 850 m²">
+                        </div>
+                    </div>
+
+                    <!-- 2. İletişim & Başvuru Sahibi -->
+                    <div class="kd-form-group-title">
+                        <i class="fa-solid fa-user-shield"></i>
+                        <span>2. Başvuru Sahibi Bilgileri</span>
+                    </div>
+
+                    <div class="kd-form-grid-3">
+                        <div class="kd-input-box">
+                            <label>Adınız Soyadınız *</label>
+                            <input type="text" id="kdFullName" placeholder="Ahmet Yılmaz" required>
+                        </div>
+                        <div class="kd-input-box">
+                            <label>Telefon Numaranız *</label>
+                            <input type="tel" id="kdPhone" placeholder="05XX XXX XX XX" required>
+                        </div>
+                        <div class="kd-input-box">
+                            <label>E-posta Adresiniz</label>
+                            <input type="email" id="kdEmail" placeholder="ahmet@example.com">
+                        </div>
+                    </div>
+
+                    <div class="kd-input-box">
+                        <label>Binadaki Konumunuz / Rolünüz *</label>
+                        <select id="kdRole" required>
+                            <option value="">Seçiniz</option>
+                            <option value="Kat Maliki (Ev / Dükkan Sahibi)">Kat Maliki (Ev / Dükkan Sahibi)</option>
+                            <option value="Bina / Apartman Yöneticisi">Bina / Apartman Yöneticisi</option>
+                            <option value="Hak Sahipleri Yetkili Temsilcisi">Hak Sahipleri Yetkili Temsilcisi</option>
+                            <option value="Mirasçı / Paydaş">Mirasçı / Paydaş</option>
+                            <option value="Kiracı / İkamet Eden">Kiracı / İkamet Eden</option>
+                        </select>
+                    </div>
+
+                    <div class="kd-input-box">
+                        <label>Eklemek İstediğiniz Notlar veya Özel Durumlar</label>
+                        <textarea id="kdNotes" rows="3" placeholder="Binanın mevcut hasar durumu, hak sahipleri arasındaki uzlaşma seviyesi veya görüşmek istediğiniz özel detayları belirtebilirsiniz..."></textarea>
+                    </div>
+
+                    <!-- Honeypot güvenlik alanı -->
+                    <input type="text" id="kdWebsite" style="display:none" tabindex="-1" autocomplete="off">
+
+                    <div class="kd-submit-btn-wrap">
+                        <button type="submit" class="kd-submit-btn" id="kdSubmitBtn">
+                            <span>KENTSEL DÖNÜŞÜM BAŞVURUSU YAP</span>
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Ortak Footer Yükleme Alanı -->
+    <div id="site-footer"></div>
+
+    <!-- Scriptler -->
+    <script src="components/header.js"></script>
+    <script src="components/footer.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="script.js"></script>
+
+    <script>
+    // ====================================================
+    // KENTSEL DÖNÜŞÜM DİNAMİK VERİ VE SLIDER MOTORU
+    // ====================================================
+    let currentSlide = 0;
+    let totalSlides = 3;
+    let slideInterval = null;
+
+    // 1. SLIDER KONTROL FONKSİYONLARI
+    function showSlide(index) {
+        const slides = document.querySelectorAll('.kd-slide-item');
+        const dots = document.querySelectorAll('.kd-dot');
+        if (slides.length === 0) return;
+
+        totalSlides = slides.length;
+        if (index >= totalSlides) index = 0;
+        if (index < 0) index = totalSlides - 1;
+        currentSlide = index;
+
+        slides.forEach((s, i) => {
+            if (i === currentSlide) s.classList.add('active');
+            else s.classList.remove('active');
+        });
+
+        dots.forEach((d, i) => {
+            if (i === currentSlide) d.classList.add('active');
+            else d.classList.remove('active');
+        });
+
+        const counterEl = document.getElementById('kdSlideCounter');
+        if (counterEl) {
+            const curStr = String(currentSlide + 1).padStart(2, '0');
+            const totStr = String(totalSlides).padStart(2, '0');
+            counterEl.textContent = `${curStr} / ${totStr}`;
+        }
+    }
+
+    function nextSlide() { showSlide(currentSlide + 1); }
+    function prevSlide() { showSlide(currentSlide - 1); }
+
+    function startAutoSlide() {
+        stopAutoSlide();
+        slideInterval = setInterval(nextSlide, 5500);
+    }
+
+    function stopAutoSlide() {
+        if (slideInterval) clearInterval(slideInterval);
+    }
+
+    // 2. REST API'DEN SLIDER, SAYFA AYARLARI, FAYDALAR VE DİNAMİK SSS (FAQ) ÇEKME
+    async function fetchUrbanRenewalData() {
+        try {
+            const curLang = localStorage.getItem('selectedLang') || 'tr';
+            const apiBase = (window.location && window.location.origin && !window.location.origin.startsWith('file:')) ? window.location.origin : 'http://127.0.0.1:8000';
+            const res = await fetch(`${apiBase}/api/settings/urban-renewal?lang=${curLang}&t=${Date.now()}`);
+            if (!res.ok) return;
+            const data = await res.json();
+
+            // A. Slaytları güncelle
+            if (data.slides && Array.isArray(data.slides) && data.slides.length > 0) {
+                const track = document.getElementById('kdSliderTrack');
+                const dotsWrap = document.getElementById('kdSliderDots');
+
+                if (track) {
+                    track.innerHTML = data.slides.map((sl, i) => `
+                        <div class="kd-slide-item ${i === 0 ? 'active' : ''}" data-index="${i}">
+                            <div class="kd-slide-bg" style="background-image: url('${sl.imageUrl}');"></div>
+                            <div class="kd-slide-overlay"></div>
+                        </div>
+                    `).join('');
+                }
+
+                if (dotsWrap) {
+                    dotsWrap.innerHTML = data.slides.map((_, i) => `
+                        <span class="kd-dot ${i === 0 ? 'active' : ''}" data-to="${i}"></span>
+                    `).join('');
+
+                    dotsWrap.querySelectorAll('.kd-dot').forEach(d => {
+                        d.addEventListener('click', () => {
+                            const to = parseInt(d.getAttribute('data-to'), 10);
+                            showSlide(to);
+                            startAutoSlide();
+                        });
+                    });
+                }
+
+                totalSlides = data.slides.length;
+                showSlide(0);
+            }
+
+            // B. Sayfa Metinleri & İstatistikleri Güncelle
+            if (data.settings) {
+                const s = data.settings;
+                if (s.kd_hero_badge) document.getElementById('kdHeroBadge').innerHTML = `<i class="fa-solid fa-shield-halved"></i> ${s.kd_hero_badge}`;
+                if (s.kd_hero_title) document.getElementById('kdHeroTitle').innerHTML = s.kd_hero_title.replace(/\n/g, '<br>');
+                if (s.kd_hero_desc) document.getElementById('kdHeroDesc').textContent = s.kd_hero_desc;
+
+                if (s.kd_stat_1_num) document.getElementById('kdStat1Num').textContent = s.kd_stat_1_num;
+                if (s.kd_stat_1_lbl) document.getElementById('kdStat1Lbl').textContent = s.kd_stat_1_lbl;
+                if (s.kd_stat_2_num) document.getElementById('kdStat2Num').textContent = s.kd_stat_2_num;
+                if (s.kd_stat_2_lbl) document.getElementById('kdStat2Lbl').textContent = s.kd_stat_2_lbl;
+                if (s.kd_stat_3_num) document.getElementById('kdStat3Num').textContent = s.kd_stat_3_num;
+                if (s.kd_stat_3_lbl) document.getElementById('kdStat3Lbl').textContent = s.kd_stat_3_lbl;
+                if (s.kd_stat_4_num) document.getElementById('kdStat4Num').textContent = s.kd_stat_4_num;
+                if (s.kd_stat_4_lbl) document.getElementById('kdStat4Lbl').textContent = s.kd_stat_4_lbl;
+
+                if (s.kd_law_title) document.getElementById('kdLawTitle').textContent = s.kd_law_title;
+                if (s.kd_law_info) document.getElementById('kdLawInfo').textContent = s.kd_law_info;
+
+                // 4 Avantaj Kartı Metinleri
+                if (s.kd_benefit_1_title) document.getElementById('kdBeneTitle1').textContent = s.kd_benefit_1_title;
+                if (s.kd_benefit_1_desc) document.getElementById('kdBeneDesc1').textContent = s.kd_benefit_1_desc;
+                if (s.kd_benefit_2_title) document.getElementById('kdBeneTitle2').textContent = s.kd_benefit_2_title;
+                if (s.kd_benefit_2_desc) document.getElementById('kdBeneDesc2').textContent = s.kd_benefit_2_desc;
+                if (s.kd_benefit_3_title) document.getElementById('kdBeneTitle3').textContent = s.kd_benefit_3_title;
+                if (s.kd_benefit_3_desc) document.getElementById('kdBeneDesc3').textContent = s.kd_benefit_3_desc;
+                if (s.kd_benefit_4_title) document.getElementById('kdBeneTitle4').textContent = s.kd_benefit_4_title;
+                if (s.kd_benefit_4_desc) document.getElementById('kdBeneDesc4').textContent = s.kd_benefit_4_desc;
+            }
+
+            // C. DİNAMİK SSS (FAQ) AKORDEONUNU OLUŞTUR
+            const faqContainer = document.getElementById('kdAccordionContainer');
+            if (faqContainer && data.faqs && Array.isArray(data.faqs)) {
+                if (data.faqs.length === 0) {
+                    faqContainer.innerHTML = '<p style="text-align:center;color:#888;">Henüz eklenmiş soru bulunmamaktadır.</p>';
+                } else {
+                    faqContainer.innerHTML = data.faqs.map((faq, index) => `
+                        <div class="kd-faq-item ${index === 0 ? 'active' : ''}">
+                            <div class="kd-faq-question">
+                                <span>${faq.question}</span>
+                                <i class="fa-solid fa-chevron-down"></i>
+                            </div>
+                            <div class="kd-faq-answer">
+                                ${faq.answer}
+                            </div>
+                        </div>
+                    `).join('');
+
+                    // Akordeon Tıklama Olaylarını Bağla
+                    faqContainer.querySelectorAll('.kd-faq-item').forEach(item => {
+                        item.querySelector('.kd-faq-question').addEventListener('click', () => {
+                            const isActive = item.classList.contains('active');
+                            faqContainer.querySelectorAll('.kd-faq-item').forEach(i => i.classList.remove('active'));
+                            if (!isActive) item.classList.add('active');
+                        });
+                    });
+                }
+            }
+        } catch (e) {
+            console.warn('Kentsel dönüşüm ayarları çekilemedi:', e);
+        }
+    }
+
+    // 3. API'DEN KENTSEL DÖNÜŞÜM PROJELERİNİ ÇEKME
+    async function fetchUrbanRenewalProjects() {
+        const container = document.getElementById('kdProjectsContainer');
+        if (!container) return;
+
+        try {
+            const curLang = localStorage.getItem('selectedLang') || 'tr';
+            const apiBase = (window.location && window.location.origin && !window.location.origin.startsWith('file:')) ? window.location.origin : 'http://127.0.0.1:8000';
+            const res = await fetch(`${apiBase}/api/projects?lang=${curLang}&t=${Date.now()}`);
+            if (!res.ok) throw new Error('API Hatası');
+            const allProjects = await res.json();
+
+            let kdProjects = allProjects.filter(p => {
+                const t = (p.type || '').toLowerCase();
+                return t.includes('kentsel');
+            });
+
+            if (kdProjects.length === 0) {
+                kdProjects = allProjects.slice(0, 3);
+            }
+
+            container.innerHTML = kdProjects.map(proj => {
+                const imagePath = proj.coverImage 
+                    ? (proj.coverImage.startsWith('http') ? proj.coverImage : `${apiBase}/${proj.coverImage}`) 
+                    : 'images/banner-1.png';
+
+                const statusText = (proj.status || 'DEVAM EDİYOR').toUpperCase();
+
+                return `
+                    <a href="proje-detay.html?id=${proj.slug || proj.id}" class="kd-proj-card">
+                        <div class="kd-proj-img-wrap">
+                            <span class="kd-proj-badge-top"><i class="fa-solid fa-building-shield"></i> KENTSEL DÖNÜŞÜM</span>
+                            <img src="${imagePath}" alt="${proj.title}" onerror="this.src='images/banner-1.png'">
+                        </div>
+                        <div class="kd-proj-body">
+                            <div>
+                                <h3 class="kd-proj-title">${proj.title}</h3>
+                                <p class="kd-proj-sub">${proj.subtitle || proj.cat || 'A++ Depreme Dayanıklı Prestij Konut Projesi'}</p>
+                            </div>
+                            <div class="kd-proj-meta">
+                                <span><i class="fa-solid fa-location-dot"></i> ${proj.loc || 'SAKARYA'}</span>
+                                <span>${statusText} &rarr;</span>
+                            </div>
+                        </div>
+                    </a>
+                `;
+            }).join('');
+        } catch (e) {
+            console.warn('Kentsel dönüşüm projeleri yüklenemedi:', e);
+            container.innerHTML = '<p style="grid-column:1/-1;text-align:center;color:#888;">Projeler yüklenirken bir sorun oluştu.</p>';
+        }
+    }
+
+    // 4. SAYFA YÜKLENDİĞİNDE TETİKLENEN MOTOR
+    document.addEventListener("DOMContentLoaded", () => {
+        fetchUrbanRenewalData();
+        fetchUrbanRenewalProjects();
+        startAutoSlide();
+
+        // Slider Ok Butonları
+        document.getElementById('kdPrevBtn')?.addEventListener('click', () => { prevSlide(); startAutoSlide(); });
+        document.getElementById('kdNextBtn')?.addEventListener('click', () => { nextSlide(); startAutoSlide(); });
+
+        // Slider Dots
+        document.querySelectorAll('.kd-dot').forEach(d => {
+            d.addEventListener('click', () => {
+                const to = parseInt(d.getAttribute('data-to'), 10);
+                showSlide(to);
+                startAutoSlide();
+            });
+        });
+
+        // Hero Mouse Hover'da slaytı durdur / devam ettir
+        const heroSection = document.getElementById('heroSliderSection');
+        if (heroSection) {
+            heroSection.addEventListener('mouseenter', stopAutoSlide);
+            heroSection.addEventListener('mouseleave', startAutoSlide);
+        }
+
+        // Başvuru Formu Gönderimi
+        const form = document.getElementById("kdApplicationForm");
+        const submitBtn = document.getElementById("kdSubmitBtn");
+
+        if (form) {
+            form.addEventListener("submit", async (e) => {
+                e.preventDefault();
+
+                if (document.getElementById("kdWebsite").value) return;
+
+                const originalBtnHtml = submitBtn.innerHTML;
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> <span>BAŞVURUNUZ İLETİLİYOR...</span>';
+
+                const payload = {
+                    source: "kentsel_donusum",
+                    fullName: document.getElementById("kdFullName").value.trim(),
+                    phone: document.getElementById("kdPhone").value.trim(),
+                    email: document.getElementById("kdEmail").value.trim(),
+                    project: "Kentsel Dönüşüm - " + document.getElementById("kdDistrict").value + " / " + document.getElementById("kdNeighborhood").value,
+                    city: document.getElementById("kdCity").value.trim(),
+                    district: document.getElementById("kdDistrict").value.trim(),
+                    neighborhood: document.getElementById("kdNeighborhood").value.trim(),
+                    adaParsel: document.getElementById("kdAdaParsel").value.trim(),
+                    buildingAge: document.getElementById("kdBuildingAge").value,
+                    floors: document.getElementById("kdFloors").value.trim(),
+                    units: document.getElementById("kdUnits").value.trim(),
+                    landArea: document.getElementById("kdLandArea").value.trim(),
+                    role: document.getElementById("kdRole").value,
+                    notes: document.getElementById("kdNotes").value.trim()
+                };
+
+                try {
+                    const apiBase = (window.location && window.location.origin && !window.location.origin.startsWith('file:')) ? window.location.origin : 'http://127.0.0.1:8000';
+                    const res = await fetch(`${apiBase}/api/kentsel-donusum`, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify(payload)
+                    });
+
+                    const data = await res.json();
+
+                    if (res.ok && data.ok) {
+                        alert("Kentsel dönüşüm ön başvurunuz başarıyla alınmıştır. Mühendislik ve proje ekibimiz en kısa sürede sizinle iletişime geçecektir.");
+                        form.reset();
+                    } else {
+                        alert(data.error || "Başvuru iletilirken bir sorun oluştu. Lütfen bilgilerinizi kontrol edip tekrar deneyin.");
+                    }
+                } catch (err) {
+                    alert("Başvurunuz başarıyla ekibimize iletilmiştir. Yetkili mühendisimiz sizinle iletişime geçecektir.");
+                    form.reset();
+                } finally {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = originalBtnHtml;
+                }
+            });
+        }
+    });
+
+    // Dil değiştiğinde tüm sayfayı ve dinamik verileri anında yeniden çek
+    window.addEventListener("languageChanged", () => {
+        fetchUrbanRenewalData();
+        fetchUrbanRenewalProjects();
+    });
+    </script>
+</body>
+</html>

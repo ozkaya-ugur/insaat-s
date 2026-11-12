@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="referrer" content="no-referrer">
+    <title>Proje Detayı | BUYAPI İnşaat</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Poppins:wght@200;300;400;500;600;700&family=Raleway:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/michele-m/soria-font@master/soria.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="detail-page-body">
+
+    <!-- AKIŞKAN IŞIK HAVUZLARI -->
+    <div class="fluid-mesh-bg">
+        <div class="mesh-orb mesh-1"></div>
+        <div class="mesh-orb mesh-2"></div>
+        <div class="mesh-orb mesh-3"></div>
+    </div>
+
+    <!-- Minimal Preloader -->
+    <div class="loader">
+        <div class="loader-inner">
+            <img src="images/l-white.svg" alt="BUYAPI Logo" class="loader-logo">
+            <div class="loader-line"><div class="loader-progress"></div></div>
+            <span class="loader-sub">Değişimin Mimarı</span>
+        </div>
+    </div>
+
+    <!-- Ortak Header Yükleme Alanı -->
+    <div id="site-header"></div>
+
+    <!-- İLK KARŞILAMA: SİNEMATİK HERO SLIDER -->
+    <section class="detail-hero-slider">
+        <div class="detail-slide active">
+            <div class="detail-slide-bg" id="heroBg1" style="background-image: url('images/banner-1.png');"></div>
+            <div class="detail-slide-overlay"></div>
+        </div>
+        <div class="detail-slide">
+            <div class="detail-slide-bg" id="heroBg2" style="background-image: url('images/banner-2.png');"></div>
+            <div class="detail-slide-overlay"></div>
+        </div>
+        <div class="detail-slide">
+            <div class="detail-slide-bg" id="heroBg3" style="background-image: url('images/banner-3.png');"></div>
+            <div class="detail-slide-overlay"></div>
+        </div>
+
+        <button type="button" class="detail-arrow-btn prev" id="detailPrevSlide" aria-label="Önceki Görsel">
+            <i class="fa-solid fa-chevron-left"></i>
+        </button>
+        <button type="button" class="detail-arrow-btn next" id="detailNextSlide" aria-label="Sonraki Görsel">
+            <i class="fa-solid fa-chevron-right"></i>
+        </button>
+
+        <div class="detail-hero-content-wrap">
+            <div class="container">
+                <a href="projeler.html" class="back-link"><i class="fa-solid fa-arrow-left"></i> <span data-i18n="detail.back_to_projects">TÜM PROJELERİ GÖR</span></a>
+                
+                <div class="hero-text-wrap">
+                    <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 12px; flex-wrap: wrap;">
+                        <span class="section-tag" id="detailLocTag" style="margin-bottom: 0 !important;">SERDİVAN / SAKARYA • KONUT & REZİDANS</span>
+                        <span class="status-badge devam-eden" id="detailStatusBadge" style="position: relative; top: auto; right: auto;">DEVAM EDİYOR</span>
+                    </div>
+                    <h1 class="project-detail-title" id="detailProjectTitle">BUYAPI INTENSE</h1>
+                    <p class="project-detail-subtitle" id="detailProjectSubtitle">Sıradışı mimari çizgiler ve lüks yaşamın minimalist sentezi.</p>
+                </div>
+
+                <!-- YÜZEN ŞERİT -->
+                <div class="project-specs-bar-floating">
+                    <div class="spec-box">
+                        <span class="spec-label" data-i18n="detail.spec_location">LOKASYON</span>
+                        <strong class="spec-value" id="specLoc">Serdivan / Sakarya</strong>
+                    </div>
+                    <div class="spec-box">
+                        <span class="spec-label" data-i18n="detail.spec_area">PROJE ALANI</span>
+                        <strong class="spec-value" id="specArea">18.500 m²</strong>
+                    </div>
+                    <div class="spec-box">
+                        <span class="spec-label" data-i18n="detail.spec_type">PROJE TİPİ</span>
+                        <strong class="spec-value" id="specType">Konut & Rezidans</strong>
+                    </div>
+                    <div class="spec-box">
+                        <span class="spec-label" data-i18n="detail.spec_concept">MİMARİ KONSEPT</span>
+                        <strong class="spec-value" id="specConcept">A++ Avant-Garde</strong>
+                    </div>
+                    <div class="spec-box">
+                        <span class="spec-label" data-i18n="detail.spec_status">PROJE DURUMU</span>
+                        <strong class="spec-value text-gold" id="specStatus">Satışta / Teslim 2026</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="detail-slide-counter">
+            <span id="detailCurrentNum">01</span> / <span>03</span>
+        </div>
+
+        <div class="hero-bottom-soft-fade"></div>
+    </section>
+
+    <!-- MİMARİ AÇIKLAMA -->
+    <section class="project-description-section section-padding">
+        <div class="container">
+            <div class="desc-main glass-content-card full-width-desc">
+                <span class="section-tag" data-i18n="detail.vision_tag">MİMARİ VİZYON</span>
+                <h2 class="section-title" id="descTitle" data-i18n="detail.vision_title">Teknik Mükemmellik Ve Estetiğin Zirvesi</h2>
+                <p class="lead-text" id="descLead">Buyapı Intense, Serdivan’ın en değerli noktasında yükselen anıtsal bir mimarlık eseridir.</p>
+                <p id="descFull">Statik mükemmellik, akıllı ev teknolojileri, geniş peyzaj alanları ve özgün cephe mimarisi ile geleceğin konut standartlarını günümüze taşıyoruz. Her detayında ince mühendislik çözümleri yer alan projemiz, yatırımcılarına yüksek prestij sunuyor.</p>
+
+                <div class="project-features-grid">
+                    <div class="feature-item">
+                        <i class="fa-solid fa-house-signal"></i>
+                        <div>
+                            <strong data-i18n="detail.features_smart_home">AKILLI EV SİSTEMİ</strong>
+                            <small data-i18n="detail.features_smart_home_sub">Tam Otomasyon İklimlendirme</small>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fa-solid fa-shield-halved"></i>
+                        <div>
+                            <strong data-i18n="detail.features_security">ÜSTÜN GÜVENLİK</strong>
+                            <small data-i18n="detail.features_security_sub">24/7 VIP Resepsiyon & Kamera</small>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fa-solid fa-square-parking"></i>
+                        <div>
+                            <strong data-i18n="detail.features_parking">KAPALI OTOPARK</strong>
+                            <small data-i18n="detail.features_parking_sub">Elektrikli Şarj İstasyonları</small>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fa-solid fa-leaf"></i>
+                        <div>
+                            <strong data-i18n="detail.features_green">YEŞİL BİNA DOKUSU</strong>
+                            <small data-i18n="detail.features_green_sub">%65 Sürdürülebilir Peyzaj</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SOL DİKEY LİSTE SEKME MODÜLÜ -->
+    <section class="project-media-tabs-section section-padding" style="padding-top: 0; padding-bottom: 60px;">
+        <div class="container">
+            
+            <div class="vertical-tabs-layout">
+                
+                <div class="vertical-tabs-nav">
+                    <span class="section-tag" style="margin-bottom: 10px; display: block;" data-i18n="detail.archive_tag">MİMARİ ARŞİV</span>
+                    <button type="button" class="v-tab-btn active" data-tab="tab-render">
+                        <i class="fa-solid fa-image"></i>
+                        <div class="v-tab-text">
+                            <strong data-i18n="detail.tab_renders">PROJE GÖRSELLERİ</strong>
+                            <small data-i18n="detail.tab_renders_sub">4K Mimari Renderlar</small>
+                        </div>
+                    </button>
+                    <button type="button" class="v-tab-btn" data-tab="tab-catalog">
+                        <i class="fa-solid fa-file-pdf"></i>
+                        <div class="v-tab-text">
+                            <strong data-i18n="detail.tab_catalog">PROJE KATALOĞU</strong>
+                            <small data-i18n="detail.tab_catalog_sub">E-Katalog & İndirme</small>
+                        </div>
+                    </button>
+                    <button type="button" class="v-tab-btn" data-tab="tab-plans">
+                        <i class="fa-solid fa-drafting-compass"></i>
+                        <div class="v-tab-text">
+                            <strong data-i18n="detail.tab_plans">KAT PLANLARI</strong>
+                            <small data-i18n="detail.tab_plans_sub">Daire Paftaları</small>
+                        </div>
+                    </button>
+                    <button type="button" class="v-tab-btn" data-tab="tab-site">
+                        <i class="fa-solid fa-helmet-safety"></i>
+                        <div class="v-tab-text">
+                            <strong data-i18n="detail.tab_site">ŞANTİYE GÖRSELLERİ</strong>
+                            <small data-i18n="detail.tab_site_sub">İnşaat Aşaması</small>
+                        </div>
+                    </button>
+                    <button type="button" class="v-tab-btn" data-tab="tab-map">
+                        <i class="fa-solid fa-map-pin"></i>
+                        <div class="v-tab-text">
+                            <strong data-i18n="detail.tab_map">KONUM (HARİTA)</strong>
+                            <small data-i18n="detail.tab_map_sub">Ufuk Görünümü</small>
+                        </div>
+                    </button>
+                    <button type="button" class="v-tab-btn" data-tab="tab-streetview">
+                        <i class="fa-solid fa-street-view"></i>
+                        <div class="v-tab-text">
+                            <strong data-i18n="detail.tab_streetview">STREET VIEW (360°)</strong>
+                            <small data-i18n="detail.tab_streetview_sub">Sokak Düzeyi Çevre</small>
+                        </div>
+                    </button>
+                    <button type="button" class="v-tab-btn" data-tab="tab-video">
+                        <i class="fa-solid fa-circle-play"></i>
+                        <div class="v-tab-text">
+                            <strong data-i18n="detail.tab_video">TANITIM VİDEOLARI</strong>
+                            <small data-i18n="detail.tab_video_sub">Sinematik Film Galerisi</small>
+                        </div>
+                    </button>
+                </div>
+
+                <div class="vertical-tabs-content-wrap">
+                    
+                    <!-- TAB 1: PROJE RENDER GÖRSELLERİ -->
+                    <div class="media-tab-content active" id="tab-render">
+                        <div class="architectural-gallery-grid" id="renderGalleryGrid">
+                            <div class="gallery-item" data-src="images/banner-1.png">
+                                <img src="images/banner-1.png" alt="Render 1" id="mainGalleryImg">
+                                <div class="gallery-hover-overlay"><i class="fa-solid fa-expand"></i><span data-i18n="detail.zoom_btn">BÜYÜT</span></div>
+                            </div>
+                            <div class="gallery-item" data-src="images/banner-2.png">
+                                <img src="images/banner-2.png" alt="Render 2" id="galleryImg2">
+                                <div class="gallery-hover-overlay"><i class="fa-solid fa-expand"></i><span data-i18n="detail.zoom_btn">BÜYÜT</span></div>
+                            </div>
+                            <div class="gallery-item" data-src="images/banner-3.png">
+                                <img src="images/banner-3.png" alt="Render 3" id="galleryImg3">
+                                <div class="gallery-hover-overlay"><i class="fa-solid fa-expand"></i><span data-i18n="detail.zoom_btn">BÜYÜT</span></div>
+                            </div>
+                            <div class="gallery-item" data-src="images/banner-4.png">
+                                <img src="images/banner-4.png" alt="Render 4" id="galleryImg4">
+                                <div class="gallery-hover-overlay"><i class="fa-solid fa-expand"></i><span data-i18n="detail.zoom_btn">BÜYÜT</span></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TAB 2: PROJE KATALOĞU -->
+                    <div class="media-tab-content" id="tab-catalog">
+                        <div class="catalog-tab-card clean-catalog-card">
+                            <div class="catalog-tab-header">
+                                <i class="fa-solid fa-file-pdf catalog-icon"></i>
+                                <div>
+                                    <span class="section-tag" data-i18n="detail.catalog_docs_tag">RESMİ DOKÜMANLAR</span>
+                                    <h3 id="catalogTitle">Buyapı e-Katalog & Teknik Şartname</h3>
+                                    <p data-i18n="detail.catalog_desc">Projenin yüksek çözünürlüklü mimari kataloğunu, malzeme listesini ve daire metrekare paftalarını cihazınıza indirebilirsiniz.</p>
+                                </div>
+                            </div>
+                            <div class="catalog-actions-wrap">
+                                <a href="images/l-white.svg" download class="pdf-download-btn large-btn" id="catalogDownloadBtn">
+                                    <i class="fa-solid fa-download"></i>
+                                    <span data-i18n="detail.catalog_download_btn">E-KATALOĞU İNDİR (PDF)</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TAB 3: KAT PLANLARI -->
+                    <div class="media-tab-content" id="tab-plans">
+                        <div class="architectural-gallery-grid">
+                            <div class="gallery-item" data-src="images/banner-3.png">
+                                <img src="images/banner-3.png" alt="Kat Planı 1">
+                                <div class="gallery-hover-overlay"><i class="fa-solid fa-expand"></i><span data-i18n="detail.zoom_btn">BÜYÜT</span></div>
+                            </div>
+                            <div class="gallery-item" data-src="images/banner-1.png">
+                                <img src="images/banner-1.png" alt="Kat Planı 2">
+                                <div class="gallery-hover-overlay"><i class="fa-solid fa-expand"></i><span data-i18n="detail.zoom_btn">BÜYÜT</span></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TAB 4: ŞANTİYE GÖRSELLERİ -->
+                    <div class="media-tab-content" id="tab-site">
+                        <div class="architectural-gallery-grid">
+                            <div class="gallery-item" data-src="images/banner-2.png">
+                                <img src="images/banner-2.png" alt="Şantiye Aşaması 1">
+                                <div class="gallery-hover-overlay"><i class="fa-solid fa-expand"></i><span data-i18n="detail.zoom_btn">BÜYÜT</span></div>
+                            </div>
+                            <div class="gallery-item" data-src="images/banner-4.png">
+                                <img src="images/banner-4.png" alt="Şantiye Aşaması 2">
+                                <div class="gallery-hover-overlay"><i class="fa-solid fa-expand"></i><span data-i18n="detail.zoom_btn">BÜYÜT</span></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TAB 5: HARİTA -->
+                    <div class="media-tab-content" id="tab-map">
+                        <div class="embed-media-wrap">
+                            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3023.1119794695914!2d30.379201576550734!3d40.770549936052725!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x14ccb2fb167ca9f1%3A0x6b6c0852d43cb8d1!2sSerdivan%2C%20Sakarya!5e0!3m2!1str!2str!4v1700000000000!5m2!1str!2str" width="100%" height="500" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+                        </div>
+                    </div>
+
+                    <!-- TAB 6: STREET VIEW -->
+                    <div class="media-tab-content" id="tab-streetview">
+                        <div class="embed-media-wrap">
+                            <iframe src="https://www.google.com/maps/embed?pb=!4v1700000000000!6m8!1m7!1sCAoSLEFGMVFpcE44akZ0U3pzQ1dONjVzVGstSWstc3ptSmNfRG9kQUU2bUxWNXE2!2m2!1d40.7705499!2d30.3817765!3f210!4f0!5f0.782086597401592" width="100%" height="500" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+                        </div>
+                    </div>
+
+                    <!-- TAB 7: TANITIM VİDEOLARI -->
+                    <div class="media-tab-content" id="tab-video">
+                        <div class="architectural-gallery-grid">
+                            
+                            <div class="gallery-item video-gallery-item" data-video="videolar/video-1.mp4">
+                                <video preload="metadata" class="video-preview-element" muted playsinline>
+                                    <source src="videolar/video-1.mp4#t=0.5" type="video/mp4">
+                                </video>
+                                <div class="gallery-hover-overlay">
+                                    <i class="fa-solid fa-circle-play" style="font-size: 2.2rem; color: var(--accent-gold, #d4af37);"></i>
+                                    <span style="margin-top: 8px;" data-i18n="detail.video_film">LANSMAN FİLMİ</span>
+                                </div>
+                            </div>
+
+                            <div class="gallery-item video-gallery-item" data-video="videolar/video-1.mp4">
+                                <video preload="metadata" class="video-preview-element" muted playsinline>
+                                    <source src="videolar/video-1.mp4#t=0.5" type="video/mp4">
+                                </video>
+                                <div class="gallery-hover-overlay">
+                                    <i class="fa-solid fa-circle-play" style="font-size: 2.2rem; color: var(--accent-gold, #d4af37);"></i>
+                                    <span style="margin-top: 8px;" data-i18n="detail.video_drone">DRONE LOKASYON TURU</span>
+                                </div>
+                            </div>
+
+                            <div class="gallery-item video-gallery-item" data-video="videolar/video-1.mp4">
+                                <video preload="metadata" class="video-preview-element" muted playsinline>
+                                    <source src="videolar/video-1.mp4#t=0.5" type="video/mp4">
+                                </video>
+                                <div class="gallery-hover-overlay">
+                                    <i class="fa-solid fa-circle-play" style="font-size: 2.2rem; color: var(--accent-gold, #d4af37);"></i>
+                                    <span style="margin-top: 8px;" data-i18n="detail.video_engineering">ŞANTİYE & MÜHENDİSLİK</span>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+    </section>
+
+    <!-- BU PROJE HAKKINDA BİLGİ ALIN -->
+    <section class="project-inquiry-section section-padding">
+        <div class="container">
+            <div class="inquiry-card-wrapper glass-content-card">
+                <div class="inquiry-info-wrap">
+                    <span class="section-tag" data-i18n="detail.inquiry_tag">DOĞRUDAN TEMAS</span>
+                    <h2 class="section-title" id="inquirySectionTitle">Proje Hakkında Detaylı Bilgi Alın</h2>
+                    <p class="lead-text" data-i18n="detail.inquiry_lead">Özel ödeme planları, güncel konum seçimi ve mimari pafta detayları için satış ofisi temsilcilerimiz size ulaşsın.</p>
+
+                    <div class="inquiry-direct-links">
+                        <a href="tel:4443343" class="inquiry-contact-item">
+                            <i class="fa-solid fa-headset"></i>
+                            <div>
+                                <small data-i18n="detail.inquiry_phone_label">SATIŞ OFİSİ MÜŞTERİ HATTI</small>
+                                <strong>444 33 43</strong>
+                            </div>
+                        </a>
+                        <a href="https://wa.me/904443343?text=Proje%20hakkında%20bilgi%20almak%20istiyorum." id="whatsappLink" target="_blank" class="inquiry-contact-item whatsapp-box">
+                            <i class="fa-brands fa-whatsapp"></i>
+                            <div>
+                                <small data-i18n="detail.inquiry_whatsapp_label">ANINDA WHATSAPP BİLGİ HATTI</small>
+                                <strong>+90 444 33 43</strong>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="inquiry-form-wrap">
+                    <form class="luxury-contact-form" id="projectInquiryForm">
+                        <div class="form-group">
+                            <label for="inquiryName" data-i18n="detail.inquiry_name_label">ADINIZ SOYADINIZ *</label>
+                            <input type="text" id="inquiryName" placeholder="Ahmet Yılmaz" data-i18n-ph="detail.ph_name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="inquiryPhone" data-i18n="detail.inquiry_phone_input_label">TELEFON NUMARASI *</label>
+                            <input type="tel" id="inquiryPhone" placeholder="05XX XXX XX XX" data-i18n-ph="detail.ph_phone" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="inquiryNote" data-i18n="detail.inquiry_note_label">NOTUNUZ VEYA SORUNUZ</label>
+                            <textarea id="inquiryNote" rows="3" placeholder="Görüşmek istediğiniz daire tipi veya uygun saati belirtebilirsiniz..." data-i18n-ph="detail.ph_note"></textarea>
+                        </div>
+                        <button type="submit" class="refined-submit-btn">
+                            <span data-i18n="detail.inquiry_submit_btn">SATIŞ DANIŞMANI ARASIN</span>
+                            <i class="fa-solid fa-phone-arrow-up-right"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- GELİŞMİŞ SÜRGÜLÜ LIGHTBOX MODAL -->
+    <div class="lightbox-modal" id="lightboxModal">
+        <span class="lightbox-close" id="lightboxClose">&times;</span>
+        
+        <button type="button" class="lightbox-arrow lb-prev" id="lbPrevBtn"><i class="fa-solid fa-chevron-left"></i></button>
+        <button type="button" class="lightbox-arrow lb-next" id="lbNextBtn"><i class="fa-solid fa-chevron-right"></i></button>
+
+        <div class="lightbox-content-wrap">
+            <img class="lightbox-image" id="lightboxImage" src="" alt="Büyütülmüş Görsel">
+            <div class="lightbox-counter" id="lightboxCounter">1 / 4</div>
+        </div>
+    </div>
+
+    <!-- Ortak Footer Yükleme Alanı -->
+    <div id="site-footer"></div>
+
+    <!-- KÜTÜPHANELER -->
+    <script src="components/header.js"></script>
+    <script src="components/footer.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="components/highmaps.js"></script>
+    <script src="components/tr-all.js"></script>
+    <script src="script.js"></script>
+
+    <!-- KESİN VE ZORLAYICI (FORCE) DİNAMİK YÜKLEYİCİ -->
+    <script>
+        async function forceLoadProjectDetails() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const projectIdOrSlug = urlParams.get('id') || urlParams.get('slug') || 'intense';
+
+            try {
+                const curLang = localStorage.getItem("selectedLang") || window.currentLang || "tr";
+                
+                // Sözlük yüklenmemişse yükle ve sayfadaki data-i18n etiketlerine uygula
+                if (typeof window.loadTranslationsFromDB === 'function' && (!window.UI_TRANSLATIONS || Object.keys(window.UI_TRANSLATIONS).length === 0)) {
+                    await window.loadTranslationsFromDB();
+                }
+                if (typeof window.applyTranslations === 'function') {
+                    window.applyTranslations(curLang);
+                }
+                const dict = (window.UI_TRANSLATIONS && window.UI_TRANSLATIONS[curLang]) || (window.UI_TRANSLATIONS && window.UI_TRANSLATIONS['tr']) || {};
+
+                const apiBase = (typeof window !== 'undefined' && window.location && window.location.origin && !window.location.origin.startsWith('file:'))
+                    ? window.location.origin
+                    : 'http://127.0.0.1:8000';
+                const res = await fetch(`${apiBase}/api/projects?lang=${curLang}&t=${Date.now()}`);
+                if (!res.ok) throw new Error("API yanıt vermedi");
+
+                const projects = await res.json();
+                
+                // slug veya ID'ye göre tam eşleşme bul
+                const proj = projects.find(p => p.slug === projectIdOrSlug || String(p.id) === String(projectIdOrSlug));
+
+                if (!proj) return;
+
+                // 1. SAYFA BAŞLIKLARI
+                document.title = `${proj.title} | BUYAPI`;
+                
+                const titleEls = document.querySelectorAll('#detailProjectTitle, .project-detail-title');
+                titleEls.forEach(el => el.innerText = proj.title.toUpperCase());
+
+                const subtitleEls = document.querySelectorAll('#detailProjectSubtitle, .project-detail-subtitle');
+                subtitleEls.forEach(el => el.innerText = proj.subtitle || proj.cat || '');
+
+                const inqSuffix = dict['detail.inquiry_title'] || 'Hakkında Detaylı Bilgi Alın';
+                if (document.getElementById('inquirySectionTitle')) {
+                    document.getElementById('inquirySectionTitle').innerText = `${proj.title} ${inqSuffix}`;
+                }
+
+                const catSuffix = dict['detail.tab_catalog'] || 'e-Katalog & Teknik Şartname';
+                if (document.getElementById('catalogTitle')) {
+                    document.getElementById('catalogTitle').innerText = `${proj.title} ${catSuffix}`;
+                }
+
+                // 2. KONUM VE ETIKETLER
+                let typeLabel = proj.type || 'KONUT & REZİDANS';
+                if (typeof getTypeLabel === 'function') {
+                    typeLabel = getTypeLabel(proj.type, curLang);
+                }
+                const locText = (proj.loc || 'SAKARYA').toUpperCase();
+
+                if (document.getElementById('detailLocTag')) {
+                    document.getElementById('detailLocTag').innerText = `${locText} • ${typeLabel.toUpperCase()}`;
+                }
+                if (document.getElementById('specLoc')) document.getElementById('specLoc').innerText = proj.loc || 'Sakarya';
+                if (document.getElementById('specType')) document.getElementById('specType').innerText = typeLabel;
+                if (document.getElementById('specArea') && proj.area) document.getElementById('specArea').innerText = proj.area;
+                if (document.getElementById('specConcept') && proj.concept) document.getElementById('specConcept').innerText = proj.concept;
+
+                // 3. DURUM ROZETLERİ (ÇOK DİLLİ)
+                const isCompleted = (proj.status || '').toLowerCase().includes('tamam');
+                const badgeEl = document.getElementById('detailStatusBadge');
+                const specStatusEl = document.getElementById('specStatus');
+
+                let statusBadgeText = isCompleted 
+                    ? (dict['detail.status_completed'] || 'TAMAMLANDI') 
+                    : (dict['detail.status_ongoing'] || 'DEVAM EDİYOR');
+                let statusSpecText = isCompleted 
+                    ? (dict['detail.status_completed_desc'] || 'Tamamlandı / Teslim Edildi') 
+                    : (dict['detail.status_ongoing_desc'] || 'Satışta / Devam Ediyor');
+
+                if (badgeEl) {
+                    badgeEl.innerText = statusBadgeText;
+                    badgeEl.className = `status-badge ${isCompleted ? 'tamamlanan' : 'devam-eden'}`;
+                }
+
+                if (specStatusEl) {
+                    specStatusEl.innerText = statusSpecText;
+                }
+
+                // 4. AÇIKLAMA METİNLERİ
+                if (document.getElementById('descTitle')) {
+                    document.getElementById('descTitle').innerText = dict['detail.vision_title'] || 'Teknik Mükemmellik Ve Estetiğin Zirvesi';
+                }
+                if (document.getElementById('descLead')) document.getElementById('descLead').innerText = proj.subtitle || proj.cat || '';
+                if (document.getElementById('descFull')) document.getElementById('descFull').innerText = proj.description || dict['detail.desc_fallback'] || 'Proje detayları hazırlanmaktadır.';
+
+                // 5. ARKA PLAN GÖRSELLERİ (HERO SLIDER - ÇOKLU GÖRSEL DESTEĞİ)
+                const heroSliderEl = document.querySelector('.detail-hero-slider');
+                const heroItems = (proj.gallery && proj.gallery.hero && proj.gallery.hero.length > 0)
+                    ? proj.gallery.hero.map(h => h.src)
+                    : (proj.coverImage ? [proj.coverImage.startsWith('http') ? proj.coverImage : `${apiBase}/${proj.coverImage}`] : []);
+
+                if (heroSliderEl && heroItems.length > 0) {
+                    // Mevcut slaytları temizle ve yenilerini oluştur
+                    const existingSlides = heroSliderEl.querySelectorAll('.detail-slide');
+                    existingSlides.forEach(s => s.remove());
+
+                    const fragment = document.createDocumentFragment();
+                    heroItems.forEach((src, idx) => {
+                        const slide = document.createElement('div');
+                        slide.className = `detail-slide ${idx === 0 ? 'active' : ''}`;
+                        slide.innerHTML = `
+                            <div class="detail-slide-bg" style="background-image: url('${src}');"></div>
+                            <div class="detail-slide-overlay"></div>
+                        `;
+                        fragment.appendChild(slide);
+                    });
+
+                    // Arrow butonlarının önüne yerleştir
+                    const firstBtn = heroSliderEl.querySelector('.detail-arrow-btn');
+                    if (firstBtn) {
+                        heroSliderEl.insertBefore(fragment, firstBtn);
+                    } else {
+                        heroSliderEl.prepend(fragment);
+                    }
+
+                    // Slayt sayacını güncelle (01 / 0N)
+                    const totalCountEl = heroSliderEl.querySelector('.detail-slide-counter span:last-child');
+                    if (totalCountEl) totalCountEl.textContent = String(heroItems.length).padStart(2, '0');
+
+                    // Slider navigasyonunu yeniden bağla
+                    const newSlides = heroSliderEl.querySelectorAll('.detail-slide');
+                    let currentSlideIdx = 0;
+                    const prevBtn = document.getElementById('detailPrevSlide');
+                    const nextBtn = document.getElementById('detailNextSlide');
+                    const numEl = document.getElementById('detailCurrentNum');
+
+                    function goToSlide(dir) {
+                        if (newSlides.length <= 1) return;
+                        newSlides[currentSlideIdx].classList.remove('active');
+                        if (dir === 'next') currentSlideIdx = (currentSlideIdx + 1) % newSlides.length;
+                        else currentSlideIdx = (currentSlideIdx - 1 + newSlides.length) % newSlides.length;
+                        newSlides[currentSlideIdx].classList.add('active');
+                        if (numEl) numEl.textContent = String(currentSlideIdx + 1).padStart(2, '0');
+                    }
+
+                    if (nextBtn) {
+                        const newNext = nextBtn.cloneNode(true);
+                        nextBtn.parentNode.replaceChild(newNext, nextBtn);
+                        newNext.addEventListener('click', () => goToSlide('next'));
+                    }
+                    if (prevBtn) {
+                        const newPrev = prevBtn.cloneNode(true);
+                        prevBtn.parentNode.replaceChild(newPrev, prevBtn);
+                        newPrev.addEventListener('click', () => goToSlide('prev'));
+                    }
+                }
+
+                // 6. GOOGLE HARİTA & STREET VIEW DİNAMİK YÜKLEME
+                if (proj.googleMapCode) {
+                    const mapWrap = document.querySelector('#tab-map .embed-media-wrap');
+                    if (mapWrap) {
+                        let code = proj.googleMapCode.trim();
+                        if (code.toLowerCase().includes('<iframe')) {
+                            mapWrap.innerHTML = code;
+                            const ifr = mapWrap.querySelector('iframe');
+                            if (ifr) { ifr.style.width = '100%'; ifr.style.height = '500px'; ifr.style.border = '0'; }
+                        } else {
+                            mapWrap.innerHTML = `<iframe src="${code}" width="100%" height="500" style="border:0;" allowfullscreen loading="lazy"></iframe>`;
+                        }
+                    }
+                }
+
+                if (proj.streetViewCode) {
+                    const svWrap = document.querySelector('#tab-streetview .embed-media-wrap');
+                    if (svWrap) {
+                        let code = proj.streetViewCode.trim();
+                        if (code.toLowerCase().includes('<iframe')) {
+                            svWrap.innerHTML = code;
+                            const ifr = svWrap.querySelector('iframe');
+                            if (ifr) { ifr.style.width = '100%'; ifr.style.height = '500px'; ifr.style.border = '0'; }
+                        } else {
+                            svWrap.innerHTML = `<iframe src="${code}" width="100%" height="500" style="border:0;" allowfullscreen loading="lazy"></iframe>`;
+                        }
+                    }
+                }
+
+                // 7. GALERİLERİ DİNAMİK YÜKLEME (RENDER, PLAN, ŞANTİYE)
+                const zoomText = dict['detail.zoom_btn'] || 'BÜYÜT';
+                if (proj.gallery) {
+                    const renderList = (gridId, items) => {
+                        const grid = document.querySelector(`#${gridId} .architectural-gallery-grid`);
+                        if (grid && items && items.length > 0) {
+                            grid.innerHTML = items.map(m => `
+                                <div class="gallery-item" data-src="${m.src}">
+                                    <img src="${m.src}" alt="${m.caption || proj.title}">
+                                    <div class="gallery-hover-overlay"><i class="fa-solid fa-expand"></i><span>${m.caption || zoomText}</span></div>
+                                </div>
+                            `).join('');
+                        }
+                    };
+                    renderList('tab-render', proj.gallery.render);
+                    renderList('tab-plan', proj.gallery.plan);
+                    renderList('tab-site', proj.gallery.site);
+                }
+
+                // 8. E-KATALOG İNDİRME LİNKİ
+                if (proj.catalog) {
+                    const catBtn = document.getElementById('catalogDownloadBtn');
+                    if (catBtn) catBtn.href = proj.catalog;
+                }
+
+                // 9. WHATSAPP LİNKİ
+                const waLink = document.getElementById('whatsappLink');
+                if (waLink) {
+                    waLink.href = `https://wa.me/904443343?text=${encodeURIComponent(proj.title + ' projesi hakkında detaylı bilgi almak istiyorum.')}`;
+                }
+
+                // Tüm çevirileri son kez teyit et
+                if (typeof window.applyTranslations === 'function') {
+                    window.applyTranslations(curLang);
+                }
+
+            } catch (err) {
+                console.error("Dinamik detay verileri güncellenirken hata:", err);
+            }
+        }
+
+        window.forceLoadProjectDetails = forceLoadProjectDetails;
+
+        // Script.js ve DOM tam yüklendikten hemen sonra zorlayarak çalıştır
+        if (document.readyState === 'loading') {
+            window.addEventListener('DOMContentLoaded', () => setTimeout(forceLoadProjectDetails, 50));
+        } else {
+            setTimeout(forceLoadProjectDetails, 50);
+        }
+        window.addEventListener('load', () => setTimeout(forceLoadProjectDetails, 100));
+
+        // Dil değiştiğinde proje detaylarını anında yeni dilde yeniden çek
+        window.addEventListener('languageChanged', () => {
+            forceLoadProjectDetails();
+        });
+    </script>
+</body>
+</html>

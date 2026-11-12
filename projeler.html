@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projelerimiz | BUYAPI İnşaat</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Poppins:wght@200;300;400;500;600;700&family=Raleway:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/michele-m/soria-font@master/soria.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="fluid-mesh-bg">
+        <div class="mesh-orb mesh-1"></div>
+        <div class="mesh-orb mesh-2"></div>
+        <div class="mesh-orb mesh-3"></div>
+    </div>
+
+    <!-- Minimal Preloader -->
+    <div class="loader">
+        <div class="loader-inner">
+            <img src="images/l-white.svg" alt="BUYAPI Logo" class="loader-logo">
+            <div class="loader-line"><div class="loader-progress"></div></div>
+            <span class="loader-sub">Değişimin Mimarı</span>
+        </div>
+    </div>
+
+    <!-- Ortak Header Yükleme Alanı -->
+    <div id="site-header"></div>
+
+    <!-- Özel Banner Görselli Header -->
+    <section class="page-banner banner-projeler">
+        <div class="page-banner-overlay"></div>
+        <div class="container">
+            <span class="section-tag" data-i18n="projects.banner_tag">MİMARİ PORTFÖY</span>
+            <h1 class="page-title" data-i18n="projects.banner_title">Proje Kataloğu</h1>
+        </div>
+    </section>
+
+    <section class="projects-main-section section-padding">
+        <div class="container">
+            
+            <div class="advanced-filter-panel">
+                <div class="filter-group-status">
+                    <button class="status-tab active" data-status="all" data-i18n="projects.tab_all">TÜM PROJELER</button>
+                    <button class="status-tab" data-status="devam-eden" data-i18n="projects.tab_ongoing">DEVAM EDİYOR</button>
+                    <button class="status-tab" data-status="tamamlanan" data-i18n="projects.tab_completed">TAMAMLANDI</button>
+                    <button class="status-tab" data-status="yeni-proje" data-i18n="projects.tab_new">YENİ PROJELER</button>
+                    <button class="status-tab kd-tab-highlight" data-type-target="kentsel" id="kdTabBtn" style="border-color:rgba(197,160,89,0.55);color:#ecdba8;background:rgba(197,160,89,0.08);"><i class="fa-solid fa-building-shield" style="margin-right:6px;color:#c5a059;"></i><span data-i18n="projects.tab_kentsel">KENTSEL DÖNÜŞÜM</span></button>
+                </div>
+
+                <div class="filter-dropdowns-wrap">
+                    <div class="custom-select-box">
+                        <i class="fa-solid fa-location-dot"></i>
+                        <select id="filterLocation">
+                            <option value="all" data-i18n-opt="projects.filter_location_all">Tüm Lokasyonlar (İl / İlçe)</option>
+                            <option value="tr-54">Sakarya</option>
+                            <option value="tr-34">İstanbul</option>
+                            <option value="tr-06">Ankara</option>
+                            <option value="tr-41">Kocaeli</option>
+                        </select>
+                    </div>
+
+                    <div class="custom-select-box">
+                        <i class="fa-solid fa-building-user"></i>
+                        <select id="filterType">
+                            <option value="all" data-i18n-opt="projects.filter_type_all">Tüm Yapı Türleri</option>
+                            <option value="konut" data-i18n-opt="projects.type_konut">Konut & Rezidans</option>
+                            <option value="ticari" data-i18n-opt="projects.type_ticari">İş Merkezi & Ticari</option>
+                            <option value="sanayi" data-i18n-opt="projects.type_sanayi">Sanayi & Endüstriyel Tesis</option>
+                            <option value="kentsel" data-i18n-opt="projects.type_kentsel">Kentsel Dönüşüm</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- SEGMENTED GÖRÜNÜM DEĞİŞTİRİCİ -->
+                <div class="view-segmented-control">
+                    <button class="view-btn active" data-view="grid" title="Kart Görünümü">
+                        <i class="fa-solid fa-border-all"></i>
+                        <span data-i18n="projects.view_grid">KART</span>
+                    </button>
+                    <button class="view-btn" data-view="list" title="Liste Görünümü">
+                        <i class="fa-solid fa-list-ul"></i>
+                        <span data-i18n="projects.view_list">LİSTE</span>
+                    </button>
+                    <button class="view-btn" data-view="map" title="Harita Görünümü">
+                        <i class="fa-solid fa-map-location-dot"></i>
+                        <span data-i18n="projects.view_map">HARİTA</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- KENTSEL DÖNÜŞÜM VIP SPOTLIGHT BANT -->
+            <div class="kd-projects-spotlight-banner">
+                <div class="banner-text">
+                    <h4><i class="fa-solid fa-building-shield" style="color:#c5a059"></i> <span data-i18n="projects.spotlight_title">Kentsel Dönüşüm Projeleri ve Hak Sahipleri Danışmanlığı</span></h4>
+                    <p data-i18n="projects.spotlight_desc">Mevcut binanızı 6306 sayılı kanun, %50+1 kuralı, tam harç muafiyeti ve A++ statik mühendislik güvencesiyle geleceğe taşıyın.</p>
+                </div>
+                <div class="banner-action">
+                    <a href="kentsel-donusum.html" class="kd-spotlight-pill">
+                        <i class="fa-solid fa-building-shield"></i>
+                        <span data-i18n="projects.spotlight_btn">Kentsel Dönüşüm Sayfası & Başvuru</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- 1. KART (GRID) GÖRÜNÜMÜ -->
+            <div class="view-container view-grid active" id="viewGrid">
+                <div class="projects-grid-layout" id="projectGridContainer">
+                    <div style="grid-column: 1/-1; text-align: center; padding: 50px; color: #888;">
+                        <i class="fa-solid fa-spinner fa-spin" style="font-size: 24px; color: #d4af37;"></i>
+                        <p style="margin-top: 10px;">Projeler dinamik yükleniyor...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. LİSTE GÖRÜNTÜSÜ -->
+            <div class="view-container view-list" id="viewList">
+                <div class="editorial-project-list" id="projectListContainer">
+                    <!-- Dinamik liste buraya gelecek -->
+                </div>
+            </div>
+
+            <!-- 3. HARİTA GÖRÜNTÜSÜ (HIGHCHARTS 81 İL VEKTOREL HARİTA) -->
+            <div class="view-container view-map" id="viewMap">
+                <div class="full-map-layout">
+                    <!-- YEREL SVG HARİTA KAPSAYICISI -->
+                    <div id="highchartsTurkeyMap" class="highcharts-map-holder" style="min-height: 480px; width: 100%;"></div>
+
+                    <!-- DİNAMİK ALT PANEL -->
+                    <div class="map-bottom-projects-panel" id="mapProjectsPanel">
+                        <div class="panel-header-bottom">
+                            <span class="panel-tag" id="panelCityTag">LOKASYON: SAKARYA</span>
+                            <h3 id="panelCityTitle">Sakarya Projelerimiz</h3>
+                        </div>
+                        <div class="map-bottom-cards-grid" id="panelCardsContainer"></div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Ortak Footer Yükleme Alanı -->
+    <div id="site-footer"></div>
+
+    <script src="components/header.js"></script>
+    <script src="components/footer.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="script.js"></script>
+<!-- HIGHMAPS CANLI CDN BAGLANTILARI -->
+    <script src="https://code.highcharts.com/maps/highmaps.js"></script>
+    <script src="https://code.highcharts.com/mapdata/countries/tr/tr-all.js"></script>
+
+    <!-- OTOMATİK DİNAMİK YÜKLEME VE FİLTRELEME MOTORU -->
+    <script>
+        let allProjects = [];
+        let mapChartInstance = null;
+        let currentStatusFilter = 'all';
+
+        // API'den Projeleri Yükleme
+        async function fetchDynamicProjects() {
+            try {
+                const curLang = localStorage.getItem('selectedLang') || window.currentLang || 'tr';
+                const apiBase = (window.location && window.location.origin && !window.location.origin.startsWith('file:')) ? window.location.origin : 'http://127.0.0.1:8000';
+                const response = await fetch(`${apiBase}/api/projects?lang=${curLang}&t=${Date.now()}`);
+                if (!response.ok) throw new Error("API Yükleme Hatası");
+                
+                allProjects = await response.json();
+                applyFilters();
+            } catch (err) {
+                console.error("Projeler veritabanından çekilemedi:", err);
+            }
+        }
+
+        // Filtreleme Fonksiyonu
+        function applyFilters() {
+            const locVal = document.getElementById('filterLocation')?.value || 'all';
+            const typeVal = document.getElementById('filterType')?.value || 'all';
+
+            const filtered = allProjects.filter(p => {
+                const matchStatus = (currentStatusFilter === 'all') || ((p.status || '').toLowerCase() === currentStatusFilter.toLowerCase());
+                const matchLoc = (locVal === 'all') || ((p.cityKey || '').toLowerCase() === locVal.toLowerCase());
+                
+                // Çoklu kategori kontrolü (Virgülle ayrılmış kategoriler içinde arama yapar)
+                const projectTypes = (p.type || '').toLowerCase().split(',');
+                const matchType = (typeVal === 'all') || projectTypes.includes(typeVal.toLowerCase());
+
+                return matchStatus && matchLoc && matchType;
+            });
+
+            renderGrid(filtered);
+            renderList(filtered);
+        }
+
+        // 1. Grid (Kart) Görünümünü Basma
+        function renderGrid(projects) {
+            const gridContainer = document.getElementById('projectGridContainer');
+            if (!gridContainer) return;
+
+            const curLang = localStorage.getItem('selectedLang') || window.currentLang || 'tr';
+
+            if (projects.length === 0) {
+                const emptyMsg = {
+                    tr: 'Aradığınız kriterlere uygun proje bulunamadı.',
+                    en: 'No projects found matching your search criteria.',
+                    ar: 'لم يتم العثور على مشاريع تطابق معايير البحث الخاصة بكم.',
+                    de: 'Keine Projekte gefunden, die Ihren Suchkriterien entsprechen.'
+                }[curLang] || 'Aradığınız kriterlere uygun proje bulunamadı.';
+                gridContainer.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: #888; padding: 40px;">${emptyMsg}</p>`;
+                return;
+            }
+
+            gridContainer.innerHTML = projects.map((proj, index) => {
+                const numStr = String(index + 1).padStart(2, '0');
+                const statusClass = (proj.status || '').toLowerCase().includes('tamam') ? 'tamamlanan' : 'devam-eden';
+                
+                let statusText = (proj.status || 'DEVAM EDİYOR').toUpperCase();
+                if (typeof getStatusLabel === 'function') {
+                    statusText = getStatusLabel(proj.status, curLang).toUpperCase();
+                }
+                
+                const apiBase = (window.location && window.location.origin && !window.location.origin.startsWith('file:')) ? window.location.origin : 'http://127.0.0.1:8000';
+                const imagePath = proj.coverImage 
+                    ? (proj.coverImage.startsWith('http') ? proj.coverImage : `${apiBase}/${proj.coverImage}`) 
+                    : 'images/banner-1.png';
+
+                return `
+                    <a href="proje-detay.html?id=${proj.slug || proj.id}" class="showcase-card project-item">
+                        <span class="status-badge ${statusClass}">${statusText}</span>
+                        <div class="card-image-wrap"><img src="${imagePath}" alt="${proj.title}" onerror="this.src='images/banner-1.png'"></div>
+                        <div class="card-glass-overlay"></div>
+                        <div class="card-inner-content">
+                            <span class="sc-num">${numStr}</span>
+                            <div class="sc-details">
+                                <span class="sc-cat">${(proj.loc || 'SAKARYA').toUpperCase()}</span>
+                                <h3>${proj.title}</h3>
+                                <p>${proj.subtitle || proj.cat || ''}</p>
+                            </div>
+                        </div>
+                    </a>
+                `;
+            }).join('');
+        }
+
+        // 2. Liste Görünümünü Basma
+        function renderList(projects) {
+            const listContainer = document.getElementById('projectListContainer');
+            if (!listContainer) return;
+
+            const curLang = localStorage.getItem('selectedLang') || window.currentLang || 'tr';
+
+            const detailLabel = {
+                tr: 'DETAY',
+                en: 'DETAILS',
+                ar: 'تفاصيل',
+                de: 'DETAILS'
+            }[curLang] || 'DETAY';
+
+            listContainer.innerHTML = projects.map((proj, index) => {
+                const numStr = String(index + 1).padStart(2, '0');
+                const statusClass = (proj.status || '').toLowerCase().includes('tamam') ? 'tamamlanan' : 'devam-eden';
+                
+                let statusText = (proj.status || 'DEVAM EDİYOR').toUpperCase();
+                if (typeof getStatusLabel === 'function') {
+                    statusText = getStatusLabel(proj.status, curLang).toUpperCase();
+                }
+
+                return `
+                    <a href="proje-detay.html?id=${proj.slug || proj.id}" class="editorial-row project-item">
+                        <div class="col-num"><span class="row-num">${numStr}</span></div>
+                        <div class="col-title"><h4 class="row-title">${proj.title}</h4></div>
+                        <div class="col-cat"><span class="status-badge ${statusClass}">${statusText}</span></div>
+                        <div class="col-desc"><p class="row-desc">${proj.subtitle || proj.cat || ''}</p><span class="row-loc"><i class="fa-solid fa-location-dot"></i> ${proj.loc || 'Sakarya'}</span></div>
+                        <div class="col-action"><span class="row-action-btn"><span>${detailLabel}</span><i class="fa-solid fa-arrow-up-right-from-square"></i></span></div>
+                    </a>
+                `;
+            }).join('');
+        }
+
+        // 3. Highcharts Türkiye Haritasını Oluşturma
+        // 3. Highcharts Türkiye Haritasını Oluşturma (İl Kodları Otomatik Eşleştirmeli)
+        function renderTurkeyMap() {
+            const mapContainer = document.getElementById('highchartsTurkeyMap');
+            if (!mapContainer || typeof Highcharts === 'undefined' || !Highcharts.maps || !Highcharts.maps['countries/tr/tr-all']) return;
+
+            // Veritabanı şehir anahtarlarını Highcharts "hc-key" kodlarına dönüştürme sözlüğü
+            const cityKeyMap = {
+                'tr-54': 'tr-sk', 'sakarya': 'tr-sk', 'serdivan': 'tr-sk', 'sapanca': 'tr-sk', 'adapazari': 'tr-sk',
+                'tr-34': 'tr-ib', 'istanbul': 'tr-ib', 'kadikoy': 'tr-ib', 'caddebostan': 'tr-ib',
+                'tr-06': 'tr-an', 'ankara': 'tr-an', 'polatli': 'tr-an',
+                'tr-41': 'tr-kc', 'kocaeli': 'tr-kc', 'gebze': 'tr-kc',
+                'tr-28': 'tr-gi', 'giresun': 'tr-gi', 'bulancak': 'tr-gi'
+            };
+
+            // İl kodlarına göre veritabanındaki projeleri sayma
+            const cityCounts = {};
+            allProjects.forEach(p => {
+                const rawKey = (p.cityKey || p.loc || 'tr-sk').toLowerCase();
+                
+                // Sözlükten eşleşeni bul, yoksa ham değeri veya 'tr-sk' kullan
+                let hcKey = cityKeyMap[rawKey];
+                if (!hcKey) {
+                    if (rawKey.includes('sakarya') || rawKey.includes('serdivan') || rawKey.includes('sapanca') || rawKey.includes('54')) hcKey = 'tr-sk';
+                    else if (rawKey.includes('istanbul') || rawKey.includes('kadikoy') || rawKey.includes('34')) hcKey = 'tr-ib';
+                    else if (rawKey.includes('ankara') || rawKey.includes('polatli') || rawKey.includes('06')) hcKey = 'tr-an';
+                    else if (rawKey.includes('kocaeli') || rawKey.includes('gebze') || rawKey.includes('41')) hcKey = 'tr-kc';
+                    else hcKey = rawKey;
+                }
+
+                cityCounts[hcKey] = (cityCounts[hcKey] || 0) + 1;
+            });
+
+            // Highcharts Veri Setini Hazırlama
+            const mapData = Highcharts.maps['countries/tr/tr-all'].features.map(f => {
+                const hcKey = f.properties['hc-key'];
+                return {
+                    'hc-key': hcKey,
+                    name: f.properties.name,
+                    value: cityCounts[hcKey] || 0
+                };
+            });
+
+            mapChartInstance = Highcharts.mapChart('highchartsTurkeyMap', {
+                chart: {
+                    backgroundColor: 'transparent',
+                    style: { fontFamily: 'Plus Jakarta Sans, sans-serif' }
+                },
+                title: { text: null },
+                mapNavigation: { enabled: true, buttonOptions: { verticalAlign: 'bottom' } },
+                colorAxis: {
+                    min: 0,
+                    minColor: '#1c1c1c',
+                    maxColor: '#d4af37'
+                },
+                series: [{
+                    data: mapData,
+                    mapData: Highcharts.maps['countries/tr/tr-all'],
+                    joinBy: 'hc-key',
+                    name: 'Proje Sayısı',
+                    borderColor: 'rgba(255, 255, 255, 0.1)',
+                    borderWidth: 0.8,
+                    states: {
+                        hover: { color: '#d4af37', borderColor: '#ffffff' }
+                    },
+                    dataLabels: {
+                        enabled: true,
+                        format: '{point.name}',
+                        style: { color: '#aaaaaa', fontSize: '10px', textOutline: 'none' }
+                    },
+                    point: {
+                        events: {
+                            click: function () {
+                                updateMapBottomPanel(this.name, this['hc-key']);
+                            }
+                        }
+                    }
+                }],
+                credits: { enabled: false }
+            });
+
+            updateMapBottomPanel('Sakarya', 'tr-sk');
+        }
+
+        // Haritada Şehre Tıklanınca Alt Paneli Güncelleme
+        function updateMapBottomPanel(cityName, cityCode) {
+            const tagEl = document.getElementById('panelCityTag');
+            const titleEl = document.getElementById('panelCityTitle');
+            const cardsContainer = document.getElementById('panelCardsContainer');
+
+            if (tagEl) tagEl.innerText = `LOKASYON: ${cityName.toUpperCase()}`;
+            if (titleEl) titleEl.innerText = `${cityName} Projelerimiz`;
+
+            // Seçilen şehir için esnek eşleşme
+            const filteredProjects = allProjects.filter(p => {
+                const loc = ((p.cityKey || '') + ' ' + (p.loc || '')).toLowerCase();
+                if (cityCode === 'tr-sk' && (loc.includes('sakarya') || loc.includes('serdivan') || loc.includes('sapanca') || loc.includes('54'))) return true;
+                if (cityCode === 'tr-ib' && (loc.includes('istanbul') || loc.includes('kadikoy') || loc.includes('34'))) return true;
+                if (cityCode === 'tr-an' && (loc.includes('ankara') || loc.includes('polatli') || loc.includes('06'))) return true;
+                if (cityCode === 'tr-kc' && (loc.includes('kocaeli') || loc.includes('gebze') || loc.includes('41'))) return true;
+                return loc.includes(cityCode.toLowerCase());
+            });
+
+            if (!cardsContainer) return;
+
+            if (filteredProjects.length === 0) {
+                cardsContainer.innerHTML = `<p style="color:#888; grid-column:1/-1; padding:15px;">${cityName} bölgesinde henüz kayıtlı projemiz bulunmamaktadır.</p>`;
+                return;
+            }
+
+            cardsContainer.innerHTML = filteredProjects.map(proj => {
+                const apiBase = (window.location && window.location.origin && !window.location.origin.startsWith('file:')) ? window.location.origin : 'http://127.0.0.1:8000';
+                const imagePath = proj.coverImage 
+                    ? (proj.coverImage.startsWith('http') ? proj.coverImage : `${apiBase}/${proj.coverImage}`) 
+                    : 'images/banner-1.png';
+
+                return `
+                    <a href="proje-detay.html?id=${proj.slug || proj.id}" style="display:flex; gap:12px; background:#181818; padding:10px; border-radius:6px; border:1px solid rgba(255,255,255,0.05); text-decoration:none; color:#fff;">
+                        <img src="${imagePath}" style="width:70px; height:50px; object-fit:cover; border-radius:4px;" onerror="this.src='images/banner-1.png'">
+                        <div>
+                            <strong style="font-size:14px; display:block; color:#fff;">${proj.title}</strong>
+                            <small style="color:#d4af37; font-size:11px;">${proj.loc || cityName}</small>
+                        </div>
+                    </a>
+                `;
+            }).join('');
+        }
+
+        // Sayfa Yüklendiğinde Ve Harita Butonuna Basıldığında Çalışacak Yapı
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchDynamicProjects();
+
+            // Status Tab Butonları
+            document.querySelectorAll('.status-tab').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.status-tab').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+
+                    const targetType = btn.getAttribute('data-type-target');
+                    if (targetType === 'kentsel') {
+                        const ft = document.getElementById('filterType');
+                        if (ft) ft.value = 'kentsel';
+                        currentStatusFilter = 'all';
+                    } else {
+                        currentStatusFilter = btn.getAttribute('data-status') || 'all';
+                        // Eğer başka bir tab'a basıldıysa ve type kentsel ise tüm tiplere dön
+                        const ft = document.getElementById('filterType');
+                        if (ft && ft.value === 'kentsel') ft.value = 'all';
+                    }
+                    applyFilters();
+                });
+            });
+
+            // URL Parametre Kontrolü (?type=kentsel)
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('type') === 'kentsel') {
+                const ft = document.getElementById('filterType');
+                if (ft) ft.value = 'kentsel';
+                document.querySelectorAll('.status-tab').forEach(b => b.classList.remove('active'));
+                document.getElementById('kdTabBtn')?.classList.add('active');
+            }
+
+            // Select Dropdown Filtreleri
+            document.getElementById('filterLocation')?.addEventListener('change', applyFilters);
+            document.getElementById('filterType')?.addEventListener('change', () => {
+                const ftVal = document.getElementById('filterType')?.value;
+                if (ftVal === 'kentsel') {
+                    document.querySelectorAll('.status-tab').forEach(b => b.classList.remove('active'));
+                    document.getElementById('kdTabBtn')?.classList.add('active');
+                }
+                applyFilters();
+            });
+
+            // Görünüm Değiştirici (Kart / Liste / Harita)
+            document.querySelectorAll('.view-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
+                    document.querySelectorAll('.view-container').forEach(c => c.classList.remove('active'));
+                    
+                    btn.classList.add('active');
+                    const targetView = btn.getAttribute('data-view');
+                    
+                    if (targetView === 'grid') document.getElementById('viewGrid').classList.add('active');
+                    if (targetView === 'list') document.getElementById('viewList').classList.add('active');
+                    if (targetView === 'map') {
+                        document.getElementById('viewMap').classList.add('active');
+                        // HARİTA BUTONUNA BASILDIĞI AN HARİTAYI ÇİZ / BOYUTLANDIR
+                        setTimeout(() => {
+                            if (!mapChartInstance) {
+                                renderTurkeyMap();
+                            } else {
+                                mapChartInstance.refit();
+                                mapChartInstance.setSize(null, null, false);
+                            }
+                        }, 50);
+                    }
+                });
+            });
+        });
+
+        // Dil Değiştiğinde Projeleri ve Başlıkları Anında Yenile
+        window.addEventListener('languageChanged', (e) => {
+            fetchDynamicProjects();
+            if (typeof window.applyTranslations === 'function') {
+                window.applyTranslations(e.detail?.lang || localStorage.getItem('selectedLang') || 'tr');
+            }
+        });
+    </script>
+</body>
+</html>
