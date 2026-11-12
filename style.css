@@ -4433,6 +4433,8 @@ body.detail-page-body {
     .vertical-tabs-nav { height: auto; gap: 10px; }
     .vertical-tabs-content-wrap { height: auto; min-height: 0; }
     .vertical-tabs-nav .v-tab-btn.active { transform: none; }
+    /* Butonun altına taşınan panel kapandığında gizlensin */
+    .vertical-tabs-nav .media-tab-content:not(.active) { display: none; }
     .vertical-tabs-nav .media-tab-content.active {
         display: flex;
         flex-direction: column;
