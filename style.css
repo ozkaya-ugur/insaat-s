@@ -4445,3 +4445,25 @@ body.detail-page-body {
     }
 }
 
+
+/* Footer imza satırı */
+.footer-credit {
+    margin-top: 22px;
+    padding-top: 16px;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    text-align: center;
+    font-size: 0.65rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    position: relative;
+    z-index: 2;
+}
+.footer-credit a {
+    color: var(--accent-gold);
+    text-decoration: none;
+    font-weight: 700;
+    margin-left: 6px;
+    transition: color 0.3s ease;
+}
+.footer-credit a:hover { color: #ffffff; }

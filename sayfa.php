@@ -190,7 +190,7 @@ $seoKeywords = trim((string)($page['seo_keywords'] ?? ''));
       })();
     </script>
     <script src="/components/header.js"></script>
-    <script src="/components/footer.js"></script>
+    <script src="/components/footer.js?v=202611121918"></script>
     <script src="/script.js"></script>
 </body>
 </html>

@@ -268,6 +268,10 @@ async function renderFooterComponent() {
                 <a href="iletisim.html" class="f-direct-contact-link" style="color:#c5a059;text-decoration:none;font-weight:700;font-size:0.68rem;letter-spacing:0.25em;text-transform:uppercase;"><i class="fa-solid fa-paper-plane" style="margin-right:6px"></i> <span data-i18n="footer.start_project_contact">${textData.startProjectContact}</span></a>
                 <a href="#" class="f-back-top" id="footerBackToTop">${textData.backTopText} <i class="fa-solid fa-arrow-up"></i></a>
             </div>
+            <div class="footer-credit">
+                <span>${({ en: 'Design & Development', ar: 'التصميم والبرمجة' })[lang] || 'Tasarım ve kodlama'}:</span>
+                <a href="https://www.sosyobyte.com" target="_blank" rel="noopener">Sosyobyte</a>
+            </div>
         </div>
     </footer>
     `;
