@@ -8,7 +8,7 @@ const DB_USER = 'root';
 const DB_PASS = '';
 
 // Ön yüzün (statik HTML sitesi) bulunduğu dizinin web adresi, sonunda / olmadan.
-// Görsel yolları (images/banner-1.png gibi) bu adrese göre tamamlanır.
+// Görsel yolları (images/banner-1.webp gibi) bu adrese göre tamamlanır.
 // Sabit bir adres tanımlıysa o kullanılır; tanımlı değilse isteğin geldiği adres
 // (host + port + alt dizin) otomatik olarak hesaplanır. Böylece yerel geliştirme,
 // önizleme ve canlı ortam aynı kodla doğru görsel yolu üretir.
