@@ -443,7 +443,9 @@
 
         function toTelHref(phoneRaw) {
             const d = digitsOnly(phoneRaw);
-            return d ? `tel:+${d}` : '';
+            if (!d) return '';
+            // 444'lü / yerel numaralara + eklenmez; yalnızca ülke kodlu (90...) numaralar uluslararası biçime çevrilir
+            return d.length >= 12 && d.startsWith('90') ? `tel:+${d}` : `tel:${d}`;
         }
 
         function toWaHref(waRaw, text = '') {
@@ -731,10 +733,12 @@
             }
         }
 
+        // Global fonksiyon bildirimi window üzerinde aynı adı taşıdığından, sarmalayıcı onu ezmeden önce asıl referansı sakla
+        const __loadProjectDetailsImpl = forceLoadProjectDetails;
         window.__detailLoadingPromise = null;
         window.forceLoadProjectDetails = async function forceLoadProjectDetailsSafe() {
             if (window.__detailLoadingPromise) return window.__detailLoadingPromise;
-            window.__detailLoadingPromise = forceLoadProjectDetails().finally(() => {
+            window.__detailLoadingPromise = __loadProjectDetailsImpl().finally(() => {
                 window.__detailLoadingPromise = null;
             });
             return window.__detailLoadingPromise;

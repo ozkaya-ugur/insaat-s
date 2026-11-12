@@ -258,7 +258,7 @@ function initHeaderComponent() {
             const s = await res.json();
             const rawPhone = (s.phone || s.kd_contact_phone || '').toString();
             const digits = rawPhone.replace(/\D/g, '');
-            const href = digits ? `tel:+${digits}` : '';
+            const href = !digits ? '' : (digits.length >= 12 && digits.startsWith('90') ? `tel:+${digits}` : `tel:${digits}`);
 
             const phoneLink = document.getElementById('headerPhoneLink');
             const phoneText = document.getElementById('headerPhoneText');
