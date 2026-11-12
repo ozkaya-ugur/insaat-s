@@ -331,6 +331,11 @@ async function initApp() {
         return vTabsMobile.matches;
     }
 
+    function vTabsCloseAll() {
+        vTabButtons.forEach(b => b.classList.remove("active"));
+        mediaTabContents.forEach(c => c.classList.remove("active"));
+    }
+
     // Mobilde aktif paneli ilgili butonun altına taşır, masaüstünde yerine geri koyar.
     function vTabsPlacePanel(scrollToPanel) {
         if (!vTabsNav || !vTabsWrap) return;
@@ -354,55 +359,53 @@ async function initApp() {
         vTabButtons.forEach(btn => {
             btn.addEventListener("click", () => {
                 const targetTab = btn.getAttribute("data-tab");
-                const isAlreadyOpen = btn.classList.contains("active") && vTabsIsMobile();
-                vTabButtons.forEach(b => b.classList.remove("active"));
-                mediaTabContents.forEach(c => c.classList.remove("active"));
+                const isAlreadyOpen = btn.classList.contains("active");
+
+                if (vTabsIsMobile() && isAlreadyOpen) {
+                    vTabsCloseAll();
+                    return;
+                }
+
+                vTabsCloseAll();
                 btn.classList.add("active");
                 const panel = document.getElementById(targetTab);
                 if (panel) panel.classList.add("active");
-                vTabsPlacePanel(!isAlreadyOpen);
+                vTabsPlacePanel(true);
             });
         });
 
-        vTabsPlacePanel(false);
+        const hasActiveOnLoad = !!document.querySelector(".v-tab-btn.active") && !!document.querySelector(".media-tab-content.active");
+        if (vTabsIsMobile()) {
+            // İstek gereği mobilde başlangıçta hiçbir sekme açık gelmesin.
+            vTabsCloseAll();
+        } else {
+            if (!hasActiveOnLoad && vTabButtons[0]) {
+                vTabButtons[0].classList.add("active");
+                const firstPanel = document.getElementById(vTabButtons[0].getAttribute("data-tab"));
+                if (firstPanel) firstPanel.classList.add("active");
+            }
+            vTabsPlacePanel(false);
+        }
+
+        const onViewportChange = () => {
+            if (vTabsIsMobile()) {
+                vTabsCloseAll();
+            } else {
+                if (!document.querySelector(".v-tab-btn.active") && vTabButtons[0]) {
+                    vTabButtons[0].classList.add("active");
+                    const firstPanel = document.getElementById(vTabButtons[0].getAttribute("data-tab"));
+                    if (firstPanel) firstPanel.classList.add("active");
+                }
+                vTabsPlacePanel(false);
+            }
+        };
+
         if (vTabsMobile.addEventListener) {
-            vTabsMobile.addEventListener("change", () => vTabsPlacePanel(false));
+            vTabsMobile.addEventListener("change", onViewportChange);
         } else if (vTabsMobile.addListener) {
-            vTabsMobile.addListener(() => vTabsPlacePanel(false));
+            vTabsMobile.addListener(onViewportChange);
         }
     }
-
-    // 8b. MOBİL: PROJE KÜNYESİ & MİMARİ VİZYON AKORDİYONU (masaüstünde butonlar CSS ile gizli)
-    const mAccDefs = [
-        { el: document.querySelector(".detail-hero-content-wrap .project-specs-bar-floating"), key: "detail.spec_title", text: "PROJE KÜNYESİ", icon: "fa-list-check", open: false },
-        { el: document.querySelector(".project-description-section .desc-main"), key: "detail.vision_tag", text: "MİMARİ VİZYON", icon: "fa-compass-drafting", open: true }
-    ];
-    mAccDefs.forEach(def => {
-        if (!def.el || def.el.classList.contains("m-acc-panel")) return;
-        const btn = document.createElement("button");
-        btn.type = "button";
-        btn.className = "m-acc-btn";
-        btn.innerHTML = `<i class="fa-solid ${def.icon}"></i><span data-i18n="${def.key}"></span><i class="fa-solid fa-chevron-down m-acc-chevron"></i>`;
-        btn.querySelector("span").textContent = (window.UI_TRANSLATIONS && window.UI_TRANSLATIONS[def.key]) || def.text;
-        def.el.classList.add("m-acc-panel");
-        def.el.parentNode.insertBefore(btn, def.el);
-
-        const setOpen = (open) => {
-            def.el.classList.toggle("m-acc-open", open);
-            btn.classList.toggle("m-acc-open", open);
-            btn.setAttribute("aria-expanded", open ? "true" : "false");
-        };
-        setOpen(def.open);
-
-        btn.addEventListener("click", () => {
-            const open = !def.el.classList.contains("m-acc-open");
-            setOpen(open);
-            if (open) {
-                const top = btn.getBoundingClientRect().top + window.pageYOffset - 90;
-                window.scrollTo({ top: Math.max(top, 0), behavior: "smooth" });
-            }
-        });
-    });
 
     // 9. LIGHTBOX RESİM MOTORU
     const lightboxModal = document.getElementById("lightboxModal");
@@ -462,7 +465,7 @@ async function initApp() {
     // 10. İLETİŞİM HARİTASI VE FORMLAR
     const locationCards = document.querySelectorAll(".office-location-card");
     const mapIframe = document.getElementById("contactMapIframe");
-    const contactForm = document.getElementById("contactForm");
+    const projectInquiryForm = document.getElementById("projectInquiryForm");
 
     const mapUrls = {
         sakarya: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3023.1119794695914!2d30.379201576550734!3d40.770549936052725!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x14ccb2fb167ca9f1%3A0x6b6c0852d43cb8d1!2sSerdivan%2C%20Sakarya!5e0!3m2!1str!2str!4v1700000000000!5m2!1str!2str",
@@ -480,11 +483,60 @@ async function initApp() {
         });
     }
 
-    if (contactForm) {
-        contactForm.addEventListener("submit", (e) => {
+    if (projectInquiryForm) {
+        projectInquiryForm.addEventListener("submit", async (e) => {
             e.preventDefault();
-            alert("Talebiniz alınmıştır. En kısa sürede mimari temsilcimiz sizinle iletişime geçecektir.");
-            contactForm.reset();
+
+            const nameEl = document.getElementById("inquiryName");
+            const phoneEl = document.getElementById("inquiryPhone");
+            const noteEl = document.getElementById("inquiryNote");
+            const submitBtn = projectInquiryForm.querySelector("button[type='submit']");
+            const submitText = submitBtn ? submitBtn.querySelector("span") : null;
+            const originalText = submitText ? submitText.textContent : "SATIŞ DANIŞMANI ARASIN";
+
+            const fullName = (nameEl?.value || "").trim();
+            const phone = (phoneEl?.value || "").trim();
+            const note = (noteEl?.value || "").trim();
+            const projectTitle = (document.getElementById("detailProjectTitle")?.textContent || "").trim();
+
+            if (!fullName || !phone) {
+                alert("Lütfen ad soyad ve telefon alanlarını doldurun.");
+                return;
+            }
+
+            const payload = {
+                source: "proje_detay",
+                fullName,
+                phone,
+                project: projectTitle || "Proje Detay Talebi",
+                note
+            };
+
+            try {
+                if (submitBtn) submitBtn.disabled = true;
+                if (submitText) submitText.textContent = "GÖNDERİLİYOR...";
+
+                const response = await fetch(`${API_URL}/contact`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(payload)
+                });
+                const data = await response.json().catch(() => ({}));
+
+                if (!response.ok || !data?.ok) {
+                    throw new Error(data?.error || "Mesaj gönderilemedi.");
+                }
+
+                const lang = localStorage.getItem("selectedLang") || window.currentLang || "tr";
+                const q = new URLSearchParams({ tip: "proje-detay", lang });
+                if (data?.id) q.set("ref", String(data.id));
+                window.location.href = `tesekkur.html?${q.toString()}`;
+            } catch (err) {
+                alert(err?.message || "Mesaj gönderilirken bir hata oluştu.");
+            } finally {
+                if (submitBtn) submitBtn.disabled = false;
+                if (submitText) submitText.textContent = originalText;
+            }
         });
     }
 }
