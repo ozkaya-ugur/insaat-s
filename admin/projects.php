@@ -12,20 +12,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         header('Content-Type: application/json; charset=utf-8');
         $raw = trim((string)($_POST['order'] ?? ''));
         $ids = array_values(array_filter(array_map('intval', explode(',', $raw)), fn($v) => $v > 0));
-        if (!$ids) {
+        if (!$ids || count($ids) !== count(array_unique($ids))) {
             echo json_encode(['ok' => false, 'message' => 'Geçerli sıralama listesi gönderilmedi.'], JSON_UNESCAPED_UNICODE);
             exit;
         }
         $all = array_map('intval', array_column(q('SELECT id FROM projects ORDER BY sort_order ASC, id DESC')->fetchAll(), 'id'));
-        if (count($ids) !== count($all) || array_diff($ids, $all) || array_diff($all, $ids)) {
+        if (array_diff($ids, $all)) {
             echo json_encode(['ok' => false, 'message' => 'Sıralama verisi eksik veya geçersiz.'], JSON_UNESCAPED_UNICODE);
             exit;
+        }
+        if (count($ids) === count($all)) {
+            $final = $ids;
+        } else {
+            // Filtre aktifken yalnızca görünen projeler gönderilir: yeni sıra, bu projelerin
+            // listedeki mevcut konumlarına yerleştirilir; diğer projeler yerinde kalır.
+            $slots = [];
+            foreach ($all as $i => $pid) {
+                if (in_array($pid, $ids, true)) $slots[] = $i;
+            }
+            if (count($slots) !== count($ids)) {
+                echo json_encode(['ok' => false, 'message' => 'Sıralama verisi eksik veya geçersiz.'], JSON_UNESCAPED_UNICODE);
+                exit;
+            }
+            $final = $all;
+            foreach ($slots as $k => $pos) $final[$pos] = $ids[$k];
         }
         try {
             db()->beginTransaction();
             $st = db()->prepare('UPDATE projects SET sort_order=? WHERE id=?');
             $i = 1;
-            foreach ($ids as $pid) {
+            foreach ($final as $pid) {
                 $st->execute([$i++, $pid]);
             }
             db()->commit();
@@ -57,23 +73,83 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         q('UPDATE projects SET is_new = 1 - is_new WHERE id=?', [$id]);
         flash('Yeni proje durumu değiştirildi.');
     }
-    redirect('projects.php');
+    redirect('projects.php' . (!empty($_POST['return_qs']) ? '?' . $_POST['return_qs'] : ''));
 }
 
+// ---- Filtreler (il / ilçe / arama) ----
+$fCity = trim((string)($_GET['il'] ?? ''));
+$fDist = trim((string)($_GET['ilce'] ?? ''));
+$fQ    = trim((string)($_GET['q'] ?? ''));
+$qs    = array_filter(['il' => $fCity, 'ilce' => $fDist, 'q' => $fQ], fn($v) => $v !== '');
+$returnQs = http_build_query($qs);
+
+$where = [];
+$params = [];
+if ($fCity !== '') { $where[] = 'city_key = ?'; $params[] = $fCity; }
+if ($fDist !== '') { $where[] = 'SUBSTRING_INDEX(loc, " / ", 1) = ?'; $params[] = $fDist; }
+if ($fQ !== '') {
+    $where[] = '(title_tr LIKE ? OR slug LIKE ? OR loc LIKE ? OR cat LIKE ?)';
+    $like = '%' . $fQ . '%';
+    array_push($params, $like, $like, $like, $like);
+}
+$sqlWhere = $where ? (' WHERE ' . implode(' AND ', $where)) : '';
+$rows = q('SELECT * FROM projects' . $sqlWhere . ' ORDER BY sort_order ASC, id DESC', $params)->fetchAll();
+$totalAll = (int)q('SELECT COUNT(*) c FROM projects')->fetch()['c'];
+
+// İl listesi: yalnızca projesi olan iller
+$cityOptions = q('SELECT city_key, COUNT(*) c FROM projects GROUP BY city_key ORDER BY c DESC')->fetchAll();
+// İlçe listesi: seçili ile göre (il seçilmemişse tüm ilçeler)
+$distRows = $fCity !== ''
+    ? q('SELECT DISTINCT SUBSTRING_INDEX(loc, " / ", 1) d FROM projects WHERE city_key=? AND loc IS NOT NULL AND loc<>"" ORDER BY d', [$fCity])->fetchAll()
+    : q('SELECT DISTINCT SUBSTRING_INDEX(loc, " / ", 1) d FROM projects WHERE loc IS NOT NULL AND loc<>"" ORDER BY d')->fetchAll();
+
 admin_header('Projeler', 'projects');
-$rows = q('SELECT * FROM projects ORDER BY sort_order ASC, id DESC')->fetchAll();
 ?>
 <div class="card">
-  <div class="row between" style="margin-bottom:14px">
-    <h2 style="margin:0">Tüm Projeler (<?= count($rows) ?>)</h2>
+  <div class="row between" style="margin-bottom:14px;flex-wrap:wrap;gap:10px">
+    <h2 style="margin:0">Tüm Projeler (<?= count($rows) ?><?= count($rows) !== $totalAll ? ' / ' . $totalAll : '' ?>)</h2>
     <?php if (admin_can('projects', 'create')): ?><a class="btn" href="project_edit.php"><i class="fa-solid fa-plus"></i> Yeni Proje</a><?php endif; ?>
   </div>
+
+  <form method="get" class="projects-filter" id="projectsFilter">
+    <div class="field">
+      <label>İl</label>
+      <select name="il" id="filterCity">
+        <option value="">Tüm İller</option>
+        <?php foreach ($cityOptions as $c): $ck = (string)$c['city_key']; ?>
+          <option value="<?= e($ck) ?>" <?= $fCity === $ck ? 'selected' : '' ?>><?= e(CITY_KEYS[$ck] ?? ($ck !== '' ? $ck : 'Belirtilmemiş')) ?> (<?= (int)$c['c'] ?>)</option>
+        <?php endforeach; ?>
+      </select>
+    </div>
+    <div class="field">
+      <label>İlçe</label>
+      <select name="ilce" id="filterDistrict">
+        <option value="">Tüm İlçeler</option>
+        <?php foreach ($distRows as $d): $dv = (string)$d['d']; if ($dv === '') continue; ?>
+          <option value="<?= e($dv) ?>" <?= $fDist === $dv ? 'selected' : '' ?>><?= e($dv) ?></option>
+        <?php endforeach; ?>
+      </select>
+    </div>
+    <div class="field">
+      <label>Ara</label>
+      <input type="search" name="q" value="<?= e($fQ) ?>" placeholder="Proje adı, slug veya lokasyon">
+    </div>
+    <div class="projects-filter-actions">
+      <button class="btn sm" type="submit"><i class="fa-solid fa-filter"></i> Filtrele</button>
+      <?php if ($qs): ?><a class="btn ghost sm" href="projects.php">Temizle</a><?php endif; ?>
+    </div>
+  </form>
+
+  <?php if ($qs): ?>
+    <p class="muted" style="margin:0 0 10px">Filtre aktif: <?= count($rows) ?> proje listeleniyor. Sürükleyerek sıralayabilirsiniz; yeni sıra yalnızca bu projelerin kendi aralarında uygulanır.</p>
+  <?php endif; ?>
+
   <div class="table-wrap">
     <table class="resp projects-table" id="projectsTable">
       <thead><tr><th style="width:36px"></th><th></th><th>Proje</th><th>Lokasyon</th><th>Durum</th><th>Sıra</th><th>Yayın</th><th></th></tr></thead>
       <tbody>
       <?php foreach ($rows as $idx => $r): ?>
-        <tr data-id="<?= (int)$r['id'] ?>" draggable="true">
+        <tr data-id="<?= (int)$r['id'] ?>">
           <td>
             <button type="button" class="drag-handle" aria-label="Sırayı değiştir" title="Sürükle bırak ile sırala"><i class="fa-solid fa-grip-vertical"></i></button>
           </td>
@@ -88,6 +164,7 @@ $rows = q('SELECT * FROM projects ORDER BY sort_order ASC, id DESC')->fetchAll()
           <td class="row-order"><?= $idx + 1 ?></td>
           <td>
             <form method="post" style="display:inline"><?= csrf_field() ?><input type="hidden" name="id" value="<?= (int)$r['id'] ?>">
+              <input type="hidden" name="return_qs" value="<?= e($returnQs) ?>">
               <button name="action" value="toggle" class="badge <?= $r['is_active'] ? 'b-tamamlanan' : 'b-off' ?>" style="cursor:pointer;background:none"><?= $r['is_active'] ? 'Yayında' : 'Gizli' ?></button>
               <button name="action" value="new" class="badge <?= !empty($r['is_new']) ? 'b-devam-eden' : 'b-off' ?>" style="cursor:pointer;background:none" title="Yeni Proje olarak işaretle"><?= !empty($r['is_new']) ? 'Yeni' : 'Yeni değil' ?></button>
               <button name="action" value="feature" class="badge <?= $r['is_featured'] ? 'b-devam-eden' : 'b-off' ?>" style="cursor:pointer;background:none" title="Ana sayfa vitrini"><?= $r['is_featured'] ? '★ Vitrin' : '☆ Vitrin' ?></button>
@@ -98,12 +175,13 @@ $rows = q('SELECT * FROM projects ORDER BY sort_order ASC, id DESC')->fetchAll()
               <?php if (admin_can('projects', 'edit')): ?><a class="btn ghost sm" href="project_edit.php?id=<?= (int)$r['id'] ?>">Düzenle</a><?php endif; ?>
               <?php if (admin_can('projects', 'delete')): ?><form method="post" data-confirm="Bu proje ve tüm görselleri kalıcı olarak silinsin mi?"><?= csrf_field() ?>
                 <input type="hidden" name="id" value="<?= (int)$r['id'] ?>">
+                <input type="hidden" name="return_qs" value="<?= e($returnQs) ?>">
                 <button name="action" value="delete" class="btn danger sm">Sil</button>
               </form><?php endif; ?>
             </div>
           </td>
         </tr>
-      <?php endforeach; if (!$rows): ?><tr><td colspan="8" class="muted">Henüz proje yok.</td></tr><?php endif; ?>
+      <?php endforeach; if (!$rows): ?><tr><td colspan="8" class="muted">Bu filtreye uygun proje yok.</td></tr><?php endif; ?>
       </tbody>
     </table>
   </div>
@@ -115,11 +193,9 @@ $rows = q('SELECT * FROM projects ORDER BY sort_order ASC, id DESC')->fetchAll()
   const tbody = table.querySelector('tbody');
   const rows = () => Array.from(tbody.querySelectorAll('tr[data-id]'));
   const token = table.closest('.card')?.querySelector('input[name="csrf"]')?.value || '';
-  let dragRow = null;
-  let dragMoved = false;
+  let dragRow = null, dragMoved = false, startY = 0, activePointer = null;
 
   function updateRowNumbers(){ rows().forEach((tr, i) => { const c = tr.querySelector('.row-order'); if (c) c.textContent = String(i+1); }); }
-
   function showWarn(msg){ window.alert(msg || 'Sıralama kaydedilemedi.'); }
 
   async function saveOrder(){
@@ -138,37 +214,42 @@ $rows = q('SELECT * FROM projects ORDER BY sort_order ASC, id DESC')->fetchAll()
     }
   }
 
-  tbody.addEventListener('dragstart', (e) => {
-    const tr = e.target.closest('tr[data-id]');
-    if (!tr || !e.target.closest('.drag-handle')) { e.preventDefault(); return; }
-    dragRow = tr;
-    dragMoved = false;
-    tr.classList.add('dragging');
-    if (e.dataTransfer) {
-      e.dataTransfer.effectAllowed = 'move';
-      e.dataTransfer.setData('text/plain', tr.dataset.id || '');
-    }
-  });
-
-  tbody.addEventListener('dragover', (e) => {
+  function onMove(e){
     if (!dragRow) return;
-    e.preventDefault();
-    const tr = e.target.closest('tr[data-id]');
-    if (!tr || tr === dragRow) return;
+    if (Math.abs(e.clientY - startY) > 4) dragMoved = true;
+    const el = document.elementFromPoint(e.clientX, e.clientY);
+    const tr = el && el.closest ? el.closest('tr[data-id]') : null;
+    if (!tr || tr === dragRow || !tbody.contains(tr)) return;
     const rect = tr.getBoundingClientRect();
-    const before = e.clientY < rect.top + rect.height / 2;
-    if (before) tbody.insertBefore(dragRow, tr);
+    if (e.clientY < rect.top + rect.height / 2) tbody.insertBefore(dragRow, tr);
     else tbody.insertBefore(dragRow, tr.nextSibling);
-    dragMoved = true;
-  });
+  }
 
-  tbody.addEventListener('dragend', async () => {
+  async function onUp(){
+    document.removeEventListener('pointermove', onMove);
+    document.removeEventListener('pointerup', onUp);
+    document.removeEventListener('pointercancel', onUp);
     if (!dragRow) return;
     dragRow.classList.remove('dragging');
     dragRow = null;
+    activePointer = null;
     if (!dragMoved) return;
     updateRowNumbers();
     await saveOrder();
+  }
+
+  tbody.addEventListener('pointerdown', (e) => {
+    const handle = e.target.closest('.drag-handle');
+    if (!handle || e.button > 0) return;
+    const tr = handle.closest('tr[data-id]');
+    if (!tr) return;
+    e.preventDefault();
+    dragRow = tr; dragMoved = false; startY = e.clientY; activePointer = e.pointerId;
+    tr.classList.add('dragging');
+    try { handle.setPointerCapture(e.pointerId); } catch (_) {}
+    document.addEventListener('pointermove', onMove);
+    document.addEventListener('pointerup', onUp);
+    document.addEventListener('pointercancel', onUp);
   });
 
   // Klavye ile sıralama
@@ -188,6 +269,10 @@ $rows = q('SELECT * FROM projects ORDER BY sort_order ASC, id DESC')->fetchAll()
       btn.focus();
     });
   });
+
+  // İl değişince ilçe listesi sunucuda yeniden üretilir
+  const citySel = document.getElementById('filterCity');
+  if (citySel) citySel.addEventListener('change', () => citySel.form.submit());
 })();
 </script>
 <?php admin_footer();

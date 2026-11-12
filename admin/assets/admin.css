@@ -154,3 +154,12 @@ tr:hover td{background:rgba(255,255,255,.02)}
 .projects-table tr.dragging td{background:rgba(197,160,89,.08)}
 .projects-table .drag-handle:active{cursor:grabbing}
 @media(min-width:901px){.table-wrap{overflow-x:visible}}
+
+/* Projeler: il/ilçe filtresi */
+.projects-filter{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end;margin:0 0 14px;padding:12px;border:1px solid var(--line);border-radius:10px;background:var(--panel2)}
+.projects-filter .field{margin:0;min-width:170px;flex:1 1 170px}
+.projects-filter .field label{font-size:.78rem;color:var(--dim);margin-bottom:4px;display:block}
+.projects-filter select,.projects-filter input{width:100%}
+.projects-filter-actions{display:flex;gap:8px;align-items:center}
+.projects-table .drag-handle{touch-action:none;-webkit-user-select:none;user-select:none}
+.projects-table tr.dragging{position:relative;z-index:2}

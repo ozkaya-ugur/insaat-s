@@ -48,12 +48,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $trackRules = [
         'google_analytics_id' => ['Google Analytics Ölçüm Kimliği', '/^G-[A-Z0-9]{4,15}$/'],
         'meta_pixel_id'       => ['Meta Pixel Kimliği', '/^\d{8,20}$/'],
+        'gtm_id'              => ['Google Etiket Yöneticisi (GTM) Kimliği', '/^GTM-[A-Z0-9]{4,10}$/'],
+    ];
+    $trackHints = [
+        'google_analytics_id' => 'Örnek: G-ABC123XYZ',
+        'meta_pixel_id'       => 'Yalnızca rakamlardan oluşmalı (ör. 123456789012345).',
+        'gtm_id'              => 'Örnek: GTM-ABC1234',
     ];
     foreach ($trackRules as $k => [$l, $re]) {
         if (!array_key_exists($k, $_POST)) continue;
         $val = strtoupper(trim((string)$_POST[$k]));
         if ($val !== '' && !preg_match($re, $val)) {
-            flash($k === 'google_analytics_id' ? "$l geçersiz. Örnek: G-ABC123XYZ" : "$l geçersiz. Yalnızca rakamlardan oluşmalı (ör. 123456789012345).", 'err');
+            flash("$l geçersiz. " . ($trackHints[$k] ?? ''), 'err');
             redirect('settings.php');
         }
         q('INSERT INTO site_settings (s_key,s_value) VALUES (?,?) ON DUPLICATE KEY UPDATE s_value=VALUES(s_value)', [$k, $val]);
@@ -93,7 +99,7 @@ admin_header('Site & Sayfa Ayarları', 'settings');
 
   <!-- ANALİTİK & TAKİP -->
   <div class="card">
-    <h2><i class="fa-solid fa-chart-line" style="color:var(--gold)"></i> Google Analytics & Meta Pixel</h2>
+    <h2><i class="fa-solid fa-chart-line" style="color:var(--gold)"></i> Google Analytics, Google Etiket Yöneticisi & Meta Pixel</h2>
     <div class="grid g2">
       <div class="field">
         <label>Google Analytics 4 Ölçüm Kimliği</label>
@@ -104,6 +110,11 @@ admin_header('Site & Sayfa Ayarları', 'settings');
         <label>Meta (Facebook) Pixel Kimliği</label>
         <input type="text" name="meta_pixel_id" value="<?= e(setting('meta_pixel_id')) ?>" placeholder="123456789012345" pattern="\d{8,20}" inputmode="numeric">
         <div class="hint">Boş bırakılırsa Meta Pixel kodu sitede yüklenmez.</div>
+      </div>
+      <div class="field">
+        <label>Google Etiket Yöneticisi (GTM) Kimliği</label>
+        <input type="text" name="gtm_id" value="<?= e(setting('gtm_id')) ?>" placeholder="GTM-XXXXXXX" pattern="[Gg][Tt][Mm]-[A-Za-z0-9]{4,10}">
+        <div class="hint">Boş bırakılırsa GTM kodu sitede yüklenmez. Örnek: GTM-ABC1234</div>
       </div>
     </div>
   </div>

@@ -356,6 +356,15 @@ window.addEventListener('languageChanged', () => {
     fetch(`${base}/api/settings?lang=tr`).then(r => r.ok ? r.json() : {}).then(s => {
         const ga = String(s.google_analytics_id || '').trim().toUpperCase();
         const px = String(s.meta_pixel_id || '').trim();
+        const gtm = String(s.gtm_id || '').trim().toUpperCase();
+        if (/^GTM-[A-Z0-9]{4,10}$/.test(gtm)) {
+            window.dataLayer = window.dataLayer || [];
+            window.dataLayer.push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' });
+            const g = document.createElement('script');
+            g.async = true; g.id = 'gtm-loader';
+            g.src = `https://www.googletagmanager.com/gtm.js?id=${encodeURIComponent(gtm)}`;
+            document.head.appendChild(g);
+        }
         if (/^G-[A-Z0-9]{4,15}$/.test(ga)) {
             const sc = document.createElement('script');
             sc.async = true; sc.id = 'ga4-loader';
