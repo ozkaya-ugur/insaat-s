@@ -95,6 +95,20 @@ function upload_file(string $field, array $allowedExt, string $sub = ''): ?strin
     if (in_array($ext, $imgExt, true) && @getimagesize($f['tmp_name']) === false)
         throw new RuntimeException('Geçerli bir görsel değil.');
 
+    $videoExt = ['mp4','webm'];
+    if (in_array($ext, $videoExt, true)) {
+        $fi = finfo_open(FILEINFO_MIME_TYPE);
+        $mime = $fi ? finfo_file($fi, $f['tmp_name']) : '';
+        if ($fi) finfo_close($fi);
+        $okVideo = [
+            'mp4' => ['video/mp4', 'application/mp4'],
+            'webm' => ['video/webm'],
+        ];
+        if (!in_array((string)$mime, $okVideo[$ext] ?? [], true)) {
+            throw new RuntimeException('Geçersiz video dosyası. Sadece gerçek MP4/WEBM dosyaları yüklenebilir.');
+        }
+    }
+
     $dir = UPLOAD_DIR . ($sub ? '/' . $sub : '');
     if (!is_dir($dir) && !mkdir($dir, 0755, true)) throw new RuntimeException('Yükleme klasörü oluşturulamadı.');
     $name = date('Ymd_His') . '_' . bin2hex(random_bytes(4)) . '.' . $ext;
@@ -127,8 +141,87 @@ function delete_upload(?string $path): void {
 function client_ip(): string { return substr($_SERVER['REMOTE_ADDR'] ?? '', 0, 45); }
 
 const CITY_KEYS = [
-    'tr-sk' => 'Sakarya', 'tr-ib' => 'İstanbul', 'tr-an' => 'Ankara', 'tr-kc' => 'Kocaeli',
-    'tr-gi' => 'Giresun', 'tr-iz' => 'İzmir', 'tr-bu' => 'Bursa', 'tr-an2' => '—',
+    'tr-aa' => '01 Adana',
+    'tr-ad' => '02 Adıyaman',
+    'tr-af' => '03 Afyonkarahisar',
+    'tr-ag' => '04 Ağrı',
+    'tr-am' => '05 Amasya',
+    'tr-an' => '06 Ankara',
+    'tr-al' => '07 Antalya',
+    'tr-av' => '08 Artvin',
+    'tr-ay' => '09 Aydın',
+    'tr-bk' => '10 Balıkesir',
+    'tr-bc' => '11 Bilecik',
+    'tr-bg' => '12 Bingöl',
+    'tr-bt' => '13 Bitlis',
+    'tr-bl' => '14 Bolu',
+    'tr-bd' => '15 Burdur',
+    'tr-bu' => '16 Bursa',
+    'tr-ck' => '17 Çanakkale',
+    'tr-ci' => '18 Çankırı',
+    'tr-cm' => '19 Çorum',
+    'tr-dn' => '20 Denizli',
+    'tr-dy' => '21 Diyarbakır',
+    'tr-ed' => '22 Edirne',
+    'tr-eg' => '23 Elazığ',
+    'tr-en' => '24 Erzincan',
+    'tr-em' => '25 Erzurum',
+    'tr-es' => '26 Eskişehir',
+    'tr-ga' => '27 Gaziantep',
+    'tr-gi' => '28 Giresun',
+    'tr-gu' => '29 Gümüşhane',
+    'tr-hk' => '30 Hakkari',
+    'tr-ht' => '31 Hatay',
+    'tr-ip' => '32 Isparta',
+    'tr-ic' => '33 Mersin',
+    'tr-ib' => '34 İstanbul',
+    'tr-iz' => '35 İzmir',
+    'tr-ka' => '36 Kars',
+    'tr-ks' => '37 Kastamonu',
+    'tr-ky' => '38 Kayseri',
+    'tr-kl' => '39 Kırklareli',
+    'tr-kh' => '40 Kırşehir',
+    'tr-kc' => '41 Kocaeli',
+    'tr-ko' => '42 Konya',
+    'tr-ku' => '43 Kütahya',
+    'tr-ml' => '44 Malatya',
+    'tr-mn' => '45 Manisa',
+    'tr-km' => '46 Kahramanmaraş',
+    'tr-mr' => '47 Mardin',
+    'tr-mg' => '48 Muğla',
+    'tr-ms' => '49 Muş',
+    'tr-nv' => '50 Nevşehir',
+    'tr-ng' => '51 Niğde',
+    'tr-or' => '52 Ordu',
+    'tr-ri' => '53 Rize',
+    'tr-sk' => '54 Sakarya',
+    'tr-ss' => '55 Samsun',
+    'tr-si' => '56 Siirt',
+    'tr-sp' => '57 Sinop',
+    'tr-sv' => '58 Sivas',
+    'tr-tg' => '59 Tekirdağ',
+    'tr-tt' => '60 Tokat',
+    'tr-tb' => '61 Trabzon',
+    'tr-tc' => '62 Tunceli',
+    'tr-su' => '63 Şanlıurfa',
+    'tr-us' => '64 Uşak',
+    'tr-va' => '65 Van',
+    'tr-yz' => '66 Yozgat',
+    'tr-zo' => '67 Zonguldak',
+    'tr-ak' => '68 Aksaray',
+    'tr-bb' => '69 Bayburt',
+    'tr-kr' => '70 Karaman',
+    'tr-kk' => '71 Kırıkkale',
+    'tr-bm' => '72 Batman',
+    'tr-sr' => '73 Şırnak',
+    'tr-br' => '74 Bartın',
+    'tr-ar' => '75 Ardahan',
+    'tr-ig' => '76 Iğdır',
+    'tr-yl' => '77 Yalova',
+    'tr-kb' => '78 Karabük',
+    'tr-ki' => '79 Kilis',
+    'tr-os' => '80 Osmaniye',
+    'tr-du' => '81 Düzce',
 ];
 const PROJECT_TYPES = [
     'konut' => 'Konut & Rezidans', 'ticari' => 'İş Merkezi & Ticari',

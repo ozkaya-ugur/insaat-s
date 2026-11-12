@@ -555,7 +555,7 @@
                 titleEls.forEach(el => el.innerText = proj.title.toUpperCase());
 
                 const subtitleEls = document.querySelectorAll('#detailProjectSubtitle, .project-detail-subtitle');
-                subtitleEls.forEach(el => el.innerText = proj.subtitle || proj.cat || '');
+                subtitleEls.forEach(el => el.innerText = proj.slogan || proj.subtitle || proj.cat || '');
 
                 const inqSuffix = dict['detail.inquiry_title'] || 'Hakkında Detaylı Bilgi Alın';
                 if (document.getElementById('inquirySectionTitle')) {

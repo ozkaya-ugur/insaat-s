@@ -67,7 +67,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $data = [
             $slug, $title, $f('title_en'), $f('title_ar'), $f('title_de'),
-            $f('subtitle_tr'), $f('subtitle_en'), $f('subtitle_ar'), $f('subtitle_de'),
+            $f('subtitle_tr'), $f('slogan_tr'), $f('subtitle_en'), $f('slogan_en'), $f('subtitle_ar'), $f('slogan_ar'), $f('subtitle_de'),
             $f('description_tr'), $f('description_en'), $f('description_ar'), $f('description_de'),
             $f('cat'), $f('loc'), $cityKey, implode(',', $types), $status,
             !empty($_POST['is_new']) ? 1 : 0, !empty($_POST['is_urban_renewal']) ? 1 : 0,
@@ -76,7 +76,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             !empty($_POST['is_featured']) ? 1 : 0, !empty($_POST['is_active']) ? 1 : 0, (int)$f('sort_order', '0'),
             $f('seo_title'), $f('seo_desc'), $f('seo_keywords'),
         ];
-        $cols = 'slug,title_tr,title_en,title_ar,title_de,subtitle_tr,subtitle_en,subtitle_ar,subtitle_de,description_tr,description_en,description_ar,description_de,cat,loc,city_key,type,status,is_new,is_urban_renewal,cover_image,area,concept,delivery,catalog_file,street_view_code,google_map_code,is_featured,is_active,sort_order,seo_title,seo_desc,seo_keywords';
+        $cols = 'slug,title_tr,title_en,title_ar,title_de,subtitle_tr,slogan_tr,subtitle_en,slogan_en,subtitle_ar,slogan_ar,subtitle_de,description_tr,description_en,description_ar,description_de,cat,loc,city_key,type,status,is_new,is_urban_renewal,cover_image,area,concept,delivery,catalog_file,street_view_code,google_map_code,is_featured,is_active,sort_order,seo_title,seo_desc,seo_keywords';
         if ($p) {
             $set = implode(',', array_map(fn($c) => "$c=?", explode(',', $cols)));
             q("UPDATE projects SET $set WHERE id=?", [...$data, $id]);
@@ -110,6 +110,7 @@ $prev = fn($path) => strpos($path, 'uploads/') === 0 ? '../' . $path : rtrim(SIT
     <div class="lpane <?= $idx === 0 ? 'on' : '' ?> <?= ($langObj['direction'] ?? 'ltr') === 'rtl' ? 'rtl' : '' ?>" data-pane="<?= e($l) ?>">
       <div class="field"><label>Başlık (<?= e($langObj['name']) ?>) <?= $l === 'tr' ? '*' : '' ?></label><input type="text" name="title_<?= e($l) ?>" value="<?= $v("title_$l") ?>" <?= $l === 'tr' ? 'required' : '' ?>></div>
       <div class="field"><label>Alt Başlık (<?= e($langObj['name']) ?>)</label><input type="text" name="subtitle_<?= e($l) ?>" value="<?= $v("subtitle_$l") ?>"></div>
+      <div class="field"><label>Slogan (<?= e($langObj['name']) ?>)</label><input type="text" name="slogan_<?= e($l) ?>" value="<?= $v("slogan_$l") ?>" placeholder="Konumdan sonra proje vurgusu"></div>
       <div class="field"><label>Açıklama (<?= e($langObj['name']) ?>)</label><textarea name="description_<?= e($l) ?>"><?= $v("description_$l") ?></textarea></div>
     </div>
     <?php endforeach; ?>
@@ -126,7 +127,7 @@ $prev = fn($path) => strpos($path, 'uploads/') === 0 ? '../' . $path : rtrim(SIT
       <div class="field"><label>Lokasyon Etiketi (loc)</label><input type="text" name="loc" value="<?= $v('loc', 'Serdivan / Sakarya') ?>"></div>
       <div class="field"><label>Harita İl Kodu</label>
         <select name="city_key">
-          <?php foreach (CITY_KEYS as $k => $n): if ($n === '—') continue; ?>
+          <?php foreach (CITY_KEYS as $k => $n): ?>
             <option value="<?= e($k) ?>" <?= ($p['city_key'] ?? 'tr-sk') === $k ? 'selected' : '' ?>><?= e($n) ?> (<?= e($k) ?>)</option>
           <?php endforeach; ?>
         </select></div>

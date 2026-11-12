@@ -445,7 +445,9 @@ async function fetchSliders() {
 
             return `
                 <div class="slide ${i === 0 ? 'active' : ''}">
-                    <div class="slide-bg" style="background-image: url('${finalImgSrc}');"></div>
+                    ${(slide.media_type === 'video' || /\.(mp4|webm)(\?|$)/i.test(finalImgSrc))
+                        ? `<div class="slide-bg slide-bg-video"><video src="${finalImgSrc}" autoplay muted loop playsinline preload="metadata"></video></div>`
+                        : `<div class="slide-bg" style="background-image: url('${finalImgSrc}');"></div>`}
                     <div class="slide-overlay"></div>
                     <div class="slide-content-wrap">
                         <div class="container">
@@ -516,9 +518,16 @@ function initHeroSliderControl() {
         if (currentNum) currentNum.textContent = `0${currentSlide + 1}`;
     }
 
-    if (nextBtn) nextBtn.onclick = (e) => { e.preventDefault(); goToSlide(currentSlide + 1); };
-    if (prevBtn) prevBtn.onclick = (e) => { e.preventDefault(); goToSlide(currentSlide - 1); };
-    dots.forEach((dot, index) => dot.onclick = () => goToSlide(index));
+    if (nextBtn) nextBtn.onclick = (e) => { e.preventDefault(); goToSlide(currentSlide + 1); restart(); };
+    if (prevBtn) prevBtn.onclick = (e) => { e.preventDefault(); goToSlide(currentSlide - 1); restart(); };
+    dots.forEach((dot, index) => dot.onclick = () => { goToSlide(index); restart(); });
+
+    // Otomatik geçiş (video slaytlar dahil)
+    function restart() {
+        clearInterval(window.__heroAutoTimer);
+        if (slides.length > 1) window.__heroAutoTimer = setInterval(() => goToSlide(currentSlide + 1), 7000);
+    }
+    restart();
 }
 
 // API'DEN PROJELERİ ÇEKİP HARİTA VE LİSTELEME İLE SENKRONİZE EDEN MOTOR
@@ -868,7 +877,7 @@ async function initProjectDetailPage() {
             const leadTextElem = document.querySelector(".project-description-section .lead-text");
 
             if (titleElem) titleElem.textContent = (project.title || "PROJE DETAYI").toUpperCase();
-            if (subtitleElem) subtitleElem.textContent = project.subtitle || "";
+            if (subtitleElem) subtitleElem.textContent = project.slogan || project.subtitle || "";
             if (categoryElem) {
                 const typeText = typeof getTypeLabel === 'function' ? getTypeLabel(project.type, currentLang) : (project.type || 'KONUT');
                 categoryElem.textContent = `${(project.loc || project.cat || 'SAKARYA').toUpperCase()} • ${typeText.toUpperCase()}`;

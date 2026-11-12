@@ -306,7 +306,7 @@
                                     <div class="sc-details">
                                         <span class="sc-cat">${(proj.loc || 'SAKARYA').toUpperCase()}</span>
                                         <h3>${proj.title}</h3>
-                                        <p>${proj.subtitle || proj.cat || 'Prestijli Mimari Proje'}</p>
+                                        <p class="sc-slogan">${proj.slogan || proj.subtitle || 'Prestijli Mimari Proje'}</p>
                                     </div>
                                 </div>
                             </a>
@@ -314,10 +314,46 @@
                         track.insertAdjacentHTML('beforeend', cardHTML);
                     });
                 }
+                if (typeof window.resetShowcase === 'function') window.resetShowcase();
             } catch (err) {
                 console.log('API bağlantı hatası:', err);
             }
         }
+
+        // Satıştaki Projelerimiz: sağ/sol okları (RTL uyumlu, dinamik kart yüklemesinden sonra da çalışır)
+        (function () {
+            let idx = 0;
+            const track = () => document.getElementById('showcaseTrack');
+            function metrics() {
+                const t = track(); if (!t) return null;
+                const cards = t.querySelectorAll('.showcase-card'); if (!cards.length) return null;
+                const gap = parseFloat(getComputedStyle(t).columnGap || getComputedStyle(t).gap) || 0;
+                const step = cards[0].getBoundingClientRect().width + gap;
+                const viewW = t.parentElement.getBoundingClientRect().width;
+                const visible = Math.max(1, Math.floor((viewW + gap) / step));
+                return { t, step, max: Math.max(0, cards.length - visible) };
+            }
+            function apply() {
+                const m = metrics(); if (!m) return;
+                idx = Math.min(Math.max(idx, 0), m.max);
+                const rtl = (document.documentElement.getAttribute('dir') || getComputedStyle(m.t).direction) === 'rtl';
+                m.t.style.transform = `translateX(${(rtl ? 1 : -1) * idx * m.step}px)`;
+            }
+            function move(d) {
+                const m = metrics(); if (!m) return;
+                idx += d;
+                if (idx > m.max) idx = 0; else if (idx < 0) idx = m.max;
+                apply();
+            }
+            window.resetShowcase = () => { idx = 0; apply(); };
+            document.addEventListener('DOMContentLoaded', () => {
+                const p = document.getElementById('showcasePrev'), n = document.getElementById('showcaseNext');
+                if (p) p.addEventListener('click', (e) => { e.preventDefault(); move(-1); });
+                if (n) n.addEventListener('click', (e) => { e.preventDefault(); move(1); });
+                apply();
+            });
+            window.addEventListener('resize', apply);
+        })();
 
         document.addEventListener('DOMContentLoaded', loadFeaturedProjectsFromAPI);
 

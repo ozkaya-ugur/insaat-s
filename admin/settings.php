@@ -26,6 +26,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         q('INSERT INTO site_settings (s_key,s_value) VALUES (?,?) ON DUPLICATE KEY UPDATE s_value=VALUES(s_value)', [$k, $val]);
     }
 
+    // 1b. Analitik & Takip (Google Analytics 4, Meta Pixel)
+    $trackRules = [
+        'google_analytics_id' => ['Google Analytics Ölçüm Kimliği', '/^G-[A-Z0-9]{4,15}$/'],
+        'meta_pixel_id'       => ['Meta Pixel Kimliği', '/^\d{8,20}$/'],
+    ];
+    foreach ($trackRules as $k => [$l, $re]) {
+        if (!array_key_exists($k, $_POST)) continue;
+        $val = strtoupper(trim((string)$_POST[$k]));
+        if ($val !== '' && !preg_match($re, $val)) {
+            flash($k === 'google_analytics_id' ? "$l geçersiz. Örnek: G-ABC123XYZ" : "$l geçersiz. Yalnızca rakamlardan oluşmalı (ör. 123456789012345).", 'err');
+            redirect('settings.php');
+        }
+        q('INSERT INTO site_settings (s_key,s_value) VALUES (?,?) ON DUPLICATE KEY UPDATE s_value=VALUES(s_value)', [$k, $val]);
+    }
+
     // 2. Kurumsal Sayfa Metinleri & İstatistikleri (Dillere Göre)
     $corpKeys = [
         'corp_banner_tag', 'corp_banner_title',
@@ -134,6 +149,23 @@ admin_header('Site & Sayfa Ayarları', 'settings');
 ?>
 
 <form method="post" style="display:flex;flex-direction:column;gap:24px;"><?= csrf_field() ?>
+
+  <!-- ANALİTİK & TAKİP -->
+  <div class="card">
+    <h2><i class="fa-solid fa-chart-line" style="color:var(--gold)"></i> Google Analytics & Meta Pixel</h2>
+    <div class="grid g2">
+      <div class="field">
+        <label>Google Analytics 4 Ölçüm Kimliği</label>
+        <input type="text" name="google_analytics_id" value="<?= e(setting('google_analytics_id')) ?>" placeholder="G-XXXXXXXXXX" pattern="[Gg]-[A-Za-z0-9]{4,15}">
+        <div class="hint">Boş bırakılırsa Google Analytics kodu sitede yüklenmez.</div>
+      </div>
+      <div class="field">
+        <label>Meta (Facebook) Pixel Kimliği</label>
+        <input type="text" name="meta_pixel_id" value="<?= e(setting('meta_pixel_id')) ?>" placeholder="123456789012345" pattern="\d{8,20}" inputmode="numeric">
+        <div class="hint">Boş bırakılırsa Meta Pixel kodu sitede yüklenmez.</div>
+      </div>
+    </div>
+  </div>
 
   <!-- 1. GENEL İLETİŞİM & SOSYAL MEDYA -->
   <div class="card">

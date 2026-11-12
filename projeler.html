@@ -286,7 +286,7 @@
                             <div class="sc-details">
                                 <span class="sc-cat">${(proj.loc || 'SAKARYA').toUpperCase()}</span>
                                 <h3>${proj.title}</h3>
-                                <p>${proj.subtitle || proj.cat || ''}</p>
+                                <p class="sc-slogan">${proj.slogan || proj.subtitle || proj.cat || ''}</p>
                             </div>
                         </div>
                     </a>
@@ -317,7 +317,7 @@
                         <div class="col-num"><span class="row-num">${numStr}</span></div>
                         <div class="col-title"><h4 class="row-title">${proj.title}</h4></div>
                         <div class="col-cat"><span class="status-badge ${statusClass}">${statusText}</span></div>
-                        <div class="col-desc"><p class="row-desc">${proj.subtitle || proj.cat || ''}</p><span class="row-loc"><i class="fa-solid fa-location-dot"></i> ${proj.loc || 'Sakarya'}</span></div>
+                        <div class="col-desc"><p class="row-desc">${proj.slogan || proj.subtitle || proj.cat || ''}</p><span class="row-loc"><i class="fa-solid fa-location-dot"></i> ${proj.loc || 'Sakarya'}</span></div>
                         <div class="col-action"><span class="row-action-btn"><span>${detailLabel}</span><i class="fa-solid fa-arrow-up-right-from-square"></i></span></div>
                     </a>
                 `;

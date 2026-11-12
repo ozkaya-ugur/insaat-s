@@ -325,3 +325,34 @@ window.addEventListener('languageChanged', () => {
         window.applyTranslations(window.currentLang);
     }
 });
+
+// ---------- Google Analytics 4 & Meta Pixel (admin panelden; boşsa hiçbir kod yüklenmez) ----------
+(function () {
+    if (window.__buyapiTrackingLoaded) return;
+    window.__buyapiTrackingLoaded = true;
+    const base = (location.origin && !location.origin.startsWith('file:')) ? location.origin : '';
+    fetch(`${base}/api/settings?lang=tr`).then(r => r.ok ? r.json() : {}).then(s => {
+        const ga = String(s.google_analytics_id || '').trim().toUpperCase();
+        const px = String(s.meta_pixel_id || '').trim();
+        if (/^G-[A-Z0-9]{4,15}$/.test(ga)) {
+            const sc = document.createElement('script');
+            sc.async = true; sc.id = 'ga4-loader';
+            sc.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(ga)}`;
+            document.head.appendChild(sc);
+            window.dataLayer = window.dataLayer || [];
+            window.gtag = function () { window.dataLayer.push(arguments); };
+            window.gtag('js', new Date());
+            window.gtag('config', ga);
+        }
+        if (/^\d{8,20}$/.test(px)) {
+            !function (f, b, e, v, n, t, s2) {
+                if (f.fbq) return; n = f.fbq = function () { n.callMethod ? n.callMethod.apply(n, arguments) : n.queue.push(arguments); };
+                if (!f._fbq) f._fbq = n; n.push = n; n.loaded = !0; n.version = '2.0'; n.queue = [];
+                t = b.createElement(e); t.async = !0; t.id = 'meta-pixel-loader'; t.src = v;
+                s2 = b.getElementsByTagName(e)[0]; s2.parentNode.insertBefore(t, s2);
+            }(window, document, 'script', 'https://connect.facebook.net/en_US/fbevents.js');
+            window.fbq('init', px);
+            window.fbq('track', 'PageView');
+        }
+    }).catch(() => {});
+})();

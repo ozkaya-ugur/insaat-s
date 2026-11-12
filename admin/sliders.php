@@ -1,7 +1,8 @@
 <?php
 require_once __DIR__ . '/_layout.php';
 require_login();
-$IMG = ['jpg','jpeg','png','webp'];
+$IMG = ['jpg','jpeg','png','webp','mp4','webm'];
+$isVideo = fn($p) => (bool)preg_match('/\.(mp4|webm)$/i', (string)$p);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     csrf_check();
@@ -20,15 +21,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $img = $old['image_url'] ?? '';
             if ($new = upload_file('image', $IMG, 'sliders')) { if ($img) delete_upload($img); $img = $new; }
             elseif ($f('image_path') !== '') $img = $f('image_path');
-            if ($img === '') throw new RuntimeException('Görsel yükleyin veya dosya yolu girin.');
+            if ($img === '') throw new RuntimeException('Görsel/video yükleyin veya dosya yolu girin.');
+            $mediaType = $isVideo($img) ? 'video' : 'image';
             $link = $f('link_url') ?: 'projeler.html';
             if (preg_match('#^\s*(javascript|data):#i', $link)) throw new RuntimeException('Geçersiz bağlantı.');
             $vals = [$f('title_tr'), $f('title_en'), $f('title_ar'), $f('subtitle_tr'), $f('subtitle_en'), $f('subtitle_ar'),
-                     $img, $link, (int)$f('sort_order'), !empty($_POST['is_active']) ? 1 : 0];
+                     $img, $mediaType, $link, (int)$f('sort_order'), !empty($_POST['is_active']) ? 1 : 0];
             if ($id) {
-                q('UPDATE sliders SET title_tr=?,title_en=?,title_ar=?,subtitle_tr=?,subtitle_en=?,subtitle_ar=?,image_url=?,link_url=?,sort_order=?,is_active=? WHERE id=?', [...$vals, $id]);
+                q('UPDATE sliders SET title_tr=?,title_en=?,title_ar=?,subtitle_tr=?,subtitle_en=?,subtitle_ar=?,image_url=?,media_type=?,link_url=?,sort_order=?,is_active=? WHERE id=?', [...$vals, $id]);
             } else {
-                q('INSERT INTO sliders (title_tr,title_en,title_ar,subtitle_tr,subtitle_en,subtitle_ar,image_url,link_url,sort_order,is_active) VALUES (?,?,?,?,?,?,?,?,?,?)', $vals);
+                q('INSERT INTO sliders (title_tr,title_en,title_ar,subtitle_tr,subtitle_en,subtitle_ar,image_url,media_type,link_url,sort_order,is_active) VALUES (?,?,?,?,?,?,?,?,?,?,?)', $vals);
             }
             flash('Slayt kaydedildi.');
         }
@@ -56,9 +58,9 @@ $s = fn($k, $d = '') => e($edit[$k] ?? $d);
   <?php endforeach; ?>
   <div class="grid g2">
     <div>
-      <?php if ($edit): ?><img class="thumb" style="width:200px;height:110px" src="<?= e($prev($edit['image_url'])) ?>" alt=""><?php endif; ?>
-      <div class="field"><label>Görsel Yükle</label><input type="file" name="image" accept="image/*"></div>
-      <div class="field"><label>veya dosya yolu</label><input type="text" name="image_path" placeholder="images/banner-1.webp"></div>
+      <?php if ($edit): ?><?php if ($isVideo($edit['image_url'])): ?><video class="thumb" style="width:200px;height:110px;object-fit:cover" src="<?= e($prev($edit['image_url'])) ?>" muted playsinline controls></video><?php else: ?><img class="thumb" style="width:200px;height:110px" src="<?= e($prev($edit['image_url'])) ?>" alt=""><?php endif; ?><?php endif; ?>
+      <div class="field"><label>Görsel veya Video Yükle</label><input type="file" name="image" accept="image/jpeg,image/png,image/webp,video/mp4,video/webm"><div class="hint">JPG, PNG, WEBP veya MP4/WEBM video (en fazla <?= MAX_UPLOAD_MB ?> MB). Video slaytlar sessiz ve döngüde otomatik oynar.</div></div>
+      <div class="field"><label>veya dosya yolu</label><input type="text" name="image_path" placeholder="images/banner-1.webp veya uploads/sliders/video.mp4"></div>
     </div>
     <div>
       <div class="field"><label>Buton Bağlantısı</label><input type="text" name="link_url" value="<?= $s('link_url', 'projeler.html') ?>"><div class="hint">Boş bırakılırsa projeler.html. Örn: proje-detay.html?id=intense</div></div>
@@ -81,7 +83,7 @@ document.querySelectorAll('.ltabs').forEach(t=>t.querySelectorAll('button').forE
   <table class="resp"><thead><tr><th></th><th>Başlık</th><th>Bağlantı</th><th>Sıra</th><th>Durum</th><th></th></tr></thead><tbody>
   <?php foreach ($rows as $r): ?>
     <tr>
-      <td><img class="thumb" src="<?= e($prev($r['image_url'])) ?>" alt=""></td>
+      <td><?php if ($isVideo($r['image_url'])): ?><video class="thumb" src="<?= e($prev($r['image_url'])) ?>" muted playsinline></video><br><span class="badge">Video</span><?php else: ?><img class="thumb" src="<?= e($prev($r['image_url'])) ?>" alt=""><?php endif; ?></td>
       <td><strong><?= e($r['title_tr']) ?></strong><br><span class="muted"><?= e($r['subtitle_tr']) ?></span></td>
       <td class="muted"><?= e($r['link_url']) ?></td><td><?= (int)$r['sort_order'] ?></td>
       <td><span class="badge <?= $r['is_active'] ? 'b-tamamlanan' : 'b-off' ?>"><?= $r['is_active'] ? 'Yayında' : 'Gizli' ?></span></td>

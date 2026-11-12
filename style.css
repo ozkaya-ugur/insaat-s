@@ -4393,3 +4393,8 @@ body.detail-page-body {
     }
     .db-page .db-page-content { padding: 18px; }
 }
+
+/* Video slayt desteği */
+.slide-bg.slide-bg-video { background: #000; }
+.slide-bg.slide-bg-video video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.showcase-card .sc-slogan { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }

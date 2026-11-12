@@ -55,6 +55,7 @@ function admin_header(string $title, string $active = ''): array {
 
 function admin_footer(): void { ?>
 </main>
+<script src="assets/dropzone.js?v=1"></script>
 <script>
 document.querySelectorAll('form[data-confirm]').forEach(f=>f.addEventListener('submit',e=>{
   if(!confirm(f.dataset.confirm)) e.preventDefault();

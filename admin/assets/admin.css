@@ -130,3 +130,15 @@ tr:hover td{background:rgba(255,255,255,.02)}
 .map-preview-box iframe{width:100%;height:100%;border:0}
 .map-preview-placeholder{color:var(--dim);font-size:13px;display:flex;flex-direction:column;align-items:center;gap:8px}
 .map-preview-placeholder i{font-size:32px;color:rgba(197,160,89,.4)}
+
+/* Sürükle-bırak yükleme alanı */
+.dropzone{position:relative;border:2px dashed rgba(197,160,89,.45);border-radius:10px;padding:18px;display:flex;flex-wrap:wrap;align-items:center;gap:12px;cursor:pointer;background:rgba(197,160,89,.04);transition:.2s}
+.dropzone.over{border-color:#c5a059;background:rgba(197,160,89,.14)}
+.dropzone>i{font-size:26px;color:#c5a059}
+.dropzone .dz-text{display:flex;flex-direction:column;gap:2px;font-size:13px}
+.dropzone .dz-text span{opacity:.7}
+.dropzone .dz-input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.dropzone .dz-preview{display:flex;flex-wrap:wrap;gap:8px;width:100%}
+.dropzone .dz-preview:empty{display:none}
+.dropzone .dz-item{display:flex;flex-direction:column;gap:4px;max-width:160px;font-size:11px;word-break:break-all}
+.dropzone .dz-item img,.dropzone .dz-item video{width:160px;height:90px;object-fit:cover;border-radius:6px;background:#000}

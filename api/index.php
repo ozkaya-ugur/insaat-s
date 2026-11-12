@@ -91,6 +91,7 @@ try {
                 'slug'           => $r['slug'],
                 'title'          => pick($r, 'title', $lang),
                 'subtitle'       => pick($r, 'subtitle', $lang),
+                'slogan'         => pick($r, 'slogan', $lang),
                 'description'    => pick($r, 'description', $lang),
                 'cat'            => $r['cat'],
                 'loc'            => $r['loc'],
@@ -131,6 +132,7 @@ try {
                 'title' => json_encode(['tr' => $s['title_tr'], 'en' => pick($s,'title','en'), 'ar' => pick($s,'title','ar')], JSON_UNESCAPED_UNICODE),
                 'subtitle' => json_encode(['tr' => $s['subtitle_tr'], 'en' => pick($s,'subtitle','en'), 'ar' => pick($s,'subtitle','ar')], JSON_UNESCAPED_UNICODE),
                 'image_url' => asset($s['image_url']),
+                'media_type' => ($s['media_type'] ?? '') === 'video' || preg_match('/\.(mp4|webm)$/i', (string)$s['image_url']) ? 'video' : 'image',
                 'link_url' => $s['link_url'],
             ];
         }
