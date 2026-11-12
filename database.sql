@@ -19,12 +19,15 @@ CREATE TABLE IF NOT EXISTS projects (
   title_tr VARCHAR(200) NOT NULL,
   title_en VARCHAR(200) DEFAULT '',
   title_ar VARCHAR(200) DEFAULT '',
+  title_de VARCHAR(200) DEFAULT '',
   subtitle_tr VARCHAR(255) DEFAULT '',
   subtitle_en VARCHAR(255) DEFAULT '',
   subtitle_ar VARCHAR(255) DEFAULT '',
+  subtitle_de VARCHAR(255) DEFAULT '',
   description_tr TEXT,
   description_en TEXT,
   description_ar TEXT,
+  description_de TEXT NULL,
   cat VARCHAR(120) DEFAULT '',            -- Şehir adı (ör. Sakarya)
   loc VARCHAR(160) DEFAULT '',            -- Lokasyon (ör. Serdivan / Sakarya)
   city_key VARCHAR(20) DEFAULT 'tr-sk',   -- Highcharts hc-key (tr-sk, tr-ib, tr-an ...)
@@ -35,6 +38,8 @@ CREATE TABLE IF NOT EXISTS projects (
   concept VARCHAR(120) DEFAULT '',
   delivery VARCHAR(60) DEFAULT '',
   catalog_file VARCHAR(255) DEFAULT '',
+  street_view_code TEXT NULL,
+  google_map_code TEXT NULL,
   is_featured TINYINT(1) DEFAULT 0,
   is_active TINYINT(1) DEFAULT 1,
   sort_order INT DEFAULT 0,
@@ -49,7 +54,7 @@ CREATE TABLE IF NOT EXISTS projects (
 CREATE TABLE IF NOT EXISTS project_media (
   id INT AUTO_INCREMENT PRIMARY KEY,
   project_id INT NOT NULL,
-  kind ENUM('render','plan','site','video') NOT NULL,
+  kind ENUM('hero','render','plan','site','video') NOT NULL,
   file_path VARCHAR(255) NOT NULL,
   caption VARCHAR(160) DEFAULT '',
   sort_order INT DEFAULT 0,
