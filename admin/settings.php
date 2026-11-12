@@ -92,7 +92,7 @@ admin_header('Site & Sayfa Ayarları', 'settings');
       <span class="muted">/kurumsal.html sayfası metinleri ve istatistikleri</span>
     </div>
 
-    <?php lang_tabs('corp_page_tabs', function($langCode, $isDefault) { ?>
+    <?php echo lang_tabs('corp_page_tabs', function($langCode, $isDefault) { ?>
       <?php $suffix = $isDefault ? '' : "_{$langCode}"; ?>
       <div class="grid g2" style="margin-bottom:14px">
         <div class="field">

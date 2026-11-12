@@ -74,7 +74,7 @@ document.addEventListener('click', (e) => {
 </body></html>
 <?php }
 
-function lang_tabs(string $id): string {
+function lang_tabs(string $id, ?callable $render = null): string {
     $langs = get_languages();
     $html = '<div class="ltabs" data-for="' . e($id) . '">';
     foreach ($langs as $idx => $l) {
@@ -82,5 +82,17 @@ function lang_tabs(string $id): string {
         $html .= '<button type="button"' . $on . ' data-l="' . e($l['code']) . '">' . e($l['flag'] . ' ' . $l['name']) . '</button>';
     }
     $html .= '</div>';
+
+    // İsteğe bağlı içerik üretici: her dil için bir .lpane üretir (ilk dil açık gelir)
+    if ($render !== null) {
+        foreach ($langs as $idx => $l) {
+            $on = ($idx === 0) ? ' on' : '';
+            ob_start();
+            $render($l['code'], $idx === 0);
+            $pane = ob_get_clean();
+            $html .= '<div class="lpane' . $on . '" data-pane="' . e($l['code']) . '">' . $pane . '</div>';
+        }
+    }
+
     return $html;
 }
