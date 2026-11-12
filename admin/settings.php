@@ -87,6 +87,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         q('INSERT INTO site_settings (s_key,s_value) VALUES (?,?) ON DUPLICATE KEY UPDATE s_value=VALUES(s_value)', ['footer_cta_btn_link', trim($_POST['footer_cta_btn_link'])]);
     }
 
+    // 3c. Projeler Sayfası & Kentsel Dönüşüm Sayfası Metinleri (çok dilli)
+    $pageKeys = [
+        'projects_banner_tag', 'projects_banner_title',
+        'kd_law_tag', 'kd_law_title', 'kd_projects_tag', 'kd_projects_title',
+        'kd_compare_tag', 'kd_compare_title', 'kd_faq_tag', 'kd_faq_title',
+        'kd_form_tag', 'kd_form_title',
+    ];
+    foreach ($pageKeys as $pk) {
+        if (isset($_POST[$pk])) {
+            q('INSERT INTO site_settings (s_key,s_value) VALUES (?,?) ON DUPLICATE KEY UPDATE s_value=VALUES(s_value)', [$pk, trim($_POST[$pk])]);
+        }
+        foreach ($activeLangs as $al) {
+            $langKey = "{$pk}_{$al['code']}";
+            if (isset($_POST[$langKey])) {
+                q('INSERT INTO site_settings (s_key,s_value) VALUES (?,?) ON DUPLICATE KEY UPDATE s_value=VALUES(s_value)', [$langKey, trim($_POST[$langKey])]);
+            }
+        }
+    }
+
     // 4. Ofis Bilgileri & Haritalar
     $officeKeys = [
         'office_sakarya_badge', 'office_sakarya_city', 'office_sakarya_title', 'office_sakarya_address', 'office_sakarya_map_link', 'office_sakarya_embed',
@@ -327,6 +346,82 @@ admin_header('Site & Sayfa Ayarları', 'settings');
       <?php endif; ?>
     <?php }); ?>
     <p class="hint">Boş bırakılan alanlarda sayfanın kendi varsayılan metni görünür. Telefon, e-posta ve sosyal medya bağlantıları yukarıdaki genel ayarlardan gelir.</p>
+  </div>
+
+  <!-- 2d. PROJELER & KENTSEL DÖNÜŞÜM SAYFA METİNLERİ (ÇOK DİLLİ) -->
+  <div class="card">
+    <div class="row between" style="margin-bottom:14px">
+      <h2><i class="fa-solid fa-layer-group" style="color:var(--gold)"></i> Projeler & Kentsel Dönüşüm Sayfa Metinleri</h2>
+      <span class="muted">/projeler.html banner alanı ve /kentsel-donusum.html bölüm başlıkları</span>
+    </div>
+
+    <?php echo lang_tabs('page_texts_tabs', function($langCode, $isDefault) { ?>
+      <?php $suffix = $isDefault ? '' : "_{$langCode}"; ?>
+      <h3 style="font-size:1rem;color:var(--gold);margin:6px 0 10px"><i class="fa-solid fa-folder-open"></i> Projeler Sayfası (<?= strtoupper($langCode) ?>)</h3>
+      <div class="grid g2" style="margin-bottom:16px">
+        <div class="field">
+          <label>Banner Üst Etiketi</label>
+          <input type="text" name="projects_banner_tag<?= $suffix ?>" value="<?= e(setting("projects_banner_tag{$suffix}")) ?>" placeholder="MİMARİ PORTFÖY">
+        </div>
+        <div class="field">
+          <label>Sayfa Başlığı</label>
+          <input type="text" name="projects_banner_title<?= $suffix ?>" value="<?= e(setting("projects_banner_title{$suffix}")) ?>" placeholder="Proje Kataloğu">
+        </div>
+      </div>
+
+      <h3 style="font-size:1rem;color:var(--gold);margin:16px 0 10px"><i class="fa-solid fa-building-shield"></i> Kentsel Dönüşüm Sayfası (<?= strtoupper($langCode) ?>)</h3>
+      <div class="grid g2" style="margin-bottom:10px">
+        <div class="field">
+          <label>Kanun Bölümü Etiketi</label>
+          <input type="text" name="kd_law_tag<?= $suffix ?>" value="<?= e(setting("kd_law_tag{$suffix}")) ?>" placeholder="YASAL MEVZUAT VE DESTEKLER">
+        </div>
+        <div class="field">
+          <label>Kanun Bölümü Başlığı</label>
+          <input type="text" name="kd_law_title<?= $suffix ?>" value="<?= e(setting("kd_law_title{$suffix}")) ?>" placeholder="6306 Sayılı Kanun Kapsamında Haklarınız">
+        </div>
+      </div>
+      <div class="grid g2" style="margin-bottom:10px">
+        <div class="field">
+          <label>Projeler Bölümü Etiketi</label>
+          <input type="text" name="kd_projects_tag<?= $suffix ?>" value="<?= e(setting("kd_projects_tag{$suffix}")) ?>" placeholder="PRESTİJ VE DEĞER YARATAN İMZALAR">
+        </div>
+        <div class="field">
+          <label>Projeler Bölümü Başlığı</label>
+          <input type="text" name="kd_projects_title<?= $suffix ?>" value="<?= e(setting("kd_projects_title{$suffix}")) ?>" placeholder="Kentsel Dönüşüm Projelerimiz">
+        </div>
+      </div>
+      <div class="grid g2" style="margin-bottom:10px">
+        <div class="field">
+          <label>Karşılaştırma Bölümü Etiketi</label>
+          <input type="text" name="kd_compare_tag<?= $suffix ?>" value="<?= e(setting("kd_compare_tag{$suffix}")) ?>" placeholder="NEDEN YENİLEMELİSİNİZ?">
+        </div>
+        <div class="field">
+          <label>Karşılaştırma Bölümü Başlığı</label>
+          <input type="text" name="kd_compare_title<?= $suffix ?>" value="<?= e(setting("kd_compare_title{$suffix}")) ?>" placeholder="Eski Yapı vs. BUYAPI Kentsel Dönüşüm">
+        </div>
+      </div>
+      <div class="grid g2" style="margin-bottom:10px">
+        <div class="field">
+          <label>SSS Bölümü Etiketi</label>
+          <input type="text" name="kd_faq_tag<?= $suffix ?>" value="<?= e(setting("kd_faq_tag{$suffix}")) ?>" placeholder="MERAK EDİLENLER">
+        </div>
+        <div class="field">
+          <label>SSS Bölümü Başlığı</label>
+          <input type="text" name="kd_faq_title<?= $suffix ?>" value="<?= e(setting("kd_faq_title{$suffix}")) ?>" placeholder="Sıkça Sorulan Sorular">
+        </div>
+      </div>
+      <div class="grid g2" style="margin-bottom:14px">
+        <div class="field">
+          <label>Başvuru Formu Etiketi</label>
+          <input type="text" name="kd_form_tag<?= $suffix ?>" value="<?= e(setting("kd_form_tag{$suffix}")) ?>" placeholder="KENTSEL DÖNÜŞÜM ÖN BAŞVURU">
+        </div>
+        <div class="field">
+          <label>Başvuru Formu Başlığı</label>
+          <input type="text" name="kd_form_title<?= $suffix ?>" value="<?= e(setting("kd_form_title{$suffix}")) ?>" placeholder="Binanızı Yenilemek İçin İlk Adımı Atın">
+        </div>
+      </div>
+    <?php }); ?>
+    <p class="hint">Boş bırakılan alanlarda sayfanın kendi varsayılan metni görünür. Kentsel dönüşüm hero slaytları, istatistikler ve SSS kayıtları ayrı bölümlerden yönetilir.</p>
   </div>
 
   <!-- 3. OFİSLER & HARİTA DETAYLARI -->

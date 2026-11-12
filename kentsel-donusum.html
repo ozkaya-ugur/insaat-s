@@ -855,7 +855,7 @@
     <section class="kd-law-section">
         <div class="container">
             <div style="text-align:center;max-width:760px;margin:0 auto 40px">
-                <span class="section-tag">YASAL MEVZUAT VE DESTEKLER</span>
+                <span class="section-tag" id="kdLawTag">YASAL MEVZUAT VE DESTEKLER</span>
                 <h2 class="section-title">6306 Sayılı Kanun Kapsamında Haklarınız</h2>
                 <p class="lead-text">Devlet teşvikleri, vergi muafiyetleri ve yeni %50+1 salt çoğunluk düzenlemesi ile binanızı yenilemek artık çok daha hızlı, karlı ve güvenli.</p>
             </div>
@@ -904,8 +904,8 @@
         <div class="container">
             <div class="kd-projects-header">
                 <div>
-                    <span class="section-tag">PRESTİJ VE DEĞER YARATAN İMZALAR</span>
-                    <h2 class="section-title" style="margin:0">Kentsel Dönüşüm Projelerimiz</h2>
+                    <span class="section-tag" id="kdProjectsTag">PRESTİJ VE DEĞER YARATAN İMZALAR</span>
+                    <h2 class="section-title" id="kdProjectsTitle" style="margin:0">Kentsel Dönüşüm Projelerimiz</h2>
                 </div>
                 <a href="projeler.html?type=kentsel" class="kd-spotlight-pill">
                     <i class="fa-solid fa-building-shield"></i>
@@ -927,8 +927,8 @@
     <section class="kd-compare-section">
         <div class="container">
             <div style="text-align:center;max-width:760px;margin:0 auto">
-                <span class="section-tag">NEDEN YENİLEMELİSİNİZ?</span>
-                <h2 class="section-title">Eski Yapı vs. BUYAPI Kentsel Dönüşüm</h2>
+                <span class="section-tag" id="kdCompareTag">NEDEN YENİLEMELİSİNİZ?</span>
+                <h2 class="section-title" id="kdCompareTitle">Eski Yapı vs. BUYAPI Kentsel Dönüşüm</h2>
                 <p class="lead-text">Binanızı yenilediğinizde yalnızca deprem güvenliği değil, yaşam konforu ve mülk değerinde eşsiz bir artış elde edersiniz.</p>
             </div>
 
@@ -975,8 +975,8 @@
     <section class="kd-faq-section" id="sss-alani">
         <div class="container">
             <div style="text-align:center;max-width:760px;margin:0 auto">
-                <span class="section-tag">MERAK EDİLENLER</span>
-                <h2 class="section-title">Sıkça Sorulan Sorular</h2>
+                <span class="section-tag" id="kdFaqTag">MERAK EDİLENLER</span>
+                <h2 class="section-title" id="kdFaqTitle">Sıkça Sorulan Sorular</h2>
                 <p class="lead-text">Kentsel dönüşüm süreci, hukuki adımlar ve haklarınız hakkında en çok merak edilen soruların yanıtları.</p>
             </div>
 
@@ -994,8 +994,8 @@
         <div class="container">
             <div class="kd-form-wrapper">
                 <div class="kd-form-header">
-                    <span class="section-tag">KENTSEL DÖNÜŞÜM ÖN BAŞVURU</span>
-                    <h2>Binanızı Yenilemek İçin İlk Adımı Atın</h2>
+                    <span class="section-tag" id="kdFormTag">KENTSEL DÖNÜŞÜM ÖN BAŞVURU</span>
+                    <h2 id="kdFormTitle">Binanızı Yenilemek İçin İlk Adımı Atın</h2>
                     <p>Aşağıdaki formu doldurarak mühendislik ve mimarlık ekibimizin binanız için ücretsiz ön fizibilite, imar incelemesi ve değer analizi hazırlamasını sağlayabilirsiniz.</p>
                 </div>
 
@@ -1231,6 +1231,17 @@
                 if (s.kd_stat_3_lbl) document.getElementById('kdStat3Lbl').textContent = s.kd_stat_3_lbl;
                 if (s.kd_stat_4_num) document.getElementById('kdStat4Num').textContent = s.kd_stat_4_num;
                 if (s.kd_stat_4_lbl) document.getElementById('kdStat4Lbl').textContent = s.kd_stat_4_lbl;
+
+                const kdTxt = (id, val) => { const el = document.getElementById(id); if (el && val) el.textContent = val; };
+                kdTxt('kdLawTag', s.kd_law_tag);
+                kdTxt('kdProjectsTag', s.kd_projects_tag);
+                kdTxt('kdProjectsTitle', s.kd_projects_title);
+                kdTxt('kdCompareTag', s.kd_compare_tag);
+                kdTxt('kdCompareTitle', s.kd_compare_title);
+                kdTxt('kdFaqTag', s.kd_faq_tag);
+                kdTxt('kdFaqTitle', s.kd_faq_title);
+                kdTxt('kdFormTag', s.kd_form_tag);
+                kdTxt('kdFormTitle', s.kd_form_title);
 
                 if (s.kd_law_title) document.getElementById('kdLawTitle').textContent = s.kd_law_title;
                 if (s.kd_law_info) document.getElementById('kdLawInfo').textContent = s.kd_law_info;

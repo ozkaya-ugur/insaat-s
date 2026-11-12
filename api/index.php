@@ -209,20 +209,24 @@ try {
     // ---------- KENTSEL DÖNÜŞÜM AYARLARI, SLIDER, FAYDALAR & DİNAMİK SSS ----------
     if (($seg[0] ?? '') === 'settings' && ($seg[1] ?? '') === 'urban-renewal' && $method === 'GET') {
         $slides = [];
-        foreach (q('SELECT * FROM urban_renewal_slides WHERE is_active=1 ORDER BY sort_order ASC, id ASC')->fetchAll() as $sl) {
-            $slides[] = [
-                'id' => (int)$sl['id'],
-                'imageUrl' => asset($sl['image_url']),
-                'title' => pick($sl, 'title', $lang),
-                'subtitle' => pick($sl, 'subtitle', $lang),
-            ];
-        }
+        try {
+            foreach (q('SELECT * FROM urban_renewal_slides WHERE is_active=1 ORDER BY sort_order ASC, id ASC')->fetchAll() as $sl) {
+                $slides[] = [
+                    'id' => (int)$sl['id'],
+                    'imageUrl' => asset($sl['image_url']),
+                    'title' => pick($sl, 'title', $lang),
+                    'subtitle' => pick($sl, 'subtitle', $lang),
+                ];
+            }
+        } catch (Throwable $e) {}
 
         $keys = [
             'kd_hero_badge', 'kd_hero_title', 'kd_hero_desc',
             'kd_stat_1_num', 'kd_stat_1_lbl', 'kd_stat_2_num', 'kd_stat_2_lbl',
             'kd_stat_3_num', 'kd_stat_3_lbl', 'kd_stat_4_num', 'kd_stat_4_lbl',
-            'kd_law_title', 'kd_law_info', 'kd_contact_phone', 'kd_contact_email',
+            'kd_law_tag', 'kd_law_title', 'kd_law_info', 'kd_contact_phone', 'kd_contact_email',
+            'kd_projects_tag', 'kd_projects_title', 'kd_compare_tag', 'kd_compare_title',
+            'kd_faq_tag', 'kd_faq_title', 'kd_form_tag', 'kd_form_title',
             'kd_benefit_1_title', 'kd_benefit_1_desc',
             'kd_benefit_2_title', 'kd_benefit_2_desc',
             'kd_benefit_3_title', 'kd_benefit_3_desc',

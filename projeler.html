@@ -40,8 +40,8 @@
     <section class="page-banner banner-projeler">
         <div class="page-banner-overlay"></div>
         <div class="container">
-            <span class="section-tag" data-i18n="projects.banner_tag">MİMARİ PORTFÖY</span>
-            <h1 class="page-title" data-i18n="projects.banner_title">Proje Kataloğu</h1>
+            <span class="section-tag" id="projectsBannerTag" data-i18n="projects.banner_tag">MİMARİ PORTFÖY</span>
+            <h1 class="page-title" id="projectsBannerTitle" data-i18n="projects.banner_title">Proje Kataloğu</h1>
         </div>
     </section>
 
@@ -199,6 +199,17 @@
             try {
                 const curLang = localStorage.getItem('selectedLang') || window.currentLang || 'tr';
                 const apiBase = (window.location && window.location.origin && !window.location.origin.startsWith('file:')) ? window.location.origin : 'http://127.0.0.1:8000';
+                try {
+                    const sres = await fetch(`${apiBase}/api/settings?lang=${curLang}&t=${Date.now()}`);
+                    if (sres.ok) {
+                        const st = await sres.json();
+                        const bt = document.getElementById('projectsBannerTag');
+                        const bh = document.getElementById('projectsBannerTitle');
+                        if (bt && st.projects_banner_tag) { bt.innerText = st.projects_banner_tag; bt.removeAttribute('data-i18n'); }
+                        if (bh && st.projects_banner_title) { bh.innerText = st.projects_banner_title; bh.removeAttribute('data-i18n'); }
+                    }
+                } catch (e) { console.warn('Projeler sayfası ayarları çekilemedi:', e); }
+
                 const response = await fetch(`${apiBase}/api/projects?lang=${curLang}&t=${Date.now()}`);
                 if (!response.ok) throw new Error("API Yükleme Hatası");
                 

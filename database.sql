@@ -116,6 +116,25 @@ CREATE TABLE IF NOT EXISTS site_settings (
   s_value TEXT
 ) ENGINE=InnoDB;
 
+CREATE TABLE IF NOT EXISTS urban_renewal_slides (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  image_url VARCHAR(255) NOT NULL,
+  title_tr VARCHAR(200) DEFAULT '', title_en VARCHAR(200) DEFAULT '', title_ar VARCHAR(200) DEFAULT '',
+  subtitle_tr VARCHAR(400) DEFAULT '', subtitle_en VARCHAR(400) DEFAULT '', subtitle_ar VARCHAR(400) DEFAULT '',
+  is_active TINYINT(1) NOT NULL DEFAULT 1,
+  sort_order INT DEFAULT 0,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS urban_renewal_faqs (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  question_tr VARCHAR(400) DEFAULT '', question_en VARCHAR(400) DEFAULT '', question_ar VARCHAR(400) DEFAULT '',
+  answer_tr TEXT NULL, answer_en TEXT NULL, answer_ar TEXT NULL,
+  is_active TINYINT(1) NOT NULL DEFAULT 1,
+  sort_order INT DEFAULT 0,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 CREATE TABLE IF NOT EXISTS messages (
   id INT AUTO_INCREMENT PRIMARY KEY,
   full_name VARCHAR(120) NOT NULL,
@@ -195,3 +214,41 @@ INSERT INTO site_settings (s_key,s_value) VALUES ('footer_tagline','ARCHITECTURA
 INSERT INTO site_settings (s_key,s_value) VALUES ('footer_tagline_en','ARCHITECTURAL PRESTIGE & ENGINEERING') ON DUPLICATE KEY UPDATE s_value=VALUES(s_value);
 INSERT INTO site_settings (s_key,s_value) VALUES ('footer_tagline_ar','ARCHITECTURAL PRESTIGE & ENGINEERING') ON DUPLICATE KEY UPDATE s_value=VALUES(s_value);
 INSERT INTO site_settings (s_key,s_value) VALUES ('footer_cta_btn_link','iletisim.html') ON DUPLICATE KEY UPDATE s_value=VALUES(s_value);
+
+-- Projeler ve kentsel dönüşüm sayfa metinleri (panelden düzenlenebilir varsayılanlar)
+INSERT INTO site_settings (s_key,s_value) VALUES ('projects_banner_tag','MİMARİ PORTFÖY') ON DUPLICATE KEY UPDATE s_value=VALUES(s_value);
+INSERT INTO site_settings (s_key,s_value) VALUES ('projects_banner_tag_en','ARCHITECTURAL PORTFOLIO') ON DUPLICATE KEY UPDATE s_value=VALUES(s_value);
+INSERT INTO site_settings (s_key,s_value) VALUES ('projects_banner_tag_ar','المحفظة المعمارية') ON DUPLICATE KEY UPDATE s_value=VALUES(s_value);
+INSERT INTO site_settings (s_key,s_value) VALUES ('projects_banner_title','Proje Kataloğu') ON DUPLICATE KEY UPDATE s_value=VALUES(s_value);
+INSERT INTO site_settings (s_key,s_value) VALUES ('projects_banner_title_en','Project Catalogue') ON DUPLICATE KEY UPDATE s_value=VALUES(s_value);
+INSERT INTO site_settings (s_key,s_value) VALUES ('projects_banner_title_ar','كتالوج المشاريع') ON DUPLICATE KEY UPDATE s_value=VALUES(s_value);
+INSERT INTO site_settings (s_key,s_value) VALUES ('kd_law_tag','YASAL MEVZUAT VE DESTEKLER') ON DUPLICATE KEY UPDATE s_value=VALUES(s_value);
+INSERT INTO site_settings (s_key,s_value) VALUES ('kd_law_tag_en','LEGAL FRAMEWORK AND INCENTIVES') ON DUPLICATE KEY UPDATE s_value=VALUES(s_value);
+INSERT INTO site_settings (s_key,s_value) VALUES ('kd_law_tag_ar','التشريعات والحوافز') ON DUPLICATE KEY UPDATE s_value=VALUES(s_value);
+INSERT INTO site_settings (s_key,s_value) VALUES ('kd_law_title','6306 Sayılı Kanun Kapsamında Haklarınız') ON DUPLICATE KEY UPDATE s_value=VALUES(s_value);
+INSERT INTO site_settings (s_key,s_value) VALUES ('kd_law_title_en','Your Rights Under Law No. 6306') ON DUPLICATE KEY UPDATE s_value=VALUES(s_value);
+INSERT INTO site_settings (s_key,s_value) VALUES ('kd_law_title_ar','حقوقكم في إطار القانون رقم 6306') ON DUPLICATE KEY UPDATE s_value=VALUES(s_value);
+INSERT INTO site_settings (s_key,s_value) VALUES ('kd_projects_tag','PRESTİJ VE DEĞER YARATAN İMZALAR') ON DUPLICATE KEY UPDATE s_value=VALUES(s_value);
+INSERT INTO site_settings (s_key,s_value) VALUES ('kd_projects_tag_en','SIGNATURES THAT CREATE PRESTIGE AND VALUE') ON DUPLICATE KEY UPDATE s_value=VALUES(s_value);
+INSERT INTO site_settings (s_key,s_value) VALUES ('kd_projects_tag_ar','بصمات تصنع الهيبة والقيمة') ON DUPLICATE KEY UPDATE s_value=VALUES(s_value);
+INSERT INTO site_settings (s_key,s_value) VALUES ('kd_projects_title','Kentsel Dönüşüm Projelerimiz') ON DUPLICATE KEY UPDATE s_value=VALUES(s_value);
+INSERT INTO site_settings (s_key,s_value) VALUES ('kd_projects_title_en','Our Urban Renewal Projects') ON DUPLICATE KEY UPDATE s_value=VALUES(s_value);
+INSERT INTO site_settings (s_key,s_value) VALUES ('kd_projects_title_ar','مشاريعنا في التحول الحضري') ON DUPLICATE KEY UPDATE s_value=VALUES(s_value);
+INSERT INTO site_settings (s_key,s_value) VALUES ('kd_compare_tag','NEDEN YENİLEMELİSİNİZ?') ON DUPLICATE KEY UPDATE s_value=VALUES(s_value);
+INSERT INTO site_settings (s_key,s_value) VALUES ('kd_compare_tag_en','WHY SHOULD YOU RENEW?') ON DUPLICATE KEY UPDATE s_value=VALUES(s_value);
+INSERT INTO site_settings (s_key,s_value) VALUES ('kd_compare_tag_ar','لماذا يجب التجديد؟') ON DUPLICATE KEY UPDATE s_value=VALUES(s_value);
+INSERT INTO site_settings (s_key,s_value) VALUES ('kd_compare_title','Eski Yapı vs. BUYAPI Kentsel Dönüşüm') ON DUPLICATE KEY UPDATE s_value=VALUES(s_value);
+INSERT INTO site_settings (s_key,s_value) VALUES ('kd_compare_title_en','Old Building vs. BUYAPI Urban Renewal') ON DUPLICATE KEY UPDATE s_value=VALUES(s_value);
+INSERT INTO site_settings (s_key,s_value) VALUES ('kd_compare_title_ar','المبنى القديم مقابل التحول الحضري من BUYAPI') ON DUPLICATE KEY UPDATE s_value=VALUES(s_value);
+INSERT INTO site_settings (s_key,s_value) VALUES ('kd_faq_tag','MERAK EDİLENLER') ON DUPLICATE KEY UPDATE s_value=VALUES(s_value);
+INSERT INTO site_settings (s_key,s_value) VALUES ('kd_faq_tag_en','FREQUENTLY ASKED') ON DUPLICATE KEY UPDATE s_value=VALUES(s_value);
+INSERT INTO site_settings (s_key,s_value) VALUES ('kd_faq_tag_ar','الأسئلة الشائعة') ON DUPLICATE KEY UPDATE s_value=VALUES(s_value);
+INSERT INTO site_settings (s_key,s_value) VALUES ('kd_faq_title','Sıkça Sorulan Sorular') ON DUPLICATE KEY UPDATE s_value=VALUES(s_value);
+INSERT INTO site_settings (s_key,s_value) VALUES ('kd_faq_title_en','Frequently Asked Questions') ON DUPLICATE KEY UPDATE s_value=VALUES(s_value);
+INSERT INTO site_settings (s_key,s_value) VALUES ('kd_faq_title_ar','الأسئلة المتكررة') ON DUPLICATE KEY UPDATE s_value=VALUES(s_value);
+INSERT INTO site_settings (s_key,s_value) VALUES ('kd_form_tag','KENTSEL DÖNÜŞÜM ÖN BAŞVURU') ON DUPLICATE KEY UPDATE s_value=VALUES(s_value);
+INSERT INTO site_settings (s_key,s_value) VALUES ('kd_form_tag_en','URBAN RENEWAL PRE-APPLICATION') ON DUPLICATE KEY UPDATE s_value=VALUES(s_value);
+INSERT INTO site_settings (s_key,s_value) VALUES ('kd_form_tag_ar','الطلب المسبق للتحول الحضري') ON DUPLICATE KEY UPDATE s_value=VALUES(s_value);
+INSERT INTO site_settings (s_key,s_value) VALUES ('kd_form_title','Binanızı Yenilemek İçin İlk Adımı Atın') ON DUPLICATE KEY UPDATE s_value=VALUES(s_value);
+INSERT INTO site_settings (s_key,s_value) VALUES ('kd_form_title_en','Take the First Step to Renew Your Building') ON DUPLICATE KEY UPDATE s_value=VALUES(s_value);
+INSERT INTO site_settings (s_key,s_value) VALUES ('kd_form_title_ar','اتخذوا الخطوة الأولى لتجديد مبناكم') ON DUPLICATE KEY UPDATE s_value=VALUES(s_value);
