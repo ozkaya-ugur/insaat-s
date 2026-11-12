@@ -137,7 +137,7 @@ $bannerImg = setting('corp_banner_img');
       <small class="tab-hint">Yeni görsel yüklersen mevcut değişir. Boş bırakırsan korunur.</small>
     </div>
 
-    <?php lang_tabs('ab_content', function($langCode, $isDefault) {
+    <?php echo lang_tabs('ab_content', function($langCode, $isDefault) {
         $s = $isDefault ? '' : "_{$langCode}";
     ?>
       <p class="tab-hint">Dil: <strong><?= strtoupper($langCode) ?></strong> — boş bırakılan alanlar TR içeriğini kullanır.</p>
@@ -191,7 +191,7 @@ $bannerImg = setting('corp_banner_img');
 
     <p class="tab-hint">Sayı ve sembol dile bağlı değildir. Etiket (lbl) her dil için ayrı girilebilir.</p>
 
-    <?php lang_tabs('ab_stats', function($langCode, $isDefault) {
+    <?php echo lang_tabs('ab_stats', function($langCode, $isDefault) {
         $s = $isDefault ? '' : "_{$langCode}";
     ?>
       <div class="grid g3" style="gap:14px">
@@ -243,7 +243,7 @@ $bannerImg = setting('corp_banner_img');
       <div class="office-box">
         <strong><i class="fa-solid fa-location-dot"></i> Sakarya Genel Merkez</strong>
 
-        <?php lang_tabs('ab_sak', function($langCode, $isDefault) {
+        <?php echo lang_tabs('ab_sak', function($langCode, $isDefault) {
             $s = $isDefault ? '' : "_{$langCode}";
         ?>
           <?php if ($isDefault): ?>
@@ -282,7 +282,7 @@ $bannerImg = setting('corp_banner_img');
       <div class="office-box">
         <strong><i class="fa-solid fa-location-dot"></i> İstanbul Bölge Ofisi</strong>
 
-        <?php lang_tabs('ab_ist', function($langCode, $isDefault) {
+        <?php echo lang_tabs('ab_ist', function($langCode, $isDefault) {
             $s = $isDefault ? '' : "_{$langCode}";
         ?>
           <?php if ($isDefault): ?>

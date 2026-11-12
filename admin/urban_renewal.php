@@ -411,7 +411,7 @@ if (!empty($_GET['edit_faq'])) {
     </div>
 
     <!-- DİL SEKMELERİ -->
-    <?php lang_tabs('faq_edit_tabs', function($langCode, $isDefault) use ($editFaq) { ?>
+    <?php echo lang_tabs('faq_edit_tabs', function($langCode, $isDefault) use ($editFaq) { ?>
       <div class="field" style="margin-bottom:10px">
         <label>Soru Metni (<?= strtoupper($langCode) ?>) <?= $isDefault ? '<span class="req">*</span>' : '' ?></label>
         <input type="text" name="question_<?= $langCode ?>" value="<?= e($editFaq['question_' . $langCode] ?? '') ?>" placeholder="ör. Kentsel dönüşüme başlamak için ne kadar onay gerekir?">
