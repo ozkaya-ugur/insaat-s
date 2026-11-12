@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="referrer" content="no-referrer">
     <title>Proje Detayı | BUYAPI İnşaat</title>
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -295,7 +299,7 @@
                         <div class="architectural-gallery-grid">
                             
                             <div class="gallery-item video-gallery-item" data-video="videolar/video-1.mp4">
-                                <video preload="metadata" class="video-preview-element" muted playsinline>
+                                <video preload="none" class="video-preview-element" muted playsinline>
                                     <source src="videolar/video-1.mp4#t=0.5" type="video/mp4">
                                 </video>
                                 <div class="gallery-hover-overlay">
@@ -305,7 +309,7 @@
                             </div>
 
                             <div class="gallery-item video-gallery-item" data-video="videolar/video-1.mp4">
-                                <video preload="metadata" class="video-preview-element" muted playsinline>
+                                <video preload="none" class="video-preview-element" muted playsinline>
                                     <source src="videolar/video-1.mp4#t=0.5" type="video/mp4">
                                 </video>
                                 <div class="gallery-hover-overlay">
@@ -315,7 +319,7 @@
                             </div>
 
                             <div class="gallery-item video-gallery-item" data-video="videolar/video-1.mp4">
-                                <video preload="metadata" class="video-preview-element" muted playsinline>
+                                <video preload="none" class="video-preview-element" muted playsinline>
                                     <source src="videolar/video-1.mp4#t=0.5" type="video/mp4">
                                 </video>
                                 <div class="gallery-hover-overlay">
@@ -344,14 +348,14 @@
                     <p class="lead-text" data-i18n="detail.inquiry_lead">Özel ödeme planları, güncel konum seçimi ve mimari pafta detayları için satış ofisi temsilcilerimiz size ulaşsın.</p>
 
                     <div class="inquiry-direct-links">
-                        <a href="tel:4443343" class="inquiry-contact-item">
+                        <a href="tel:+900000000000" class="inquiry-contact-item" id="phoneLink">
                             <i class="fa-solid fa-headset"></i>
                             <div>
                                 <small data-i18n="detail.inquiry_phone_label">SATIŞ OFİSİ MÜŞTERİ HATTI</small>
                                 <strong>444 33 43</strong>
                             </div>
                         </a>
-                        <a href="https://wa.me/904443343?text=Proje%20hakkında%20bilgi%20almak%20istiyorum." id="whatsappLink" target="_blank" class="inquiry-contact-item whatsapp-box">
+                        <a href="#" id="whatsappLink" target="_blank" class="inquiry-contact-item whatsapp-box">
                             <i class="fa-brands fa-whatsapp"></i>
                             <div>
                                 <small data-i18n="detail.inquiry_whatsapp_label">ANINDA WHATSAPP BİLGİ HATTI</small>
@@ -411,9 +415,102 @@
 
     <!-- KESİN VE ZORLAYICI (FORCE) DİNAMİK YÜKLEYİCİ -->
     <script>
+        function renderProjectNotFound(missingKey) {
+            let robots = document.querySelector('meta[name="robots"]');
+            if (!robots) {
+                robots = document.createElement('meta');
+                robots.setAttribute('name', 'robots');
+                document.head.appendChild(robots);
+            }
+            robots.setAttribute('content', 'noindex, nofollow');
+            document.title = 'Proje Bulunamadı | BUYAPI';
+
+            const wrap = document.querySelector('.project-description-section .container')
+                || document.querySelector('main')
+                || document.body;
+            wrap.innerHTML = `
+                <section class="project-not-found" style="padding:40px;text-align:center;">
+                    <h1>Aradığınız proje bulunamadı</h1>
+                    <p>"${missingKey}" için eşleşen kayıt bulunamadı.</p>
+                    <a class="btn btn-gold" href="projeler.html">Tüm Projeler</a>
+                </section>
+            `;
+        }
+
+        function digitsOnly(v) {
+            return (v || '').toString().replace(/\D/g, '');
+        }
+
+        function toTelHref(phoneRaw) {
+            const d = digitsOnly(phoneRaw);
+            return d ? `tel:+${d}` : '';
+        }
+
+        function toWaHref(waRaw, text = '') {
+            const d = digitsOnly(waRaw);
+            if (!d) return '';
+            const msg = text ? `?text=${encodeURIComponent(text)}` : '';
+            return `https://wa.me/${d}${msg}`;
+        }
+
+        function resolveAssetUrl(rawPath) {
+            const p = (rawPath || '').toString().trim();
+            if (!p) return '';
+            if (/^https?:\/\//i.test(p)) return p;
+            return p.startsWith('/') ? p : `/${p}`;
+        }
+
+        async function getContactSettings(lang = 'tr') {
+            const apiBase = (typeof window !== 'undefined' && window.location && window.location.origin && !window.location.origin.startsWith('file:'))
+                ? window.location.origin
+                : 'http://127.0.0.1:8000';
+            const res = await fetch(`${apiBase}/api/settings?lang=${lang}&t=${Date.now()}`);
+            if (!res.ok) throw new Error(`Ayar API hatası: ${res.status}`);
+            return await res.json();
+        }
+
+        async function applyDynamicContactLinks(projectTitle) {
+            const lang = localStorage.getItem('selectedLang') || 'tr';
+            try {
+                const s = await getContactSettings(lang);
+                const waLink = document.getElementById('whatsappLink');
+                const waText = waLink?.querySelector('strong');
+                const phoneLink = document.getElementById('phoneLink');
+                const phoneText = phoneLink?.querySelector('strong');
+
+                const rawWa = (s.whatsapp || '').toString();
+                const rawPhone = (s.phone || s.kd_contact_phone || '').toString();
+                const waHref = toWaHref(rawWa, `${projectTitle || 'Proje'} hakkında bilgi almak istiyorum.`);
+                const telHref = toTelHref(rawPhone);
+
+                if (waLink) {
+                    if (waHref) {
+                        waLink.href = waHref;
+                        waLink.style.display = '';
+                        if (waText && rawWa) waText.textContent = rawWa;
+                    } else {
+                        waLink.removeAttribute('href');
+                        waLink.style.display = 'none';
+                    }
+                }
+
+                if (phoneLink && telHref) {
+                    phoneLink.setAttribute('href', telHref);
+                    phoneLink.style.display = '';
+                    if (phoneText && rawPhone) phoneText.textContent = rawPhone;
+                }
+            } catch (err) {
+                console.warn('İletişim ayarları alınamadı:', err);
+            }
+        }
+
         async function forceLoadProjectDetails() {
             const urlParams = new URLSearchParams(window.location.search);
-            const projectIdOrSlug = urlParams.get('id') || urlParams.get('slug') || 'intense';
+            const projectIdOrSlug = urlParams.get('id') || urlParams.get('slug');
+            if (!projectIdOrSlug) {
+                window.location.replace('projeler.html');
+                return;
+            }
 
             try {
                 const curLang = localStorage.getItem("selectedLang") || window.currentLang || "tr";
@@ -438,7 +535,10 @@
                 // slug veya ID'ye göre tam eşleşme bul
                 const proj = projects.find(p => p.slug === projectIdOrSlug || String(p.id) === String(projectIdOrSlug));
 
-                if (!proj) return;
+                if (!proj) {
+                    renderProjectNotFound(projectIdOrSlug);
+                    return;
+                }
 
                 // 1. SAYFA BAŞLIKLARI
                 document.title = `${proj.title} | BUYAPI`;
@@ -505,8 +605,8 @@
                 // 5. ARKA PLAN GÖRSELLERİ (HERO SLIDER - ÇOKLU GÖRSEL DESTEĞİ)
                 const heroSliderEl = document.querySelector('.detail-hero-slider');
                 const heroItems = (proj.gallery && proj.gallery.hero && proj.gallery.hero.length > 0)
-                    ? proj.gallery.hero.map(h => h.src)
-                    : (proj.coverImage ? [proj.coverImage.startsWith('http') ? proj.coverImage : `${apiBase}/${proj.coverImage}`] : []);
+                    ? proj.gallery.hero.map(h => resolveAssetUrl(h.src)).filter(Boolean)
+                    : (proj.coverImage ? [resolveAssetUrl(proj.coverImage)] : []);
 
                 if (heroSliderEl && heroItems.length > 0) {
                     // Mevcut slaytları temizle ve yenilerini oluştur
@@ -608,7 +708,7 @@
                         }
                     };
                     renderList('tab-render', proj.gallery.render);
-                    renderList('tab-plan', proj.gallery.plan);
+                    renderList('tab-plans', proj.gallery.plan);
                     renderList('tab-site', proj.gallery.site);
                 }
 
@@ -618,11 +718,8 @@
                     if (catBtn) catBtn.href = proj.catalog;
                 }
 
-                // 9. WHATSAPP LİNKİ
-                const waLink = document.getElementById('whatsappLink');
-                if (waLink) {
-                    waLink.href = `https://wa.me/904443343?text=${encodeURIComponent(proj.title + ' projesi hakkında detaylı bilgi almak istiyorum.')}`;
-                }
+                // 9. İLETİŞİM LİNKLERİNİ AYARLARDAN DİNAMİK GÜNCELLE
+                await applyDynamicContactLinks(proj.title);
 
                 // Tüm çevirileri son kez teyit et
                 if (typeof window.applyTranslations === 'function') {
@@ -634,19 +731,25 @@
             }
         }
 
-        window.forceLoadProjectDetails = forceLoadProjectDetails;
+        window.__detailLoadingPromise = null;
+        window.forceLoadProjectDetails = async function forceLoadProjectDetailsSafe() {
+            if (window.__detailLoadingPromise) return window.__detailLoadingPromise;
+            window.__detailLoadingPromise = forceLoadProjectDetails().finally(() => {
+                window.__detailLoadingPromise = null;
+            });
+            return window.__detailLoadingPromise;
+        };
 
-        // Script.js ve DOM tam yüklendikten hemen sonra zorlayarak çalıştır
+        // Script.js ve DOM tam yüklendikten hemen sonra tek girişle çalıştır
         if (document.readyState === 'loading') {
-            window.addEventListener('DOMContentLoaded', () => setTimeout(forceLoadProjectDetails, 50));
+            window.addEventListener('DOMContentLoaded', () => setTimeout(() => window.forceLoadProjectDetails(), 50));
         } else {
-            setTimeout(forceLoadProjectDetails, 50);
+            setTimeout(() => window.forceLoadProjectDetails(), 50);
         }
-        window.addEventListener('load', () => setTimeout(forceLoadProjectDetails, 100));
 
         // Dil değiştiğinde proje detaylarını anında yeni dilde yeniden çek
         window.addEventListener('languageChanged', () => {
-            forceLoadProjectDetails();
+            window.forceLoadProjectDetails();
         });
     </script>
 </body>

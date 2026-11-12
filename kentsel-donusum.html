@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kentsel Dönüşüm | BUYAPI İnşaat & Mühendislik A.Ş.</title>
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1280,6 +1284,13 @@
         const container = document.getElementById('kdProjectsContainer');
         if (!container) return;
 
+        const resolveAssetUrl = (rawPath) => {
+            const p = (rawPath || '').toString().trim();
+            if (!p) return '';
+            if (/^https?:\/\//i.test(p)) return p;
+            return p.startsWith('/') ? p : `/${p}`;
+        };
+
         try {
             const curLang = localStorage.getItem('selectedLang') || 'tr';
             const apiBase = (window.location && window.location.origin && !window.location.origin.startsWith('file:')) ? window.location.origin : 'http://127.0.0.1:8000';
@@ -1287,18 +1298,28 @@
             if (!res.ok) throw new Error('API Hatası');
             const allProjects = await res.json();
 
-            let kdProjects = allProjects.filter(p => {
-                const t = (p.type || '').toLowerCase();
-                return t.includes('kentsel');
+            const kdProjects = (allProjects || []).filter((p) => {
+                const types = (p.type || '').toLowerCase().split(',').map((x) => x.trim());
+                const byFlag = p.isUrbanRenewal === true || p.isUrbanRenewal === 1 || p.is_urban_renewal === 1;
+                const byType = types.includes('kentsel');
+                return byFlag || byType;
             });
 
-            if (kdProjects.length === 0) {
-                kdProjects = allProjects.slice(0, 3);
+            // Yanlış fallback kaldırıldı: kentsel proje yoksa boş durum gösterilir.
+            if (!kdProjects.length) {
+                container.innerHTML = `
+                    <div class="empty-state urban-empty" role="status" aria-live="polite" style="grid-column:1/-1;text-align:center;padding:40px;">
+                        <h3>Kentsel dönüşüm projelerimiz yakında burada yer alacak.</h3>
+                        <p>Güncel projeleri görmek için Projeler sayfasını ziyaret edebilirsiniz.</p>
+                        <a class="btn btn-gold" href="projeler.html?type=kentsel">Projeleri Gör</a>
+                    </div>
+                `;
+                return;
             }
 
             container.innerHTML = kdProjects.map(proj => {
-                const imagePath = proj.coverImage 
-                    ? (proj.coverImage.startsWith('http') ? proj.coverImage : `${apiBase}/${proj.coverImage}`) 
+                const imagePath = proj.coverImage
+                    ? resolveAssetUrl(proj.coverImage)
                     : 'images/banner-1.png';
 
                 const statusText = (proj.status || 'DEVAM EDİYOR').toUpperCase();
@@ -1403,8 +1424,8 @@
                         alert(data.error || "Başvuru iletilirken bir sorun oluştu. Lütfen bilgilerinizi kontrol edip tekrar deneyin.");
                     }
                 } catch (err) {
-                    alert("Başvurunuz başarıyla ekibimize iletilmiştir. Yetkili mühendisimiz sizinle iletişime geçecektir.");
-                    form.reset();
+                    console.error('Kentsel dönüşüm başvuru gönderim hatası:', err);
+                    alert("Başvuru gönderilemedi. Lütfen internet bağlantınızı kontrol edip tekrar deneyin.");
                 } finally {
                     submitBtn.disabled = false;
                     submitBtn.innerHTML = originalBtnHtml;

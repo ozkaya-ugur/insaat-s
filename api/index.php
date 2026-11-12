@@ -13,12 +13,36 @@ function out($data, int $code = 200): never {
     exit;
 }
 
+function normalizeAssetPath(?string $path): string {
+    $path = trim((string)$path);
+    if ($path === '') return '';
+
+    // Tam URL geldiyse host'u atıp yalnızca path'i al
+    if (preg_match('#^https?://#i', $path)) {
+        $parts = parse_url($path);
+        $path = $parts['path'] ?? '';
+    }
+
+    return ltrim($path, '/');
+}
+
+function buildPublicAssetUrl(string $relativePath): string {
+    if ($relativePath === '') return '';
+
+    // Ortam değişkeni varsa öncelik ver
+    $base = getenv('PUBLIC_ASSET_BASE_URL') ?: '';
+    if ($base !== '') {
+        return rtrim($base, '/') . '/' . ltrim($relativePath, '/');
+    }
+
+    // Aynı origin'de çalışacak güvenli yol
+    return '/' . ltrim($relativePath, '/');
+}
+
 function asset(?string $p): string {
-    if (!$p) return '';
-    if (preg_match('#^https?://#i', $p)) return $p;
-    // uploads/ → API sunucusundan, diğerleri (images/...) ön yüz klasöründen
-    if (strpos($p, UPLOAD_URL_PATH . '/') === 0) return API_PUBLIC_URL . '/' . $p;
-    return $p;
+    $relative = normalizeAssetPath($p);
+    if ($relative === '') return '';
+    return buildPublicAssetUrl($relative);
 }
 
 function pick(array $row, string $base, string $lang): string {
@@ -73,6 +97,8 @@ try {
                 'cityKey'        => $r['city_key'],
                 'type'           => $r['type'],
                 'status'         => $r['status'],
+                'isNew'          => (int)($r['is_new'] ?? (($r['status'] ?? '') === 'yeni-proje' ? 1 : 0)),
+                'isUrbanRenewal' => (int)($r['is_urban_renewal'] ?? 0),
                 'statusLabel'    => PROJECT_STATUS[$r['status']] ?? $r['status'],
                 'coverImage'     => asset($r['cover_image']),
                 'area'           => $r['area'],
@@ -254,6 +280,7 @@ try {
 
     // ---------- MESAJ / KENTSEL DÖNÜŞÜM GÖNDERME ----------
     $isMsg = ($seg[0] ?? '') === 'messages' ||
+             ($seg[0] ?? '') === 'contact' ||
              ($seg[0] ?? '') === 'kentsel-donusum' ||
              ($seg === ['admin','settings','messages']);
 
@@ -261,12 +288,12 @@ try {
         $in = json_decode(file_get_contents('php://input'), true);
         if (!is_array($in)) $in = $_POST;
 
-        if (!empty($in['website'])) out(['ok' => true]); // honeypot
+        if (!empty($in['website'])) out(['ok' => true, 'message' => 'Mesajınız alındı.']); // honeypot
 
-        $name  = trim((string)($in['fullName'] ?? $in['full_name'] ?? ''));
+        $name  = trim((string)($in['fullName'] ?? $in['full_name'] ?? $in['name'] ?? ''));
         $phone = trim((string)($in['phone'] ?? ''));
         $email = trim((string)($in['email'] ?? ''));
-        $proj  = trim((string)($in['project'] ?? ''));
+        $proj  = trim((string)($in['project'] ?? $in['subject'] ?? ''));
         $src   = trim((string)($in['source'] ?? (($seg[0] ?? '') === 'kentsel-donusum' ? 'kentsel_donusum' : 'iletisim')));
         
         // Kentsel dönüşüm başvuru formu ise detayları mesaj alanına derle
@@ -315,7 +342,7 @@ try {
             @mail($notify, '=?UTF-8?B?' . base64_encode($subj) . '?=', $body,
                 "Content-Type: text/plain; charset=UTF-8\r\n" . ($email ? 'Reply-To: ' . str_replace(["\r","\n"], '', $email) . "\r\n" : ''));
         }
-        out(['ok' => true]);
+        out(['ok' => true, 'message' => 'Mesajınız başarıyla iletildi.']);
     }
 
     out(['error' => 'Bulunamadı'], 404);

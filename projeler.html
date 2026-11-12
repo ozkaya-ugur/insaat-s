@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Projelerimiz | BUYAPI İnşaat</title>
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -58,10 +62,11 @@
                         <i class="fa-solid fa-location-dot"></i>
                         <select id="filterLocation">
                             <option value="all" data-i18n-opt="projects.filter_location_all">Tüm Lokasyonlar (İl / İlçe)</option>
-                            <option value="tr-54">Sakarya</option>
-                            <option value="tr-34">İstanbul</option>
-                            <option value="tr-06">Ankara</option>
-                            <option value="tr-41">Kocaeli</option>
+                            <option value="tr-sk">Sakarya</option>
+                            <option value="tr-ib">İstanbul</option>
+                            <option value="tr-an">Ankara</option>
+                            <option value="tr-kc">Kocaeli</option>
+                            <option value="tr-gi">Giresun</option>
                         </select>
                     </div>
 
@@ -163,6 +168,32 @@
         let mapChartInstance = null;
         let currentStatusFilter = 'all';
 
+        // İl kodları farklı kaynaklardan gelebildiği için tek biçime normalize edilir.
+        const CITY_FILTER_MAP = {
+            'tr-54': 'tr-sk',
+            'tr-34': 'tr-ib',
+            'tr-06': 'tr-an',
+            'tr-28': 'tr-gi',
+            'tr-41': 'tr-kc',
+            'tr-sk': 'tr-sk',
+            'tr-ib': 'tr-ib',
+            'tr-an': 'tr-an',
+            'tr-gi': 'tr-gi',
+            'tr-kc': 'tr-kc'
+        };
+
+        function normalizeCityKey(value) {
+            const raw = (value || '').toString().trim().toLowerCase();
+            return CITY_FILTER_MAP[raw] || raw;
+        }
+
+        function resolveAssetUrl(rawPath) {
+            const p = (rawPath || '').toString().trim();
+            if (!p) return '';
+            if (/^https?:\/\//i.test(p)) return p;
+            return p.startsWith('/') ? p : `/${p}`;
+        }
+
         // API'den Projeleri Yükleme
         async function fetchDynamicProjects() {
             try {
@@ -180,16 +211,26 @@
 
         // Filtreleme Fonksiyonu
         function applyFilters() {
-            const locVal = document.getElementById('filterLocation')?.value || 'all';
+            const locValRaw = document.getElementById('filterLocation')?.value || 'all';
+            const locVal = normalizeCityKey(locValRaw);
             const typeVal = document.getElementById('filterType')?.value || 'all';
 
             const filtered = allProjects.filter(p => {
-                const matchStatus = (currentStatusFilter === 'all') || ((p.status || '').toLowerCase() === currentStatusFilter.toLowerCase());
-                const matchLoc = (locVal === 'all') || ((p.cityKey || '').toLowerCase() === locVal.toLowerCase());
-                
+                const statusVal = (p.status || '').toLowerCase();
+                const isNew = p.isNew === 1 || p.isNew === true || statusVal === 'yeni-proje';
+
+                let matchStatus = (currentStatusFilter === 'all') || (statusVal === currentStatusFilter.toLowerCase());
+                if (currentStatusFilter === 'yeni-proje') {
+                    matchStatus = isNew;
+                }
+
+                const cityKey = normalizeCityKey(p.cityKey || p.loc || '');
+                const matchLoc = (locVal === 'all') || (cityKey === locVal);
+
                 // Çoklu kategori kontrolü (Virgülle ayrılmış kategoriler içinde arama yapar)
-                const projectTypes = (p.type || '').toLowerCase().split(',');
-                const matchType = (typeVal === 'all') || projectTypes.includes(typeVal.toLowerCase());
+                const projectTypes = (p.type || '').toLowerCase().split(',').map(x => x.trim());
+                const isUrban = p.isUrbanRenewal === 1 || p.isUrbanRenewal === true || projectTypes.includes('kentsel');
+                const matchType = (typeVal === 'all') || (typeVal === 'kentsel' ? isUrban : projectTypes.includes(typeVal.toLowerCase()));
 
                 return matchStatus && matchLoc && matchType;
             });
@@ -225,9 +266,8 @@
                     statusText = getStatusLabel(proj.status, curLang).toUpperCase();
                 }
                 
-                const apiBase = (window.location && window.location.origin && !window.location.origin.startsWith('file:')) ? window.location.origin : 'http://127.0.0.1:8000';
-                const imagePath = proj.coverImage 
-                    ? (proj.coverImage.startsWith('http') ? proj.coverImage : `${apiBase}/${proj.coverImage}`) 
+                const imagePath = proj.coverImage
+                    ? resolveAssetUrl(proj.coverImage)
                     : 'images/banner-1.png';
 
                 return `
@@ -394,9 +434,8 @@
             }
 
             cardsContainer.innerHTML = filteredProjects.map(proj => {
-                const apiBase = (window.location && window.location.origin && !window.location.origin.startsWith('file:')) ? window.location.origin : 'http://127.0.0.1:8000';
-                const imagePath = proj.coverImage 
-                    ? (proj.coverImage.startsWith('http') ? proj.coverImage : `${apiBase}/${proj.coverImage}`) 
+                const imagePath = proj.coverImage
+                    ? resolveAssetUrl(proj.coverImage)
                     : 'images/banner-1.png';
 
                 return `

@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>İletişim & Ofislerimiz | BUYAPI İnşaat</title>
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -65,7 +69,7 @@
                                 <span>HARİTADA GÖR</span>
                                 <i class="fa-solid fa-arrow-up-right-from-square"></i>
                             </a>
-                            <a href="tel:4443343" class="office-phone-btn" id="offSakaryaPhone">
+                            <a href="tel:+900000000000" class="office-phone-btn" id="offSakaryaPhone">
                                 <i class="fa-solid fa-phone"></i> <span>444 33 43</span>
                             </a>
                         </div>
@@ -88,7 +92,7 @@
                                 <span>HARİTADA GÖR</span>
                                 <i class="fa-solid fa-arrow-up-right-from-square"></i>
                             </a>
-                            <a href="tel:4443343" class="office-phone-btn" id="offIstanbulPhone">
+                            <a href="tel:+900000000000" class="office-phone-btn" id="offIstanbulPhone">
                                 <i class="fa-solid fa-phone"></i> <span>444 33 43</span>
                             </a>
                         </div>
@@ -106,7 +110,7 @@
                                 <i class="fa-brands fa-facebook-f"></i>
                                 <span>FACEBOOK</span>
                             </a>
-                            <a href="https://wa.me/904443343" target="_blank" class="social-box-btn whatsapp" id="socialWhatsapp">
+                            <a href="#" target="_blank" class="social-box-btn whatsapp" id="socialWhatsapp">
                                 <i class="fa-brands fa-whatsapp"></i>
                                 <span>WHATSAPP</span>
                             </a>
@@ -152,6 +156,8 @@
                             <textarea id="messageText" rows="4" placeholder="Talebiniz veya mesajınız hakkında detay belirtebilirsiniz..." required></textarea>
                         </div>
 
+                        <div id="contactFormNotice" class="form-notice" aria-live="polite"></div>
+
                         <button type="submit" class="refined-submit-btn" id="submitBtn">
                             <span>MESAJI GÖNDER</span>
                             <i class="fa-solid fa-arrow-right-long"></i>
@@ -172,123 +178,162 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     
     <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            const API_BASE = (window.location && window.location.origin && !window.location.origin.startsWith('file:')) ? window.location.origin + '/api' : 'http://127.0.0.1:8000/api';
+        const CONTACT_API_BASE = (window.location && window.location.origin && !window.location.origin.startsWith('file:'))
+            ? window.location.origin + '/api'
+            : 'http://127.0.0.1:8000/api';
 
-            // Dinamik İletişim & Ofis Verilerini API'den Yükleme
-            async function loadContactPageData() {
-                try {
-                    const curLang = localStorage.getItem("selectedLang") || window.currentLang || "tr";
-                    const res = await fetch(`${API_BASE}/settings?lang=${curLang}&t=${Date.now()}`);
-                    if (!res.ok) return;
-                    const s = await res.json();
-
-                    if (s.phone) {
-                        const cleanPhone = s.phone.replace(/\s+/g, '');
-                        const pSakarya = document.getElementById('offSakaryaPhone');
-                        if (pSakarya) { pSakarya.href = `tel:${cleanPhone}`; pSakarya.querySelector('span').innerText = s.phone; }
-                        const pIstanbul = document.getElementById('offIstanbulPhone');
-                        if (pIstanbul) { pIstanbul.href = `tel:${cleanPhone}`; pIstanbul.querySelector('span').innerText = s.phone; }
-                    }
-
-                    if (s.office_sakarya_badge) document.getElementById('offSakaryaBadge').innerHTML = `<i class="fa-solid fa-building"></i> ${s.office_sakarya_badge}`;
-                    if (s.office_sakarya_city) document.getElementById('offSakaryaCity').innerText = s.office_sakarya_city;
-                    if (s.office_sakarya_title) document.getElementById('offSakaryaTitle').innerText = s.office_sakarya_title;
-                    if (s.office_sakarya_address) document.getElementById('offSakaryaAddr').innerText = s.office_sakarya_address;
-                    if (s.office_sakarya_map_link) document.getElementById('offSakaryaMapLink').href = s.office_sakarya_map_link;
-                    if (s.office_sakarya_embed) {
-                        document.getElementById('cardSakarya')?.setAttribute('data-map', s.office_sakarya_embed);
-                        const mapIfr = document.getElementById('contactMapIframe');
-                        if (mapIfr && document.getElementById('cardSakarya')?.classList.contains('active')) {
-                            mapIfr.src = s.office_sakarya_embed;
-                        }
-                    }
-
-                    if (s.office_istanbul_badge) document.getElementById('offIstanbulBadge').innerHTML = `<i class="fa-solid fa-city"></i> ${s.office_istanbul_badge}`;
-                    if (s.office_istanbul_city) document.getElementById('offIstanbulCity').innerText = s.office_istanbul_city;
-                    if (s.office_istanbul_title) document.getElementById('offIstanbulTitle').innerText = s.office_istanbul_title;
-                    if (s.office_istanbul_address) document.getElementById('offIstanbulAddr').innerText = s.office_istanbul_address;
-                    if (s.office_istanbul_map_link) document.getElementById('offIstanbulMapLink').href = s.office_istanbul_map_link;
-                    if (s.office_istanbul_embed) document.getElementById('cardIstanbul')?.setAttribute('data-map', s.office_istanbul_embed);
-
-                    if (s.instagram) document.getElementById('socialInstagram').href = s.instagram;
-                    if (s.facebook) document.getElementById('socialFacebook').href = s.facebook;
-                    if (s.whatsapp) document.getElementById('socialWhatsapp').href = `https://wa.me/${s.whatsapp.replace(/\D/g, '')}`;
-                } catch (e) {
-                    console.warn("İletişim ayarları yüklenemedi:", e);
-                }
+        function setNotice(type, text) {
+            const notice = document.getElementById('contactFormNotice');
+            if (!notice) {
+                alert(text);
+                return;
             }
+            notice.className = `form-notice ${type}`;
+            notice.textContent = text;
+        }
 
-            // Dinamik Projeleri Yükleme
-            async function loadProjectsToSelect() {
-                const selectEl = document.getElementById("projectSelect");
-                try {
-                    const curLang = localStorage.getItem("selectedLang") || window.currentLang || "tr";
-                    const res = await fetch(`${API_BASE}/projects?lang=${curLang}`);
-                    if (res.ok) {
-                        const projects = await res.json();
-                        selectEl.innerHTML = '<option value="genel">Genel Bilgi Talep Ediyorum</option>';
-                        projects.forEach(p => {
-                            const opt = document.createElement("option");
-                            opt.value = p.slug;
-                            opt.textContent = `${p.title} (${p.cat})`;
-                            selectEl.appendChild(opt);
-                        });
-                    }
-                } catch (e) {
-                    console.log("Projeler yüklendi.");
+        async function loadContactPageData() {
+            try {
+                const curLang = localStorage.getItem("selectedLang") || window.currentLang || "tr";
+                const res = await fetch(`${CONTACT_API_BASE}/settings?lang=${curLang}&t=${Date.now()}`);
+                if (!res.ok) return;
+                const s = await res.json();
+
+                if (s.phone) {
+                    const cleanPhone = s.phone.replace(/\s+/g, '');
+                    const pSakarya = document.getElementById('offSakaryaPhone');
+                    if (pSakarya) { pSakarya.href = `tel:${cleanPhone}`; pSakarya.querySelector('span').innerText = s.phone; }
+                    const pIstanbul = document.getElementById('offIstanbulPhone');
+                    if (pIstanbul) { pIstanbul.href = `tel:${cleanPhone}`; pIstanbul.querySelector('span').innerText = s.phone; }
                 }
-            }
 
-            // Sakarya ve İstanbul Ofis Kartlarına Tıklandığında Haritayı Değiştirme
+                if (s.office_sakarya_badge) document.getElementById('offSakaryaBadge').innerHTML = `<i class="fa-solid fa-building"></i> ${s.office_sakarya_badge}`;
+                if (s.office_sakarya_city) document.getElementById('offSakaryaCity').innerText = s.office_sakarya_city;
+                if (s.office_sakarya_title) document.getElementById('offSakaryaTitle').innerText = s.office_sakarya_title;
+                if (s.office_sakarya_address) document.getElementById('offSakaryaAddr').innerText = s.office_sakarya_address;
+                if (s.office_sakarya_map_link) document.getElementById('offSakaryaMapLink').href = s.office_sakarya_map_link;
+                if (s.office_sakarya_embed) {
+                    document.getElementById('cardSakarya')?.setAttribute('data-map', s.office_sakarya_embed);
+                    const mapIfr = document.getElementById('contactMapIframe');
+                    if (mapIfr && document.getElementById('cardSakarya')?.classList.contains('active')) {
+                        mapIfr.src = s.office_sakarya_embed;
+                    }
+                }
+
+                if (s.office_istanbul_badge) document.getElementById('offIstanbulBadge').innerHTML = `<i class="fa-solid fa-city"></i> ${s.office_istanbul_badge}`;
+                if (s.office_istanbul_city) document.getElementById('offIstanbulCity').innerText = s.office_istanbul_city;
+                if (s.office_istanbul_title) document.getElementById('offIstanbulTitle').innerText = s.office_istanbul_title;
+                if (s.office_istanbul_address) document.getElementById('offIstanbulAddr').innerText = s.office_istanbul_address;
+                if (s.office_istanbul_map_link) document.getElementById('offIstanbulMapLink').href = s.office_istanbul_map_link;
+                if (s.office_istanbul_embed) document.getElementById('cardIstanbul')?.setAttribute('data-map', s.office_istanbul_embed);
+
+                if (s.instagram) document.getElementById('socialInstagram').href = s.instagram;
+                if (s.facebook) document.getElementById('socialFacebook').href = s.facebook;
+                if (s.whatsapp) document.getElementById('socialWhatsapp').href = `https://wa.me/${s.whatsapp.replace(/\D/g, '')}`;
+            } catch (e) {
+                console.warn("İletişim ayarları yüklenemedi:", e);
+            }
+        }
+
+        async function loadProjectsToSelect() {
+            const selectEl = document.getElementById("projectSelect");
+            if (!selectEl) return;
+            try {
+                const curLang = localStorage.getItem("selectedLang") || window.currentLang || "tr";
+                const res = await fetch(`${CONTACT_API_BASE}/projects?lang=${curLang}`);
+                if (res.ok) {
+                    const projects = await res.json();
+                    selectEl.innerHTML = '<option value="genel">Genel Bilgi Talep Ediyorum</option>';
+                    projects.forEach(p => {
+                        const opt = document.createElement("option");
+                        opt.value = p.slug;
+                        opt.textContent = `${p.title} (${p.cat})`;
+                        selectEl.appendChild(opt);
+                    });
+                }
+            } catch (e) {
+                console.warn("Projeler yüklenemedi:", e);
+            }
+        }
+
+        function initOfficeCardClicks() {
             const officeCards = document.querySelectorAll(".office-location-card");
             const mapIframe = document.getElementById("contactMapIframe");
-
             officeCards.forEach(card => {
                 card.addEventListener("click", () => {
                     officeCards.forEach(c => c.classList.remove("active"));
                     card.classList.add("active");
-                    
                     const mapUrl = card.getAttribute("data-map");
-                    if (mapUrl && mapIframe) {
-                        mapIframe.src = mapUrl;
-                    }
+                    if (mapUrl && mapIframe) mapIframe.src = mapUrl;
                 });
             });
+        }
 
-            // Form Gönderme
+        function initContactForm() {
             const form = document.getElementById("contactForm");
-            form?.addEventListener("submit", async (e) => {
+            if (!form) return;
+
+            form.addEventListener("submit", async (e) => {
                 e.preventDefault();
+
                 const submitBtn = document.getElementById("submitBtn");
-                submitBtn.disabled = true;
-                submitBtn.querySelector("span").innerText = "GÖNDERİLİYOR...";
+                const originalLabel = submitBtn?.querySelector("span")?.innerText || "MESAJI GÖNDER";
+                if (submitBtn) {
+                    submitBtn.disabled = true;
+                    submitBtn.querySelector("span").innerText = "GÖNDERİLİYOR...";
+                }
 
                 const payload = {
-                    fullName: document.getElementById("fullName").value,
-                    phone: document.getElementById("phoneNum").value,
-                    email: document.getElementById("emailAddr").value,
-                    project: document.getElementById("projectSelect").value,
-                    message: document.getElementById("messageText").value
+                    name: document.getElementById("fullName")?.value?.trim() || "",
+                    phone: document.getElementById("phoneNum")?.value?.trim() || "",
+                    email: document.getElementById("emailAddr")?.value?.trim() || "",
+                    subject: document.getElementById("projectSelect")?.value || "genel",
+                    message: document.getElementById("messageText")?.value?.trim() || "",
+                    website: ""
                 };
 
+                if (!payload.name || !payload.email || !payload.message) {
+                    setNotice('error', 'Lütfen zorunlu alanları doldurun.');
+                    if (submitBtn) {
+                        submitBtn.disabled = false;
+                        submitBtn.querySelector("span").innerText = originalLabel;
+                    }
+                    return;
+                }
+
+                setNotice('info', 'Mesajınız gönderiliyor...');
+
                 try {
-                    await fetch(`${API_BASE}/admin/settings/messages`, {
+                    const res = await fetch(`${CONTACT_API_BASE}/contact`, {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify(payload)
                     });
 
-                    alert("Mesajınız başarıyla ekibimize iletildi.");
+                    let data = {};
+                    try { data = await res.json(); } catch (_) {}
+
+                    if (!res.ok || data.ok !== true) {
+                        throw new Error(data?.error || data?.message || `Gönderim başarısız (HTTP ${res.status}).`);
+                    }
+
+                    setNotice('success', data.message || 'Mesajınız başarıyla ekibimize iletildi.');
                     form.reset();
                 } catch (err) {
-                    alert("Mesaj iletildi.");
+                    console.error('[İletişim Formu] Gönderim hatası:', err);
+                    setNotice('error', err.message || 'Mesaj gönderilemedi. Lütfen tekrar deneyin.');
                 } finally {
-                    submitBtn.disabled = false;
-                    submitBtn.querySelector("span").innerText = "MESAJI GÖNDER";
+                    if (submitBtn) {
+                        submitBtn.disabled = false;
+                        submitBtn.querySelector("span").innerText = originalLabel;
+                    }
                 }
             });
+        }
 
+        document.addEventListener("DOMContentLoaded", () => {
+            initOfficeCardClicks();
+            initContactForm();
             loadContactPageData();
             loadProjectsToSelect();
         });

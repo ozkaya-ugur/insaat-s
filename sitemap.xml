@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  BUYAPI sitemap.xml (statik şablon)
+  Dayanak: buyapi_kod_sartnamesi.md Bölüm 3/F ve Bölüm 5.
+
+  ÖNEMLİ:
+  - Bu dosya 5 ana sayfa + 41 proje URL yuvası içerir.
+  - <alan-adi> yer tutucusunu canlı alan adınızla değiştirin.
+  - __PROJE_SLUG_XX__ yer tutucularını /api/projects çıktısındaki gerçek slug değerleriyle değiştirin.
+  - URL biçimi şartnameye göre: proje-detay.html?id={slug}
+-->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://<alan-adi>/index.html</loc></url>
+  <url><loc>https://<alan-adi>/kurumsal.html</loc></url>
+  <url><loc>https://<alan-adi>/projeler.html</loc></url>
+  <url><loc>https://<alan-adi>/kentsel-donusum.html</loc></url>
+  <url><loc>https://<alan-adi>/iletisim.html</loc></url>
+
+  <url><loc>https://<alan-adi>/proje-detay.html?id=__PROJE_SLUG_01__</loc></url>
+  <url><loc>https://<alan-adi>/proje-detay.html?id=__PROJE_SLUG_02__</loc></url>
+  <url><loc>https://<alan-adi>/proje-detay.html?id=__PROJE_SLUG_03__</loc></url>
+  <url><loc>https://<alan-adi>/proje-detay.html?id=__PROJE_SLUG_04__</loc></url>
+  <url><loc>https://<alan-adi>/proje-detay.html?id=__PROJE_SLUG_05__</loc></url>
+  <url><loc>https://<alan-adi>/proje-detay.html?id=__PROJE_SLUG_06__</loc></url>
+  <url><loc>https://<alan-adi>/proje-detay.html?id=__PROJE_SLUG_07__</loc></url>
+  <url><loc>https://<alan-adi>/proje-detay.html?id=__PROJE_SLUG_08__</loc></url>
+  <url><loc>https://<alan-adi>/proje-detay.html?id=__PROJE_SLUG_09__</loc></url>
+  <url><loc>https://<alan-adi>/proje-detay.html?id=__PROJE_SLUG_10__</loc></url>
+  <url><loc>https://<alan-adi>/proje-detay.html?id=__PROJE_SLUG_11__</loc></url>
+  <url><loc>https://<alan-adi>/proje-detay.html?id=__PROJE_SLUG_12__</loc></url>
+  <url><loc>https://<alan-adi>/proje-detay.html?id=__PROJE_SLUG_13__</loc></url>
+  <url><loc>https://<alan-adi>/proje-detay.html?id=__PROJE_SLUG_14__</loc></url>
+  <url><loc>https://<alan-adi>/proje-detay.html?id=__PROJE_SLUG_15__</loc></url>
+  <url><loc>https://<alan-adi>/proje-detay.html?id=__PROJE_SLUG_16__</loc></url>
+  <url><loc>https://<alan-adi>/proje-detay.html?id=__PROJE_SLUG_17__</loc></url>
+  <url><loc>https://<alan-adi>/proje-detay.html?id=__PROJE_SLUG_18__</loc></url>
+  <url><loc>https://<alan-adi>/proje-detay.html?id=__PROJE_SLUG_19__</loc></url>
+  <url><loc>https://<alan-adi>/proje-detay.html?id=__PROJE_SLUG_20__</loc></url>
+  <url><loc>https://<alan-adi>/proje-detay.html?id=__PROJE_SLUG_21__</loc></url>
+  <url><loc>https://<alan-adi>/proje-detay.html?id=__PROJE_SLUG_22__</loc></url>
+  <url><loc>https://<alan-adi>/proje-detay.html?id=__PROJE_SLUG_23__</loc></url>
+  <url><loc>https://<alan-adi>/proje-detay.html?id=__PROJE_SLUG_24__</loc></url>
+  <url><loc>https://<alan-adi>/proje-detay.html?id=__PROJE_SLUG_25__</loc></url>
+  <url><loc>https://<alan-adi>/proje-detay.html?id=__PROJE_SLUG_26__</loc></url>
+  <url><loc>https://<alan-adi>/proje-detay.html?id=__PROJE_SLUG_27__</loc></url>
+  <url><loc>https://<alan-adi>/proje-detay.html?id=__PROJE_SLUG_28__</loc></url>
+  <url><loc>https://<alan-adi>/proje-detay.html?id=__PROJE_SLUG_29__</loc></url>
+  <url><loc>https://<alan-adi>/proje-detay.html?id=__PROJE_SLUG_30__</loc></url>
+  <url><loc>https://<alan-adi>/proje-detay.html?id=__PROJE_SLUG_31__</loc></url>
+  <url><loc>https://<alan-adi>/proje-detay.html?id=__PROJE_SLUG_32__</loc></url>
+  <url><loc>https://<alan-adi>/proje-detay.html?id=__PROJE_SLUG_33__</loc></url>
+  <url><loc>https://<alan-adi>/proje-detay.html?id=__PROJE_SLUG_34__</loc></url>
+  <url><loc>https://<alan-adi>/proje-detay.html?id=__PROJE_SLUG_35__</loc></url>
+  <url><loc>https://<alan-adi>/proje-detay.html?id=__PROJE_SLUG_36__</loc></url>
+  <url><loc>https://<alan-adi>/proje-detay.html?id=__PROJE_SLUG_37__</loc></url>
+  <url><loc>https://<alan-adi>/proje-detay.html?id=__PROJE_SLUG_38__</loc></url>
+  <url><loc>https://<alan-adi>/proje-detay.html?id=__PROJE_SLUG_39__</loc></url>
+  <url><loc>https://<alan-adi>/proje-detay.html?id=__PROJE_SLUG_40__</loc></url>
+  <url><loc>https://<alan-adi>/proje-detay.html?id=__PROJE_SLUG_41__</loc></url>
+</urlset>

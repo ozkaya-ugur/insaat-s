@@ -85,7 +85,7 @@ function initHeaderComponent() {
             </nav>
             <div class="mobile-menu-footer">
                 <p>&copy; 2026 BUYAPI İNŞAAT A.Ş.</p>
-                <a href="tel:4443343"><i class="fa-solid fa-phone"></i> 444 33 43</a>
+                <a href="tel:+900000000000" id="headerPhoneLink"><i class="fa-solid fa-phone"></i> <span id="headerPhoneText">Telefon</span></a>
             </div>
         </div>
     </div>
@@ -249,8 +249,30 @@ function initHeaderComponent() {
         }
     };
 
+    async function loadHeaderContactSettings() {
+        try {
+            const apiBase = getHeaderApiBase();
+            const curLang = localStorage.getItem("selectedLang") || "tr";
+            const res = await fetch(`${apiBase}/api/settings?lang=${curLang}&t=${Date.now()}`);
+            if (!res.ok) return;
+            const s = await res.json();
+            const rawPhone = (s.phone || s.kd_contact_phone || '').toString();
+            const digits = rawPhone.replace(/\D/g, '');
+            const href = digits ? `tel:+${digits}` : '';
+
+            const phoneLink = document.getElementById('headerPhoneLink');
+            const phoneText = document.getElementById('headerPhoneText');
+            if (phoneLink && href) phoneLink.href = href;
+            if (phoneText && rawPhone) phoneText.textContent = rawPhone;
+        } catch (e) {
+            console.warn('Header iletişim ayarları yüklenemedi:', e);
+        }
+    }
+
+    window.loadHeaderContactSettings = loadHeaderContactSettings;
     loadDynamicLanguages();
     window.loadDynamicPages();
+    loadHeaderContactSettings();
     updateActiveLanguageUI();
 
     if (typeof applyTranslations === "function") {
@@ -318,6 +340,9 @@ window.addEventListener("languageChanged", () => {
     updateActiveLanguageUI();
     if (typeof window.loadDynamicPages === "function") {
         window.loadDynamicPages();
+    }
+    if (typeof window.loadHeaderContactSettings === "function") {
+        window.loadHeaderContactSettings();
     }
     if (typeof window.applyTranslations === "function") {
         window.applyTranslations(window.currentLang);

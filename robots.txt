@@ -1,0 +1,10 @@
+# BUYAPI robots.txt (Üretim için şablon)
+# Dayanak: buyapi_kod_sartnamesi.md Bölüm 3/F
+
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /api/
+
+# TODO: Aşağıdaki alan adını canlı alan adınızla değiştirin.
+Sitemap: https://<alan-adi>/sitemap.xml

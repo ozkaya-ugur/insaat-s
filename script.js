@@ -11,6 +11,33 @@ let currentLang = localStorage.getItem("selectedLang") || "tr";
 window.currentLang = currentLang; // Global Kapsama Tanımla
 let UI_TRANSLATIONS = {}; // Veritabanındaki `site_settings` tablosundan dinamik dolacak
 
+// Tekrarlı API çağrılarını azaltmak için basit bellek önbelleği
+const __apiCache = new Map();
+function fetchJsonCached(url, options = {}, { ttlMs = 30000, force = false } = {}) {
+    const key = `${url}::${JSON.stringify(options || {})}`;
+    const now = Date.now();
+
+    if (!force && __apiCache.has(key)) {
+        const entry = __apiCache.get(key);
+        if (now - entry.time < ttlMs) {
+            return entry.promise;
+        }
+    }
+
+    const promise = fetch(url, options).then(async (res) => {
+        if (!res.ok) throw new Error(`HTTP ${res.status} - ${url}`);
+        return res.json();
+    });
+
+    __apiCache.set(key, { time: now, promise });
+    promise.catch(() => {
+        const cur = __apiCache.get(key);
+        if (cur?.promise === promise) __apiCache.delete(key);
+    });
+
+    return promise;
+}
+
 // DİL VE DURUM ÇEVİRİ SÖZLÜKLERİ
 const STATUS_TRANSLATIONS = {
     'devam-eden': { tr: 'Devam Ediyor', en: 'Ongoing Project', ar: 'مشروع قيد الإنشاء' },
@@ -36,11 +63,8 @@ function getTypeLabel(typeKey, lang = currentLang) {
 // VERİTABANINDAN TÜM MENÜ VE SİTE ÇEVİRİLERİNİ ÇEKME MOTORU
 window.loadTranslationsFromDB = async function() {
     try {
-        const res = await fetch(`${API_URL}/translations?t=${Date.now()}`);
-        if (res.ok) {
-            UI_TRANSLATIONS = await res.json();
-            window.UI_TRANSLATIONS = UI_TRANSLATIONS;
-        }
+        UI_TRANSLATIONS = await fetchJsonCached(`${API_URL}/translations`, {}, { ttlMs: 5 * 60 * 1000, force: false });
+        window.UI_TRANSLATIONS = UI_TRANSLATIONS;
     } catch (e) {
         console.error("Veritabanından çeviriler çekilemedi:", e);
     }
@@ -93,31 +117,49 @@ function applyTranslations(lang) { return window.applyTranslations(lang); }
 
 // DİNAMİK ÇOK DİLLİ SEO METATAG ENGINE
 async function applySeoMetaTags(lang = currentLang) {
+    // Detay sayfasında başlık/seo proje bazlı akıştan yönetiliyor.
+    if (document.body?.classList.contains('detail-page-body')) return;
+
     try {
-        const res = await fetch(`${API_URL}/seo`);
-        const seoData = await res.json();
-        if (!seoData || !seoData[lang]) return;
+        const path = (location.pathname.split('/').pop() || 'index.html').toLowerCase();
+        const slug = path.replace('.html', '') || 'index';
+        const isHome = slug === 'index';
 
-        const currentSeo = seoData[lang];
+        const staticTitle = document.querySelector('head > title')?.textContent?.trim() || document.title;
 
-        // 1. Title Güncelle
-        if (currentSeo.title) {
+        const [seoData, pages] = await Promise.all([
+            fetchJsonCached(`${API_URL}/seo`, {}, { ttlMs: 60 * 1000 }),
+            fetchJsonCached(`${API_URL}/pages?menu=1&lang=${encodeURIComponent(lang)}`, {}, { ttlMs: 60 * 1000 }).catch(() => [])
+        ]);
+
+        const currentSeo = seoData?.[lang] || seoData?.tr || {};
+        const pageSeo = (pages || []).find((p) => (p.slug || '').toLowerCase() === slug) || null;
+
+        // 1) Sayfaya özel SEO varsa önceliklidir
+        if (pageSeo?.seoTitle) {
+            document.title = pageSeo.seoTitle;
+        } else if (isHome && currentSeo.title) {
+            // 2) Genel SEO yalnızca ana sayfada title'ı ezebilir
             document.title = currentSeo.title;
+        } else if (staticTitle) {
+            // 3) Diğer sayfalarda statik title korunur
+            document.title = staticTitle;
         }
 
-        // 2. Meta Description Güncelle
-        if (currentSeo.desc) {
-            let metaDesc = document.querySelector('meta[name="description"]');
-            if (!metaDesc) {
-                metaDesc = document.createElement('meta');
-                metaDesc.setAttribute('name', 'description');
-                document.head.appendChild(metaDesc);
-            }
+        let metaDesc = document.querySelector('meta[name="description"]');
+        if (!metaDesc) {
+            metaDesc = document.createElement('meta');
+            metaDesc.setAttribute('name', 'description');
+            document.head.appendChild(metaDesc);
+        }
+
+        if (pageSeo?.seoDesc) {
+            metaDesc.setAttribute('content', pageSeo.seoDesc);
+        } else if (isHome && currentSeo.desc) {
             metaDesc.setAttribute('content', currentSeo.desc);
         }
 
-        // 3. Meta Keywords Güncelle
-        if (currentSeo.keywords) {
+        if (isHome && currentSeo.keywords) {
             let metaKey = document.querySelector('meta[name="keywords"]');
             if (!metaKey) {
                 metaKey = document.createElement('meta');
@@ -139,6 +181,17 @@ function lockMobileHeroHeight() {
     }
 }
 window.addEventListener('DOMContentLoaded', lockMobileHeroHeight);
+
+// Canonical etiketi yoksa üret
+function ensureCanonicalTag() {
+    let canonical = document.querySelector('link[rel="canonical"]');
+    if (!canonical) {
+        canonical = document.createElement('link');
+        canonical.setAttribute('rel', 'canonical');
+        document.head.appendChild(canonical);
+    }
+    canonical.setAttribute('href', window.location.href.split('#')[0]);
+}
 
 // Haritada Şehre Tıklandığında Alt Panele Yumuşak Kaydırma (Smooth Scroll)
 window.scrollToMapProjects = function(cityKey) {
@@ -185,6 +238,7 @@ async function initApp() {
     // 1. ÖNCE ÇEVİRİLERİ VE SEO METATAGLERİNİ MYSQL VERİTABANINDAN ÇEK VE UYGULA
     await loadTranslationsFromDB();
     applyTranslations(currentLang);
+    ensureCanonicalTag();
     await applySeoMetaTags(currentLang);
 
     // 2. AKTİF MENÜ VURGULAMA
@@ -458,9 +512,14 @@ function initHeroSliderControl() {
 
 // API'DEN PROJELERİ ÇEKİP HARİTA VE LİSTELEME İLE SENKRONİZE EDEN MOTOR
 async function fetchProjectsAndMapData() {
+    // Projeler/map bileşeni olmayan sayfalarda gereksiz çağrı yapmayalım.
+    const needsProjectsData = document.getElementById('highchartsTurkeyMap')
+        || document.getElementById('projectGridContainer')
+        || document.getElementById('projectListContainer');
+    if (!needsProjectsData) return;
+
     try {
-        const res = await fetch(`${API_URL}/projects?lang=${currentLang}`);
-        const projects = await res.json();
+        const projects = await fetchJsonCached(`${API_URL}/projects?lang=${encodeURIComponent(currentLang)}`, {}, { ttlMs: 60 * 1000 });
         if (!projects) return;
 
         let cityProjectsData = {};
@@ -777,12 +836,12 @@ async function initProjectDetailPage() {
         return window.forceLoadProjectDetails();
     }
     const urlParams = new URLSearchParams(window.location.search);
-    const slug = urlParams.get('slug') || urlParams.get('id') || 'intense';
+    const slug = urlParams.get('slug') || urlParams.get('id');
+    if (!slug) return;
 
     try {
         // API'den mevcut dildeki projeleri çek
-        const res = await fetch(`${API_URL}/projects?lang=${currentLang}`);
-        const projects = await res.json();
+        const projects = await fetchJsonCached(`${API_URL}/projects?lang=${encodeURIComponent(currentLang)}`, {}, { ttlMs: 60 * 1000 });
         
         // URL'deki slug veya id ile eşleşen projeyi bul
         const project = projects.find(p => p.slug === slug || String(p.id) === String(slug));

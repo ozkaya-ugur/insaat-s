@@ -1,0 +1,40 @@
+<!--
+  Canonical etiketi örnekleri
+  Dayanak: buyapi_kod_sartnamesi.md Bölüm 3/F
+  Not: <alan-adi> yer tutucusunu gerçek alan adınızla değiştirin.
+-->
+
+<!-- index.html -->
+<link rel="canonical" href="https://<alan-adi>/index.html">
+
+<!-- kurumsal.html -->
+<link rel="canonical" href="https://<alan-adi>/kurumsal.html">
+
+<!-- projeler.html -->
+<link rel="canonical" href="https://<alan-adi>/projeler.html">
+
+<!-- kentsel-donusum.html -->
+<link rel="canonical" href="https://<alan-adi>/kentsel-donusum.html">
+
+<!-- iletisim.html -->
+<link rel="canonical" href="https://<alan-adi>/iletisim.html">
+
+<!-- proje-detay.html için JS ile dinamik canonical -->
+<script>
+(function () {
+  // Bu kodu proje-detay.html içinde, proje slug/id belirlendikten sonra çalıştırın.
+  const params = new URLSearchParams(window.location.search);
+  const slugOrId = params.get('id') || params.get('slug');
+  if (!slugOrId) return;
+
+  const canonicalHref = `https://<alan-adi>/proje-detay.html?id=${encodeURIComponent(slugOrId)}`;
+
+  let link = document.querySelector('link[rel="canonical"]');
+  if (!link) {
+    link = document.createElement('link');
+    link.setAttribute('rel', 'canonical');
+    document.head.appendChild(link);
+  }
+  link.setAttribute('href', canonicalHref);
+})();
+</script>
