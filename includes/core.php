@@ -108,6 +108,114 @@ function admin_user(): ?array {
 function require_login(): array {
     $u = admin_user();
     if (!$u) { header('Location: /admin/login.php'); exit; }
+    // Yetki ve aktiflik her istekte veritabanından tazelenir; böylece verilen/alınan
+    // yetkiler ve pasife alınan hesap anında etkili olur.
+    try {
+        $row = q('SELECT id,username,full_name,role,permissions,is_active,must_change_password FROM admins WHERE id=?', [(int)$u['id']])->fetch();
+        if (!$row || (int)$row['is_active'] !== 1) {
+            $_SESSION = [];
+            session_destroy();
+            header('Location: /admin/login.php?pasif=1');
+            exit;
+        }
+        $_SESSION['admin'] = [
+            'id' => (int)$row['id'], 'username' => $row['username'], 'name' => $row['full_name'],
+            'role' => $row['role'] ?: 'staff', 'permissions' => $row['permissions'],
+            'must_change_password' => (int)$row['must_change_password'],
+        ];
+        return $_SESSION['admin'];
+    } catch (Throwable $ex) {
+        return $u; // tablo/kolon henüz yoksa eski davranış korunur
+    }
+}
+
+// ---------- Personel yetkileri ----------
+// Sayfa => bölümler. Sahip (owner) rolü bu ağacın tamamına otomatik sahiptir.
+function admin_perm_tree(): array {
+    return [
+        'index'         => ['label' => 'Genel Bakış', 'icon' => 'fa-gauge-high', 'sections' => ['view' => 'Görüntüle']],
+        'projects'      => ['label' => 'Projeler', 'icon' => 'fa-building', 'sections' => ['view' => 'Listele', 'create' => 'Yeni proje ekle', 'edit' => 'Düzenle', 'delete' => 'Sil']],
+        'urban_renewal' => ['label' => 'Kentsel Dönüşüm', 'icon' => 'fa-recycle', 'sections' => ['view' => 'Görüntüle', 'edit' => 'Düzenle']],
+        'about'         => ['label' => 'Hakkımızda / Kurumsal', 'icon' => 'fa-landmark', 'sections' => ['view' => 'Görüntüle', 'edit' => 'Düzenle']],
+        'pages'         => ['label' => 'Sayfalar', 'icon' => 'fa-file-lines', 'sections' => ['view' => 'Listele', 'create' => 'Yeni sayfa', 'edit' => 'Düzenle', 'delete' => 'Sil']],
+        'sliders'       => ['label' => 'Ana Sayfa Slider', 'icon' => 'fa-images', 'sections' => ['view' => 'Görüntüle', 'edit' => 'Düzenle']],
+        'messages'      => ['label' => 'Mesajlar', 'icon' => 'fa-envelope', 'sections' => ['view' => 'Görüntüle', 'process' => 'Atama & sonuç işle', 'delete' => 'Sil', 'export' => 'CSV indir']],
+        'languages'     => ['label' => 'Diller', 'icon' => 'fa-globe', 'sections' => ['view' => 'Görüntüle', 'edit' => 'Düzenle']],
+        'translations'  => ['label' => 'Çeviriler', 'icon' => 'fa-language', 'sections' => ['view' => 'Görüntüle', 'edit' => 'Düzenle']],
+        'seo'           => ['label' => 'SEO', 'icon' => 'fa-magnifying-glass-chart', 'sections' => ['view' => 'Görüntüle', 'edit' => 'Düzenle']],
+        'settings'      => ['label' => 'Site Ayarları', 'icon' => 'fa-gear', 'sections' => ['view' => 'Görüntüle', 'general' => 'Site & iletişim bilgileri', 'mail' => 'E-posta testi']],
+        'staff'         => ['label' => 'Personel & Yetkiler', 'icon' => 'fa-users-gear', 'sections' => ['view' => 'Listele', 'create' => 'Personel ekle', 'edit' => 'Düzenle / şifre belirle', 'delete' => 'Sil', 'permissions' => 'Yetki ver']],
+        'account'       => ['label' => 'Hesabım', 'icon' => 'fa-user-shield', 'sections' => ['view' => 'Görüntüle', 'password' => 'Kendi şifresini değiştir']],
+    ];
+}
+
+function admin_is_owner(?array $u = null): bool {
+    $u = $u ?? admin_user();
+    return $u !== null && ($u['role'] ?? '') === 'owner';
+}
+
+function admin_perms(?array $u = null): array {
+    $u = $u ?? admin_user();
+    if (!$u) return [];
+    $raw = $u['permissions'] ?? '';
+    if (is_array($raw)) return $raw;
+    if (!is_string($raw) || $raw === '') return [];
+    $d = json_decode($raw, true);
+    return is_array($d) ? $d : [];
+}
+
+function admin_can(string $page, string $section = 'view', ?array $u = null): bool {
+    $u = $u ?? admin_user();
+    if (!$u) return false;
+    if (($u['role'] ?? '') === 'owner') return true;
+    // Her personel kendi hesap sayfasını ve şifresini yönetebilir.
+    if ($page === 'account' && in_array($section, ['view', 'password'], true)) return true;
+    $p = admin_perms($u);
+    if (!isset($p[$page]) || !is_array($p[$page])) return false;
+    return in_array($section, $p[$page], true);
+}
+
+function admin_can_any(string $page, ?array $u = null): bool {
+    $u = $u ?? admin_user();
+    if (!$u) return false;
+    if (($u['role'] ?? '') === 'owner') return true;
+    if ($page === 'account') return true;
+    $p = admin_perms($u);
+    return !empty($p[$page]) && is_array($p[$page]);
+}
+
+// Kullanıcının yetkili olduğu ilk sayfa (giriş sonrası yönlendirme için)
+function admin_home_url(?array $u = null): string {
+    $u = $u ?? admin_user();
+    foreach (admin_perm_tree() as $page => $meta) {
+        if (admin_can_any($page, $u)) return '/admin/' . $page . '.php';
+    }
+    return '/admin/account.php';
+}
+
+function admin_deny(): void {
+    http_response_code(403);
+    ?><!DOCTYPE html><html lang="tr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="noindex,nofollow"><title>Yetki yok | BUYAPI Panel</title>
+    <link rel="stylesheet" href="/admin/assets/admin.css"></head><body>
+    <div class="login-wrap"><div class="login-box" style="text-align:center">
+      <h1 style="font-size:22px">Yetkiniz yok</h1>
+      <p class="sub" style="margin:10px 0 18px">Bu sayfaya veya bu işleme erişim yetkiniz bulunmuyor. Yetki için yöneticinize başvurun.</p>
+      <a class="btn" href="<?= e(admin_home_url()) ?>" style="justify-content:center;width:100%">Panele dön</a>
+    </div></div></body></html><?php
+    exit;
+}
+
+// Salt görüntüleme modu: sayfa açılır, form alanları kilitlenir.
+function admin_readonly(?bool $set = null): bool {
+    static $ro = false;
+    if ($set !== null) $ro = $set;
+    return $ro;
+}
+
+function require_perm(string $page, string $section = 'view'): array {
+    $u = require_login();
+    if (!admin_can($page, $section, $u)) admin_deny();
     return $u;
 }
 
@@ -244,6 +352,149 @@ function throttle_hit(string $key): void {
 }
 function throttle_clear(string $key): void {
     try { q('DELETE FROM login_attempts WHERE k=?', [$key]); } catch (Throwable $ex) { }
+}
+
+// ---------- Favicon ----------
+const FAVICON_FILES = ['favicon.ico', 'favicon-16x16.png', 'favicon-32x32.png', 'apple-touch-icon.png'];
+
+/** Yüklenen görselden favicon setini üretir; kök dizindeki dosyaları (yedekleyerek) günceller. */
+function favicon_generate(string $srcFile, string $ext): array {
+    if (!function_exists('imagecreatefromstring')) throw new RuntimeException('Sunucuda GD eklentisi yok, favicon üretilemedi.');
+    $dir = UPLOAD_DIR . '/favicon';
+    if (!is_dir($dir) && !mkdir($dir, 0755, true)) throw new RuntimeException('Favicon klasörü oluşturulamadı.');
+    $ver = date('YmdHis');
+    $out = [];
+
+    if ($ext === 'ico') {
+        if (!copy($srcFile, "$dir/favicon-$ver.ico")) throw new RuntimeException('ICO dosyası kaydedilemedi.');
+        $out['favicon.ico'] = "$dir/favicon-$ver.ico";
+    } else {
+        $img = @imagecreatefromstring((string)file_get_contents($srcFile));
+        if (!$img) throw new RuntimeException('Görsel okunamadı (PNG, JPG veya WEBP yükleyin).');
+        $w = imagesx($img); $h = imagesy($img); $side = min($w, $h);
+        $sx = (int)(($w - $side) / 2); $sy = (int)(($h - $side) / 2);
+        $pngs = [];
+        foreach (['favicon-16x16.png' => 16, 'favicon-32x32.png' => 32, 'apple-touch-icon.png' => 180, 'favicon-48.png' => 48] as $name => $size) {
+            $c = imagecreatetruecolor($size, $size);
+            imagealphablending($c, false); imagesavealpha($c, true);
+            imagefill($c, 0, 0, imagecolorallocatealpha($c, 0, 0, 0, 127));
+            imagecopyresampled($c, $img, 0, 0, $sx, $sy, $size, $size, $side, $side);
+            ob_start(); imagepng($c, null, 9); $pngs[$size] = ob_get_clean();
+            imagedestroy($c);
+            if ($size !== 48) { $p = "$dir/" . pathinfo($name, PATHINFO_FILENAME) . "-$ver.png"; file_put_contents($p, $pngs[$size]); $out[$name] = $p; }
+        }
+        imagedestroy($img);
+        // PNG gömülü ICO (16, 32, 48)
+        $sizes = [16, 32, 48];
+        $ico = pack('vvv', 0, 1, count($sizes));
+        $offset = 6 + 16 * count($sizes);
+        $data = '';
+        foreach ($sizes as $s) {
+            $ico .= pack('CCCCvvVV', $s, $s, 0, 0, 1, 32, strlen($pngs[$s]), $offset);
+            $offset += strlen($pngs[$s]); $data .= $pngs[$s];
+        }
+        file_put_contents("$dir/favicon-$ver.ico", $ico . $data);
+        $out['favicon.ico'] = "$dir/favicon-$ver.ico";
+    }
+
+    // Kök dizindeki standart dosyaları güncelle (ilk seferde orijinaller yedeklenir)
+    $root = realpath(__DIR__ . '/..');
+    $rootUpdated = true;
+    foreach (FAVICON_FILES as $name) {
+        $target = "$root/$name";
+        if (!isset($out[$name])) continue;
+        $bak = "$dir/default-$name";
+        if (is_file($target) && !is_file($bak)) @copy($target, $bak);
+        if (!@copy($out[$name], $target)) $rootUpdated = false;
+    }
+
+    $rel = fn($p) => $p ? UPLOAD_URL_PATH . '/favicon/' . basename($p) : '';
+    $vals = [
+        'favicon_ico'   => $rel($out['favicon.ico'] ?? ''),
+        'favicon_32'    => $rel($out['favicon-32x32.png'] ?? ''),
+        'favicon_16'    => $rel($out['favicon-16x16.png'] ?? ''),
+        'favicon_apple' => $rel($out['apple-touch-icon.png'] ?? ''),
+        'favicon_version' => $ver,
+    ];
+    foreach ($vals as $k => $v) q('INSERT INTO site_settings (s_key,s_value) VALUES (?,?) ON DUPLICATE KEY UPDATE s_value=VALUES(s_value)', [$k, $v]);
+    // Eski üretilmiş dosyaları temizle
+    foreach (glob("$dir/*-*.{png,ico}", GLOB_BRACE) ?: [] as $f) {
+        $b = basename($f);
+        if (strpos($b, 'default-') === 0 || strpos($b, $ver) !== false) continue;
+        @unlink($f);
+    }
+    return ['root_updated' => $rootUpdated, 'version' => $ver] + $vals;
+}
+
+/** Varsayılan favicon setine döner. */
+function favicon_reset(): void {
+    $dir = UPLOAD_DIR . '/favicon';
+    $root = realpath(__DIR__ . '/..');
+    foreach (FAVICON_FILES as $name) {
+        if (is_file("$dir/default-$name")) @copy("$dir/default-$name", "$root/$name");
+    }
+    foreach (glob("$dir/*-*.{png,ico}", GLOB_BRACE) ?: [] as $f) {
+        if (strpos(basename($f), 'default-') !== 0) @unlink($f);
+    }
+    q("DELETE FROM site_settings WHERE s_key IN ('favicon_ico','favicon_32','favicon_16','favicon_apple')");
+    q("INSERT INTO site_settings (s_key,s_value) VALUES ('favicon_version',?) ON DUPLICATE KEY UPDATE s_value=VALUES(s_value)", [date('YmdHis')]);
+}
+
+/** <head> için favicon link etiketleri (sunucu tarafı render eden sayfalar). */
+function favicon_links_html(string $prefix = '/'): string {
+    $v = setting('favicon_version', '');
+    $q = $v !== '' ? '?v=' . rawurlencode($v) : '';
+    $pick = fn($key, $def) => ($p = setting($key, '')) !== '' ? $prefix . ltrim($p, '/') : $prefix . $def;
+    return '<link rel="icon" type="image/x-icon" href="' . e($pick('favicon_ico', 'favicon.ico') . $q) . '">' . "\n"
+        . '    <link rel="icon" type="image/png" sizes="32x32" href="' . e($pick('favicon_32', 'favicon-32x32.png') . $q) . '">' . "\n"
+        . '    <link rel="icon" type="image/png" sizes="16x16" href="' . e($pick('favicon_16', 'favicon-16x16.png') . $q) . '">' . "\n"
+        . '    <link rel="apple-touch-icon" sizes="180x180" href="' . e($pick('favicon_apple', 'apple-touch-icon.png') . $q) . '">';
+}
+
+// ---------- Medya kütüphanesi ----------
+/** uploads/ ve images/ altındaki görsel/video dosyalarını listeler. */
+function media_library(string $search = '', string $type = 'all'): array {
+    $root = realpath(__DIR__ . '/..');
+    $imgExt = ['jpg','jpeg','png','webp','gif'];
+    $vidExt = ['mp4','webm'];
+    $allowed = $type === 'image' ? $imgExt : ($type === 'video' ? $vidExt : array_merge($imgExt, $vidExt));
+    $items = [];
+    foreach (['uploads', 'images'] as $base) {
+        $dir = "$root/$base";
+        if (!is_dir($dir)) continue;
+        $it = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dir, FilesystemIterator::SKIP_DOTS));
+        foreach ($it as $f) {
+            if (!$f->isFile()) continue;
+            $ext = strtolower($f->getExtension());
+            if (!in_array($ext, $allowed, true)) continue;
+            $rel = $base . '/' . str_replace('\\', '/', substr($f->getPathname(), strlen($dir) + 1));
+            if (strpos($rel, 'uploads/favicon/') === 0) continue;
+            if ($search !== '' && stripos($rel, $search) === false) continue;
+            $items[] = ['path' => $rel, 'type' => in_array($ext, $vidExt, true) ? 'video' : 'image', 'size' => $f->getSize(), 'mtime' => $f->getMTime()];
+        }
+    }
+    usort($items, fn($a, $b) => $b['mtime'] <=> $a['mtime']);
+    return $items;
+}
+
+/** Göreli bir medya yolunun güvenli ve mevcut olduğunu doğrular. */
+function media_path_valid(string $path, array $allowedExt): bool {
+    $path = ltrim(trim($path), '/');
+    if ($path === '' || strpos($path, '..') !== false || !preg_match('#^(uploads|images)/[A-Za-z0-9_\-./ ]+$#', $path)) return false;
+    if (!in_array(strtolower(pathinfo($path, PATHINFO_EXTENSION)), $allowedExt, true)) return false;
+    $root = realpath(__DIR__ . '/..');
+    $full = realpath("$root/$path");
+    return $full && strpos($full, $root . DIRECTORY_SEPARATOR) === 0 && is_file($full);
+}
+
+/** Bir dosya başka bir kayıtta kullanılıyor mu (silmeden önce kontrol). */
+function upload_in_use(string $path, int $exceptSliderId = 0): bool {
+    if ($path === '') return false;
+    if ((int)q('SELECT COUNT(*) FROM sliders WHERE image_url=? AND id<>?', [$path, $exceptSliderId])->fetchColumn()) return true;
+    if ((int)q('SELECT COUNT(*) FROM projects WHERE cover_image=?', [$path])->fetchColumn()) return true;
+    if ((int)q('SELECT COUNT(*) FROM project_media WHERE file_path=?', [$path])->fetchColumn()) return true;
+    if ((int)q('SELECT COUNT(*) FROM site_settings WHERE s_value=?', [$path])->fetchColumn()) return true;
+    return false;
 }
 
 // ---------- Dosya yükleme ----------

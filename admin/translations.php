@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/_layout.php';
-require_login();
+require_perm('translations', 'view');
+admin_readonly(!admin_can('translations', 'edit'));
 
 $activeLangs = get_languages();
 $LANGS = [];
@@ -10,6 +11,7 @@ foreach ($activeLangs as $al) {
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     csrf_check();
+    if (!admin_can('translations', 'edit')) admin_deny();
     $act = $_POST['action'] ?? '';
     if ($act === 'save') {
         // Anahtarlarda nokta olduğu için (hero.tag) indeks bazlı dizilerle gönderilir.

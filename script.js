@@ -493,6 +493,7 @@ document.addEventListener("submit", async (e) => {
 
     const nameEl = document.getElementById("inquiryName");
     const phoneEl = document.getElementById("inquiryPhone");
+    const emailEl = document.getElementById("inquiryEmail");
     const noteEl = document.getElementById("inquiryNote");
     const submitBtn = form.querySelector("button[type='submit']");
     const submitText = submitBtn ? submitBtn.querySelector("span") : null;
@@ -500,6 +501,7 @@ document.addEventListener("submit", async (e) => {
 
     const fullName = (nameEl?.value || "").trim();
     const phone = (phoneEl?.value || "").trim();
+    const email = (emailEl?.value || "").trim();
     const note = (noteEl?.value || "").trim();
     const projectTitle = (document.getElementById("detailProjectTitle")?.textContent || "").trim();
     const slug = new URLSearchParams(location.search).get("slug") || new URLSearchParams(location.search).get("id") || "";
@@ -508,11 +510,17 @@ document.addEventListener("submit", async (e) => {
         alert("Lütfen ad soyad ve telefon alanlarını doldurun.");
         return;
     }
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) {
+        alert("Lütfen geçerli bir e-posta adresi girin.");
+        if (emailEl) emailEl.focus();
+        return;
+    }
 
     const payload = {
         source: "proje_detay",
         fullName,
         phone,
+        email,
         project: [projectTitle, slug && !projectTitle.toLowerCase().includes(slug) ? `(${slug})` : ""].filter(Boolean).join(" ") || "Proje Detay Talebi",
         note
     };

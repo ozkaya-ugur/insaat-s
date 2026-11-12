@@ -1,9 +1,11 @@
 <?php
 require_once __DIR__ . '/_layout.php';
-require_login();
+require_perm('languages', 'view');
+admin_readonly(!admin_can('languages', 'edit'));
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     csrf_check();
+    if (!admin_can('languages', 'edit')) admin_deny();
     $act = $_POST['action'] ?? '';
 
     // Yeni Dil Ekle

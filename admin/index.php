@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/_layout.php';
+require_perm('index', 'view');
 admin_header('Genel Bakış', 'index');
 
 $c = fn($sql) => (int)q($sql)->fetchColumn();

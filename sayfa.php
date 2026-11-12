@@ -107,10 +107,7 @@ $seoKeywords = trim((string)($page['seo_keywords'] ?? ''));
     <title><?= e($seoTitle) ?> | BUYAPI</title>
     <?php if ($seoDesc !== ''): ?><meta name="description" content="<?= e($seoDesc) ?>"><?php endif; ?>
     <?php if ($seoKeywords !== ''): ?><meta name="keywords" content="<?= e($seoKeywords) ?>"><?php endif; ?>
-    <link rel="icon" type="image/x-icon" href="/favicon.ico">
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <?= favicon_links_html('/') ?>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Poppins:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">

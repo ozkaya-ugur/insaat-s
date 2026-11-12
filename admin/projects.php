@@ -1,24 +1,28 @@
 <?php
 require_once __DIR__ . '/_layout.php';
-require_login();
+require_perm('projects', 'view');
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     csrf_check();
     $id = (int)($_POST['id'] ?? 0);
     $act = $_POST['action'] ?? '';
     if ($act === 'delete' && $id) {
+        if (!admin_can('projects', 'delete')) admin_deny();
         $p = q('SELECT cover_image, catalog_file FROM projects WHERE id=?', [$id])->fetch();
         foreach (q('SELECT file_path FROM project_media WHERE project_id=?', [$id])->fetchAll() as $m) delete_upload($m['file_path']);
         if ($p) { delete_upload($p['cover_image']); delete_upload($p['catalog_file']); }
         q('DELETE FROM projects WHERE id=?', [$id]);
         flash('Proje silindi.');
     } elseif ($act === 'toggle' && $id) {
+        if (!admin_can('projects', 'edit')) admin_deny();
         q('UPDATE projects SET is_active = 1 - is_active WHERE id=?', [$id]);
         flash('Yayın durumu değiştirildi.');
     } elseif ($act === 'feature' && $id) {
+        if (!admin_can('projects', 'edit')) admin_deny();
         q('UPDATE projects SET is_featured = 1 - is_featured WHERE id=?', [$id]);
         flash('Ana sayfa vitrini güncellendi.');
     } elseif ($act === 'new' && $id) {
+        if (!admin_can('projects', 'edit')) admin_deny();
         q('UPDATE projects SET is_new = 1 - is_new WHERE id=?', [$id]);
         flash('Yeni proje durumu değiştirildi.');
     }
@@ -31,7 +35,7 @@ $rows = q('SELECT * FROM projects ORDER BY sort_order ASC, id DESC')->fetchAll()
 <div class="card">
   <div class="row between" style="margin-bottom:14px">
     <h2 style="margin:0">Tüm Projeler (<?= count($rows) ?>)</h2>
-    <a class="btn" href="project_edit.php"><i class="fa-solid fa-plus"></i> Yeni Proje</a>
+    <?php if (admin_can('projects', 'create')): ?><a class="btn" href="project_edit.php"><i class="fa-solid fa-plus"></i> Yeni Proje</a><?php endif; ?>
   </div>
   <table class="resp">
     <thead><tr><th></th><th>Proje</th><th>Lokasyon</th><th>Durum</th><th>Sıra</th><th>Yayın</th><th></th></tr></thead>
@@ -55,11 +59,11 @@ $rows = q('SELECT * FROM projects ORDER BY sort_order ASC, id DESC')->fetchAll()
           </form>
         </td>
         <td class="row" style="justify-content:flex-end">
-          <a class="btn ghost sm" href="project_edit.php?id=<?= (int)$r['id'] ?>">Düzenle</a>
-          <form method="post" data-confirm="Bu proje ve tüm görselleri kalıcı olarak silinsin mi?"><?= csrf_field() ?>
+          <?php if (admin_can('projects', 'edit')): ?><a class="btn ghost sm" href="project_edit.php?id=<?= (int)$r['id'] ?>">Düzenle</a><?php endif; ?>
+          <?php if (admin_can('projects', 'delete')): ?><form method="post" data-confirm="Bu proje ve tüm görselleri kalıcı olarak silinsin mi?"><?= csrf_field() ?>
             <input type="hidden" name="id" value="<?= (int)$r['id'] ?>">
             <button name="action" value="delete" class="btn danger sm">Sil</button>
-          </form>
+          </form><?php endif; ?>
         </td>
       </tr>
     <?php endforeach; if (!$rows): ?><tr><td colspan="7" class="muted">Henüz proje yok.</td></tr><?php endif; ?>

@@ -1,12 +1,14 @@
 <?php
 require_once __DIR__ . '/_layout.php';
-require_login();
+require_perm('about', 'view');
+admin_readonly(!admin_can('about', 'edit'));
 
 $activeLangs = get_languages();
 
 // ─── POST HANDLER ─────────────────────────────────────────────────────────────
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     csrf_check();
+    if (!admin_can('about', 'edit')) admin_deny();
     $section = $_POST['section'] ?? '';
 
     // ── 1. Banner & Ana İçerik ──────────────────────────────────────────────

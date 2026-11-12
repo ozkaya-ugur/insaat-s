@@ -1,12 +1,14 @@
 <?php
 require_once __DIR__ . '/_layout.php';
-require_login();
+require_perm('urban_renewal', 'view');
+admin_readonly(!admin_can('urban_renewal', 'edit'));
 
 $activeLangs = get_languages();
 
 // 1. POST İşlemleri
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     csrf_check();
+    if (!admin_can('urban_renewal', 'edit')) admin_deny();
     $act = $_POST['action'] ?? '';
 
     // Slayt Ekle

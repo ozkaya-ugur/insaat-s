@@ -326,6 +326,28 @@ window.addEventListener('languageChanged', () => {
     }
 });
 
+// ---------- Favicon (admin panel > SEO'dan yönetilir) ----------
+(function () {
+    if (window.__buyapiFaviconLoaded) return;
+    window.__buyapiFaviconLoaded = true;
+    const base = (location.origin && !location.origin.startsWith('file:')) ? location.origin : '';
+    fetch(`${base}/api/settings?lang=tr`).then(r => r.ok ? r.json() : {}).then(s => {
+        const v = String(s.favicon_version || '').trim();
+        if (!v) return;
+        const q = `?v=${encodeURIComponent(v)}`;
+        const url = (key, def) => `${base}/${String(s[key] || def).replace(/^\/+/, '')}${q}`;
+        const set = (selector, href, attrs) => {
+            let el = document.head.querySelector(selector);
+            if (!el) { el = document.createElement('link'); Object.entries(attrs).forEach(([k, val]) => el.setAttribute(k, val)); document.head.appendChild(el); }
+            el.setAttribute('href', href);
+        };
+        set('link[rel="icon"][type="image/x-icon"]', url('favicon_ico', 'favicon.ico'), { rel: 'icon', type: 'image/x-icon' });
+        set('link[rel="icon"][sizes="32x32"]', url('favicon_32', 'favicon-32x32.png'), { rel: 'icon', type: 'image/png', sizes: '32x32' });
+        set('link[rel="icon"][sizes="16x16"]', url('favicon_16', 'favicon-16x16.png'), { rel: 'icon', type: 'image/png', sizes: '16x16' });
+        set('link[rel="apple-touch-icon"]', url('favicon_apple', 'apple-touch-icon.png'), { rel: 'apple-touch-icon', sizes: '180x180' });
+    }).catch(() => {});
+})();
+
 // ---------- Google Analytics 4 & Meta Pixel (admin panelden; boşsa hiçbir kod yüklenmez) ----------
 (function () {
     if (window.__buyapiTrackingLoaded) return;

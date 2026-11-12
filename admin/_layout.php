@@ -3,31 +3,27 @@ require_once __DIR__ . '/../includes/core.php';
 
 function admin_header(string $title, string $active = ''): array {
     $u = require_login();
+    // Emniyet kemeri: sayfa kendi kontrolünü yapmayı unutsa bile yetkisiz erişim engellenir.
+    if ($active !== '' && !admin_can_any($active, $u)) admin_deny();
     $unread = 0;
-    try { $unread = (int)q('SELECT COUNT(*) FROM messages WHERE is_read=0')->fetchColumn(); } catch (Throwable $e) {}
-    $menu = [
-        'index'        => ['Genel Bakış',  'fa-gauge-high'],
-        'projects'     => ['Projeler',     'fa-building'],
-        'urban_renewal'=> ['Kentsel Dönüşüm', 'fa-recycle'],
-        'about'        => ['Hakkımızda / Kurumsal', 'fa-landmark'],
-        'pages'        => ['Sayfalar',     'fa-file-lines'],
-        'sliders'      => ['Ana Sayfa Slider', 'fa-images'],
-        'messages'     => ['Mesajlar',     'fa-envelope'],
-        'languages'    => ['Diller',       'fa-globe'],
-        'translations' => ['Çeviriler',    'fa-language'],
-        'seo'          => ['SEO',          'fa-magnifying-glass-chart'],
-        'settings'     => ['Site Ayarları','fa-gear'],
-        'account'      => ['Hesabım',      'fa-user-shield'],
-    ];
+    if (admin_can('messages', 'view', $u)) {
+        try { $unread = (int)q('SELECT COUNT(*) FROM messages WHERE is_read=0')->fetchColumn(); } catch (Throwable $e) {}
+    }
+    $menu = [];
+    foreach (admin_perm_tree() as $k => $meta) {
+        if (!admin_can_any($k, $u)) continue;
+        $menu[$k] = [$meta['label'], $meta['icon']];
+    }
     $f = flash();
     ?><!DOCTYPE html>
 <html lang="tr"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
 <title><?= e($title) ?> | BUYAPI Panel</title>
+<?= favicon_links_html('../') ?>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link rel="stylesheet" href="assets/admin.css">
-</head><body>
+</head><body class="<?= admin_readonly() ? 'ro' : '' ?>">
 <aside class="side" id="side">
   <div class="brand">BUYAPI <small>YÖNETİM</small></div>
   <nav>
@@ -39,7 +35,9 @@ function admin_header(string $title, string $active = ''): array {
   <?php endforeach; ?>
   </nav>
   <div class="side-foot">
-    <div><i class="fa-solid fa-circle-user"></i> <?= e($u['username']) ?></div>
+    <div><i class="fa-solid fa-circle-user"></i> <?= e($u['username']) ?>
+      <span class="pill" style="background:rgba(212,175,55,0.16);color:var(--gold);margin-left:6px"><?= admin_is_owner($u) ? 'Sahip' : 'Personel' ?></span>
+    </div>
     <a href="logout.php"><i class="fa-solid fa-right-from-bracket"></i> Çıkış</a>
   </div>
 </aside>
@@ -48,6 +46,10 @@ function admin_header(string $title, string $active = ''): array {
     <button class="burger" onclick="document.getElementById('side').classList.toggle('open')"><i class="fa-solid fa-bars"></i></button>
     <h1><?= e($title) ?></h1>
   </header>
+  <?php if (!empty($u['must_change_password']) && admin_can('account', 'password', $u)): ?>
+    <div class="alert err">Güvenliğiniz için şifrenizi değiştirmeniz gerekiyor. <a href="account.php" style="color:inherit;text-decoration:underline">Hesabım</a> sayfasından yeni şifre belirleyin.</div>
+  <?php endif; ?>
+  <?php if (admin_readonly()): ?><div class="alert">Salt görüntüleme yetkiniz var. Bu sayfada değişiklik kaydedemezsiniz.</div><?php endif; ?>
   <?php if ($f): ?><div class="alert <?= $f[1] === 'err' ? 'err' : 'ok' ?>"><?= e($f[0]) ?></div><?php endif; ?>
 <?php
     return $u;
@@ -57,6 +59,9 @@ function admin_footer(): void { ?>
 </main>
 <script src="assets/dropzone.js?v=1"></script>
 <script>
+const lockForm = (f) => f.querySelectorAll('input,select,textarea,button').forEach(el => { if (!el.closest('[data-keep]')) el.disabled = true; });
+if (document.body.classList.contains('ro')) document.querySelectorAll('main form').forEach(lockForm);
+document.querySelectorAll('main form[data-ro]').forEach(lockForm);
 document.querySelectorAll('form[data-confirm]').forEach(f=>f.addEventListener('submit',e=>{
   if(!confirm(f.dataset.confirm)) e.preventDefault();
 }));

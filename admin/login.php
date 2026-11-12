@@ -2,7 +2,7 @@
 require_once __DIR__ . '/../includes/core.php';
 start_session();
 
-if (admin_user()) redirect('index.php');
+if (admin_user()) redirect(admin_home_url());
 
 // Hiç yönetici yoksa kuruluma yönlendir
 try {
@@ -30,11 +30,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $row = q('SELECT * FROM admins WHERE username=?', [$u])->fetch();
         if ($row && password_verify($p, $row['password_hash'])) {
             session_regenerate_id(true);
-            $_SESSION['admin'] = ['id' => (int)$row['id'], 'username' => $row['username'], 'name' => $row['full_name']];
+            $_SESSION['admin'] = ['id' => (int)$row['id'], 'username' => $row['username'], 'name' => $row['full_name'], 'role' => $row['role'] ?: 'staff', 'permissions' => $row['permissions'] ?? null, 'must_change_password' => (int)($row['must_change_password'] ?? 0)];
             $_SESSION['fails'] = 0;
             throttle_clear($throttleKey);
             q('UPDATE admins SET last_login=NOW() WHERE id=?', [$row['id']]);
-            redirect('index.php');
+            redirect(admin_home_url($_SESSION['admin']));
         }
         $_SESSION['fails']++;
         throttle_hit($throttleKey);

@@ -1,10 +1,11 @@
 <?php
 require_once __DIR__ . '/_layout.php';
-require_login();
+require_perm('projects', 'view');
 
 $id = (int)($_GET['id'] ?? $_POST['id'] ?? 0);
 $p = $id ? q('SELECT * FROM projects WHERE id=?', [$id])->fetch() : null;
 if ($id && !$p) { flash('Proje bulunamadı.', 'err'); redirect('projects.php'); }
+if (!admin_can('projects', $p ? 'edit' : 'create')) admin_deny();
 
 $IMG = ['jpg','jpeg','png','webp','gif'];
 $KINDS = [

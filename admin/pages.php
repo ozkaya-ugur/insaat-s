@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/_layout.php';
-require_login();
+require_perm('pages', 'view');
+admin_readonly(!admin_can('pages', 'edit'));
 
 $layoutTemplates = [
     'standart'  => 'Standart (banner + tek kolon metin)',
@@ -16,6 +17,9 @@ $editPage = $editId ? q('SELECT * FROM pages WHERE id=?', [$editId])->fetch() : 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     csrf_check();
     $act = $_POST['action'] ?? '';
+    if ($act === 'delete') { if (!admin_can('pages', 'delete')) admin_deny(); }
+    elseif ($act === 'save') { if (!admin_can('pages', 'create') && !admin_can('pages', 'edit')) admin_deny(); }
+    elseif (!admin_can('pages', 'edit')) admin_deny();
 
     if ($act === 'toggle_menu') {
         $id = (int)($_POST['id'] ?? 0);
@@ -361,10 +365,10 @@ $v = fn($k, $d = '') => e($editPage[$k] ?? $d);
           </td>
           <td style="text-align:right">
             <div class="row" style="justify-content:flex-end;gap:6px">
-              <a class="btn sm <?= $editId === (int)$p['id'] ? '' : 'ghost' ?>" href="pages.php?edit=<?= (int)$p['id'] ?>" title="Düzenle">
+              <?php if (admin_can('pages', 'edit')): ?><a class="btn sm <?= $editId === (int)$p['id'] ? '' : 'ghost' ?>" href="pages.php?edit=<?= (int)$p['id'] ?>" title="Düzenle">
                 <i class="fa-solid fa-pen"></i>
-              </a>
-              <?php if (!in_array($p['slug'], ['anasayfa', 'projeler', 'kentsel-donusum'], true)): ?>
+              </a><?php endif; ?>
+              <?php if (admin_can('pages', 'delete') && !in_array($p['slug'], ['anasayfa', 'projeler', 'kentsel-donusum'], true)): ?>
                 <form method="post" data-confirm="'<?= e($p['title_tr']) ?>' sayfasını silmek istediğinize emin misiniz?" style="display:inline">
                   <?= csrf_field() ?>
                   <input type="hidden" name="action" value="delete">

@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/_layout.php';
-require_login();
+require_perm('settings', 'view');
+admin_readonly(!admin_can('settings', 'general') && !admin_can('settings', 'mail'));
 
 $activeLangs = get_languages();
 
@@ -18,6 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Test e-postası gönderimi
     if (($_POST['action'] ?? '') === 'test_mail') {
+        if (!admin_can('settings', 'mail')) admin_deny();
         $to = trim((string)($_POST['test_to'] ?? ''));
         if ($to === '') $to = setting('notify_email');
         if (!filter_var($to, FILTER_VALIDATE_EMAIL)) {
@@ -29,6 +31,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         redirect('settings.php');
     }
+
+    if (!admin_can('settings', 'general')) admin_deny();
 
     // 1. İletişim & Sosyal Medya
     foreach ($FIELDS_CONTACT as $k => [$l, $t]) {
@@ -80,7 +84,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 admin_header('Site & Sayfa Ayarları', 'settings');
 ?>
 
-<form method="post" style="display:flex;flex-direction:column;gap:24px;"><?= csrf_field() ?>
+<form method="post" style="display:flex;flex-direction:column;gap:24px;"<?= admin_can('settings', 'general') ? '' : ' data-ro="1"' ?>><?= csrf_field() ?>
 
   <!-- ANALİTİK & TAKİP -->
   <div class="card">
@@ -329,6 +333,7 @@ admin_header('Site & Sayfa Ayarları', 'settings');
 $mailLog = [];
 try { $mailLog = q('SELECT * FROM mail_log ORDER BY id DESC LIMIT 8')->fetchAll(); } catch (Throwable $ex) {}
 ?>
+<?php if (admin_can('settings', 'mail')): ?>
 <div class="card" style="margin-top:24px">
   <div class="row between" style="margin-bottom:14px">
     <h2><i class="fa-solid fa-paper-plane" style="color:var(--gold)"></i> Bildirim E-postası Testi</h2>
@@ -360,5 +365,6 @@ try { $mailLog = q('SELECT * FROM mail_log ORDER BY id DESC LIMIT 8')->fetchAll(
     </tbody>
   </table>
 </div>
+<?php endif; ?>
 
 <?php admin_footer(); ?>
