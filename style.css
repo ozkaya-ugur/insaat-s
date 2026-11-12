@@ -4473,11 +4473,31 @@ body.detail-page-body {
 .footer-credit a:hover { color: #ffffff; }
 
 
-.projects-pagination{margin-top:28px;padding:14px;border:1px solid var(--border-hairline);background:rgba(255,255,255,.02)}
-.projects-pagination-top{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:10px}
-.projects-pagination-controls{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap}
-.projects-page-numbers{display:flex;gap:6px;flex-wrap:wrap;justify-content:center}
-.projects-page-numbers .page-num.active{background:var(--accent-gold);color:#000;border-color:var(--accent-gold)}
+/* Projeler sayfalandırma — anasayfa ok butonlarıyla aynı dil */
+.projects-pager{margin:48px auto 8px;display:flex;flex-direction:column;align-items:center;gap:16px}
+.projects-pager .pager-bar{display:flex;align-items:center;justify-content:center;gap:14px}
+.projects-pager .pager-arrow{background:var(--card-glass);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid var(--border-hairline);color:var(--text-white);width:48px;height:48px;display:inline-flex;align-items:center;justify-content:center;font-size:15px;cursor:pointer;transition:all .3s ease;padding:0;border-radius:0}
+.projects-pager .pager-arrow:hover:not(:disabled){border-color:var(--accent-gold);color:var(--accent-gold);background:rgba(197,160,89,.15)}
+.projects-pager .pager-arrow:disabled{opacity:.3;cursor:not-allowed}
+[dir="rtl"] .projects-pager .pager-arrow i{transform:scaleX(-1)}
+.projects-pager .pager-numbers{display:flex;align-items:center;gap:4px;padding:0 6px;border-left:1px solid var(--border-hairline);border-right:1px solid var(--border-hairline)}
+.projects-pager .pager-num{position:relative;background:transparent;border:0;color:rgba(255,255,255,.55);min-width:40px;height:48px;padding:0 6px;font-family:inherit;font-size:14px;font-weight:500;letter-spacing:1.5px;cursor:pointer;transition:color .3s ease}
+.projects-pager .pager-num::after{content:"";position:absolute;left:50%;bottom:8px;width:0;height:1px;background:var(--accent-gold);transform:translateX(-50%);transition:width .3s ease}
+.projects-pager .pager-num:hover{color:var(--text-white)}
+.projects-pager .pager-num:hover::after{width:14px}
+.projects-pager .pager-num.active{color:var(--accent-gold);font-weight:600}
+.projects-pager .pager-num.active::after{width:22px}
+.projects-pager .pager-dots{color:rgba(255,255,255,.35);min-width:22px;text-align:center;letter-spacing:2px;user-select:none}
+.projects-pager .pager-meta{display:flex;align-items:center;gap:12px;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.4)}
+.projects-pager .pager-sep{width:24px;height:1px;background:var(--accent-gold);opacity:.6}
+#projectsPaginationIndicator{color:var(--accent-gold)}
+@media (max-width:560px){
+ .projects-pager{margin-top:36px}
+ .projects-pager .pager-bar{gap:8px}
+ .projects-pager .pager-arrow{width:42px;height:42px}
+ .projects-pager .pager-num{min-width:32px;height:42px;font-size:13px;letter-spacing:1px}
+ .projects-pager .pager-meta{font-size:10px;letter-spacing:1.2px;text-align:center}
+}
 
 /* İl seçilmeden ilçe filtresi pasif */
 .custom-select-box.is-disabled{opacity:.45;pointer-events:none}
