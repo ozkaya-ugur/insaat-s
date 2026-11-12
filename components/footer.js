@@ -114,8 +114,21 @@ async function renderFooterComponent() {
             ? window.location.origin
             : 'http://127.0.0.1:8000';
         const apiUrl = typeof API_URL !== 'undefined' ? API_URL : `${apiBase}/api`;
-        const res = await fetch(`${apiUrl}/settings/footer?t=${Date.now()}`);
+        const res = await fetch(`${apiUrl}/settings?lang=${lang}&t=${Date.now()}`);
         const dbData = await res.json();
+
+        // Panelden yönetilen footer metinleri (footer_* anahtarları, API seçili dile göre çözer)
+        const footerMap = {
+            footer_section_tag: 'sectionTag', footer_cta_title: 'ctaTitle', footer_cta_desc: 'ctaDesc',
+            footer_cta_btn_text: 'ctaBtnText', footer_brand_desc: 'brandDesc', footer_copy_text: 'copyText',
+            footer_tagline: 'tagline'
+        };
+        if (dbData && typeof dbData === 'object') {
+            Object.entries(footerMap).forEach(([k, field]) => {
+                if (hasValue(dbData[k])) textData[field] = String(dbData[k]).replace(/[<>]/g, '');
+            });
+            if (hasValue(dbData.footer_cta_btn_link)) data.ctaBtnLink = dbData.footer_cta_btn_link;
+        }
 
         if (dbData && Object.keys(dbData).length > 0) {
             // Sabit Genel Ayarlar (Kökteki Veriler)

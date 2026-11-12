@@ -66,6 +66,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
+    // 3b. İletişim Sayfası & Footer Metinleri (çok dilli)
+    $textKeys = [
+        'contact_banner_tag', 'contact_page_title', 'contact_form_title', 'contact_form_desc',
+        'footer_section_tag', 'footer_cta_title', 'footer_cta_desc', 'footer_cta_btn_text',
+        'footer_brand_desc', 'footer_copy_text', 'footer_tagline',
+    ];
+    foreach ($textKeys as $tk) {
+        if (isset($_POST[$tk])) {
+            q('INSERT INTO site_settings (s_key,s_value) VALUES (?,?) ON DUPLICATE KEY UPDATE s_value=VALUES(s_value)', [$tk, trim($_POST[$tk])]);
+        }
+        foreach ($activeLangs as $al) {
+            $langKey = "{$tk}_{$al['code']}";
+            if (isset($_POST[$langKey])) {
+                q('INSERT INTO site_settings (s_key,s_value) VALUES (?,?) ON DUPLICATE KEY UPDATE s_value=VALUES(s_value)', [$langKey, trim($_POST[$langKey])]);
+            }
+        }
+    }
+    if (isset($_POST['footer_cta_btn_link'])) {
+        q('INSERT INTO site_settings (s_key,s_value) VALUES (?,?) ON DUPLICATE KEY UPDATE s_value=VALUES(s_value)', ['footer_cta_btn_link', trim($_POST['footer_cta_btn_link'])]);
+    }
+
     // 4. Ofis Bilgileri & Haritalar
     $officeKeys = [
         'office_sakarya_badge', 'office_sakarya_city', 'office_sakarya_title', 'office_sakarya_address', 'office_sakarya_map_link', 'office_sakarya_embed',
@@ -234,6 +255,78 @@ admin_header('Site & Sayfa Ayarları', 'settings');
       </div>
     <?php }); ?>
     <p class="hint">Boş bırakılan alanlarda sayfanın kendi varsayılan metni görünür. Görsel alanı yalnızca Türkçe sekmesinde bulunur ve tüm dillerde geçerlidir.</p>
+  </div>
+
+  <!-- 2c. İLETİŞİM SAYFASI & FOOTER METİNLERİ (ÇOK DİLLİ) -->
+  <div class="card">
+    <div class="row between" style="margin-bottom:14px">
+      <h2><i class="fa-solid fa-envelope-open-text" style="color:var(--gold)"></i> İletişim Sayfası & Footer Metinleri</h2>
+      <span class="muted">/iletisim.html başlıkları ve tüm sayfalardaki alt bilgi (footer) alanı</span>
+    </div>
+
+    <?php echo lang_tabs('contact_footer_tabs', function($langCode, $isDefault) { ?>
+      <?php $suffix = $isDefault ? '' : "_{$langCode}"; ?>
+      <h3 style="font-size:1rem;color:var(--gold);margin:6px 0 10px"><i class="fa-solid fa-address-book"></i> İletişim Sayfası (<?= strtoupper($langCode) ?>)</h3>
+      <div class="grid g2" style="margin-bottom:10px">
+        <div class="field">
+          <label>Banner Üst Etiketi</label>
+          <input type="text" name="contact_banner_tag<?= $suffix ?>" value="<?= e(setting("contact_banner_tag{$suffix}")) ?>" placeholder="BİZİMLE İLETİŞİME GEÇİN">
+        </div>
+        <div class="field">
+          <label>Sayfa Başlığı</label>
+          <input type="text" name="contact_page_title<?= $suffix ?>" value="<?= e(setting("contact_page_title{$suffix}")) ?>" placeholder="İletişim & Ofislerimiz">
+        </div>
+      </div>
+      <div class="field" style="margin-bottom:10px">
+        <label>Form Bölümü Başlığı</label>
+        <input type="text" name="contact_form_title<?= $suffix ?>" value="<?= e(setting("contact_form_title{$suffix}")) ?>" placeholder="Projenizi Birlikte Başlatalım">
+      </div>
+      <div class="field" style="margin-bottom:14px">
+        <label>Form Bölümü Açıklaması</label>
+        <textarea name="contact_form_desc<?= $suffix ?>" style="min-height:50px" placeholder="Hayalinizdeki konut, iş merkezi veya mimari yatırımlarınız için ekibimize mesaj bırakabilirsiniz."><?= e(setting("contact_form_desc{$suffix}")) ?></textarea>
+      </div>
+
+      <h3 style="font-size:1rem;color:var(--gold);margin:16px 0 10px"><i class="fa-solid fa-shoe-prints"></i> Footer (<?= strtoupper($langCode) ?>)</h3>
+      <div class="grid g2" style="margin-bottom:10px">
+        <div class="field">
+          <label>Üst Etiket</label>
+          <input type="text" name="footer_section_tag<?= $suffix ?>" value="<?= e(setting("footer_section_tag{$suffix}")) ?>" placeholder="PROJE & İŞ BİRLİĞİ">
+        </div>
+        <div class="field">
+          <label>Buton Metni</label>
+          <input type="text" name="footer_cta_btn_text<?= $suffix ?>" value="<?= e(setting("footer_cta_btn_text{$suffix}")) ?>" placeholder="Projeyi Başlatın">
+        </div>
+      </div>
+      <div class="field" style="margin-bottom:10px">
+        <label>Büyük Başlık</label>
+        <input type="text" name="footer_cta_title<?= $suffix ?>" value="<?= e(setting("footer_cta_title{$suffix}")) ?>">
+      </div>
+      <div class="field" style="margin-bottom:10px">
+        <label>Başlık Altı Açıklama</label>
+        <textarea name="footer_cta_desc<?= $suffix ?>" style="min-height:50px"><?= e(setting("footer_cta_desc{$suffix}")) ?></textarea>
+      </div>
+      <div class="field" style="margin-bottom:10px">
+        <label>Marka Açıklaması (logo altı)</label>
+        <textarea name="footer_brand_desc<?= $suffix ?>" style="min-height:50px"><?= e(setting("footer_brand_desc{$suffix}")) ?></textarea>
+      </div>
+      <div class="grid g2" style="margin-bottom:14px">
+        <div class="field">
+          <label>Telif Metni</label>
+          <input type="text" name="footer_copy_text<?= $suffix ?>" value="<?= e(setting("footer_copy_text{$suffix}")) ?>" placeholder="© 2026 BUYAPI İNŞAAT A.Ş. • TÜM HAKLARI SAKLIDIR.">
+        </div>
+        <div class="field">
+          <label>Slogan (en alt satır)</label>
+          <input type="text" name="footer_tagline<?= $suffix ?>" value="<?= e(setting("footer_tagline{$suffix}")) ?>" placeholder="ARCHITECTURAL PRESTIGE & ENGINEERING">
+        </div>
+      </div>
+      <?php if ($isDefault): ?>
+        <div class="field" style="margin-bottom:14px">
+          <label>Footer Buton Bağlantısı (tüm dillerde geçerli)</label>
+          <input type="text" name="footer_cta_btn_link" value="<?= e(setting('footer_cta_btn_link')) ?>" placeholder="iletisim.html">
+        </div>
+      <?php endif; ?>
+    <?php }); ?>
+    <p class="hint">Boş bırakılan alanlarda sayfanın kendi varsayılan metni görünür. Telefon, e-posta ve sosyal medya bağlantıları yukarıdaki genel ayarlardan gelir.</p>
   </div>
 
   <!-- 3. OFİSLER & HARİTA DETAYLARI -->

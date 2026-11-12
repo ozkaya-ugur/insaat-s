@@ -39,8 +39,8 @@
     <section class="page-banner banner-iletisim">
         <div class="page-banner-overlay"></div>
         <div class="container">
-            <span class="section-tag">BİZİMLE İLETİŞİME GEÇİN</span>
-            <h1 class="page-title">İletişim & Ofislerimiz</h1>
+            <span class="section-tag" id="contactBannerTag">BİZİMLE İLETİŞİME GEÇİN</span>
+            <h1 class="page-title" id="contactPageTitle">İletişim & Ofislerimiz</h1>
         </div>
     </section>
 
@@ -123,8 +123,8 @@
                 <!-- SAĞ KOLON: İLETİŞİM FORMU -->
                 <div class="contact-form-card glass-content-card">
                     <span class="section-tag">BİZE ULAŞIN</span>
-                    <h2 class="section-title">Projenizi Birlikte Başlatalım</h2>
-                    <p class="lead-text">Hayalinizdeki konut, iş merkezi veya mimari yatırımlarınız için ekibimize mesaj bırakabilirsiniz.</p>
+                    <h2 class="section-title" id="contactFormTitle">Projenizi Birlikte Başlatalım</h2>
+                    <p class="lead-text" id="contactFormDesc">Hayalinizdeki konut, iş merkezi veya mimari yatırımlarınız için ekibimize mesaj bırakabilirsiniz.</p>
 
                     <form class="luxury-contact-form" id="contactForm">
                         <div class="form-row-two">
@@ -226,6 +226,12 @@
                 if (s.office_istanbul_address) document.getElementById('offIstanbulAddr').innerText = s.office_istanbul_address;
                 if (s.office_istanbul_map_link) document.getElementById('offIstanbulMapLink').href = s.office_istanbul_map_link;
                 if (s.office_istanbul_embed) document.getElementById('cardIstanbul')?.setAttribute('data-map', s.office_istanbul_embed);
+
+                const setTxt = (id, val) => { const el = document.getElementById(id); if (el && val) el.innerText = val; };
+                setTxt('contactBannerTag', s.contact_banner_tag);
+                setTxt('contactPageTitle', s.contact_page_title);
+                setTxt('contactFormTitle', s.contact_form_title);
+                setTxt('contactFormDesc', s.contact_form_desc);
 
                 if (s.instagram) document.getElementById('socialInstagram').href = s.instagram;
                 if (s.facebook) document.getElementById('socialFacebook').href = s.facebook;
