@@ -1,6 +1,8 @@
 :root{--bg:#0b0d12;--panel:#12151c;--panel2:#171b24;--line:rgba(255,255,255,.08);--gold:#c5a059;--text:#e8eaee;--dim:#8d94a1;--ok:#2ecc71;--err:#e5484d}
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Plus Jakarta Sans',system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.5}
+html,body{max-width:100%;overflow-x:hidden}
+main,section,article,div,form,.card,.row,.grid,.field{min-width:0}
 a{color:inherit;text-decoration:none}
 .side{position:fixed;inset:0 auto 0 0;width:240px;background:var(--panel);border-right:1px solid var(--line);display:flex;flex-direction:column;z-index:50}
 .brand{padding:24px 22px;font-weight:800;letter-spacing:.2em;color:var(--gold);font-size:16px}
@@ -75,12 +77,44 @@ tr:hover td{background:rgba(255,255,255,.02)}
 .login-box p.sub{text-align:center;color:var(--dim);font-size:12px;margin-bottom:24px}
 .muted{color:var(--dim)}
 @media(max-width:900px){
-  .side{transform:translateX(-100%);transition:.25s}.side.open{transform:none}
-  .main{margin-left:0;padding:20px 16px 60px}.burger{display:inline-block}
-  .g2,.g3,.g4{grid-template-columns:1fr}
-  table.resp thead{display:none}
-  table.resp tr{display:block;border-bottom:1px solid var(--line);padding:8px 0}
-  table.resp td{display:flex;justify-content:space-between;border:0;padding:5px 4px}
+  .side{transform:translateX(-100%);transition:.25s;max-width:86vw}.side.open{transform:none}
+  .side nav a{padding:10px 12px}
+  .side nav a span{white-space:normal;line-height:1.3}
+  .main{margin-left:0;padding:20px 14px 56px}
+  .burger{display:inline-block}
+  .top{flex-wrap:wrap;align-items:flex-start}
+  .top h1{font-size:20px;line-height:1.25;word-break:break-word}
+  .row{flex-wrap:wrap}
+  .row .btn{width:auto;max-width:100%}
+  .btn{max-width:100%;white-space:normal}
+  .g2,.g3,.g4{grid-template-columns:minmax(0,1fr)}
+  .media-grid{grid-template-columns:repeat(auto-fill,minmax(110px,1fr))}
+  table.resp{display:block;width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid var(--line);border-radius:8px}
+  table.resp thead{display:table-header-group}
+  table.resp tbody{display:table-row-group}
+  table.resp tr{display:table-row}
+  table.resp th,table.resp td{display:table-cell;white-space:nowrap}
+}
+
+@media(max-width:768px){
+  .card{padding:16px}
+  .ltabs{overflow:auto;padding-bottom:4px}
+  .ltabs button{white-space:nowrap}
+  .tr-form .row.between{gap:10px}
+  .tr-form .row.between .btn{width:100%}
+
+  .trans-table{border:0 !important;overflow:visible !important;display:block}
+  .trans-table thead{display:none !important}
+  .trans-table tbody{display:block}
+  .trans-table tr{display:block;border:1px solid var(--line);border-radius:10px;padding:12px;margin-bottom:12px;background:var(--panel2)}
+  .trans-table td{display:block;border:0;padding:0;margin:0 0 10px;white-space:normal !important}
+  .trans-table td:last-child{margin-bottom:0}
+  .trans-table td::before{content:attr(data-label);display:block;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--dim);margin-bottom:6px}
+  .trans-table td input[type=text],
+  .trans-table td textarea,
+  .trans-table td select{width:100%;max-width:100%}
+  .trans-table td[data-label="İşlem"] .btn{width:100%;justify-content:center}
+  .trans-table td[data-label="İşlem"] .btn i{margin-right:4px}
 }
 
 /* Sürükle Bırak (Dropzone) & Harita Önizleme Stilleri */
