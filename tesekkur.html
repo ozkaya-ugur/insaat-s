@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teşekkürler | BUYAPI</title>
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Poppins:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="fluid-mesh-bg">
+        <div class="mesh-orb mesh-1"></div>
+        <div class="mesh-orb mesh-2"></div>
+        <div class="mesh-orb mesh-3"></div>
+    </div>
+
+    <div id="site-header"></div>
+
+    <main class="section-padding" style="min-height:70vh;display:flex;align-items:center;">
+        <div class="container">
+            <section class="db-page-content" style="max-width:760px;margin:0 auto;text-align:center;">
+                <div style="width:84px;height:84px;margin:0 auto 16px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(197,160,89,.2);border:1px solid rgba(197,160,89,.4)">
+                    <i class="fa-solid fa-circle-check" style="font-size:2rem;color:#f2deb0"></i>
+                </div>
+                <span class="section-tag" id="thankTag">TEŞEKKÜRLER</span>
+                <h1 class="section-title" id="thankTitle" style="margin-top:8px">Mesajınız bize ulaştı</h1>
+                <p class="lead-text" id="thankDesc">En kısa sürede sizinle iletişime geçeceğiz.</p>
+                <p id="refLine" style="display:none;color:#f3e3b8;font-weight:600"></p>
+
+                <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:16px">
+                    <a href="index.html" class="btn"><i class="fa-solid fa-house"></i> <span id="homeBtnText">Anasayfaya Dön</span></a>
+                    <a href="iletisim.html" class="btn ghost"><i class="fa-solid fa-paper-plane"></i> <span id="newMsgText">Yeni Mesaj Gönder</span></a>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <div id="site-footer"></div>
+
+    <script src="components/header.js"></script>
+    <script src="components/footer.js"></script>
+    <script src="script.js"></script>
+    <script>
+      (function(){
+        const tr = {
+          tag: 'TEŞEKKÜRLER',
+          title: 'Mesajınız bize ulaştı',
+          desc: 'En kısa sürede sizinle iletişime geçeceğiz.',
+          home: 'Anasayfaya Dön',
+          again: 'Yeni Mesaj Gönder',
+          ref: 'Takip Numarası'
+        };
+        const en = {
+          tag: 'THANK YOU',
+          title: 'Thank you, your message has been received',
+          desc: 'Our team will contact you as soon as possible.',
+          home: 'Back to Home',
+          again: 'Send New Message',
+          ref: 'Reference'
+        };
+        const ar = {
+          tag: 'شكراً لك',
+          title: 'شكراً لك، تم استلام رسالتك',
+          desc: 'سيتواصل معك فريقنا في أقرب وقت ممكن.',
+          home: 'العودة إلى الرئيسية',
+          again: 'إرسال رسالة جديدة',
+          ref: 'رقم المتابعة'
+        };
+
+        const url = new URL(window.location.href);
+        const lang = url.searchParams.get('lang') || localStorage.getItem('selectedLang') || 'tr';
+        const dict = lang === 'ar' ? ar : (lang === 'en' ? en : tr);
+
+        document.documentElement.lang = lang;
+        if (lang === 'ar') document.documentElement.setAttribute('dir', 'rtl');
+        else document.documentElement.removeAttribute('dir');
+
+        const set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+        set('thankTag', dict.tag);
+        set('thankTitle', dict.title);
+        set('thankDesc', dict.desc);
+        set('homeBtnText', dict.home);
+        set('newMsgText', dict.again);
+
+        const ref = url.searchParams.get('ref') || url.searchParams.get('id');
+        if (ref) {
+          const line = document.getElementById('refLine');
+          if (line) {
+            line.style.display = 'block';
+            line.textContent = `${dict.ref}: ${ref}`;
+          }
+        }
+      })();
+    </script>
+</body>
+</html>

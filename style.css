@@ -4291,3 +4291,105 @@ body.detail-page-body {
 }
 
 
+
+
+/* ===============================
+   VERİTABANI SAYFA RENDERLEYİCİSİ
+   =============================== */
+.db-page .db-page-banner {
+    position: relative;
+    min-height: 300px;
+    display: flex;
+    align-items: flex-end;
+    padding: 120px 0 40px;
+    background: linear-gradient(160deg, #0a0d14 0%, #131a27 100%);
+    background-size: cover;
+    background-position: center;
+    border-bottom: 1px solid rgba(255,255,255,.08);
+}
+.db-page .db-page-banner-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(8,11,18,.55), rgba(8,11,18,.92));
+}
+.db-page .db-page-banner-inner {
+    position: relative;
+    z-index: 2;
+}
+.db-page .db-page-content {
+    background: rgba(14,18,26,.55);
+    border: 1px solid rgba(255,255,255,.08);
+    border-radius: 12px;
+    padding: 28px;
+    backdrop-filter: blur(10px);
+}
+.db-page .prose-content {
+    color: #d7d9df;
+    line-height: 1.85;
+    max-width: 920px;
+    margin: 0 auto;
+}
+.db-page .prose-content.is-wide {
+    max-width: none;
+}
+.db-page .prose-content h2,
+.db-page .prose-content h3,
+.db-page .prose-content h4 {
+    color: #f2deb0;
+    margin: 24px 0 10px;
+}
+.db-page .prose-content a {
+    color: #e7c681;
+    text-decoration: underline;
+}
+.db-page .prose-content img {
+    max-width: 100%;
+    border-radius: 10px;
+    border: 1px solid rgba(255,255,255,.15);
+}
+.db-page.layout-iki-kolon .db-layout-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 24px;
+}
+.db-page .db-layout-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+.db-page .db-side-card {
+    background: rgba(7,10,16,.72);
+    border: 1px solid rgba(197,160,89,.35);
+    border-radius: 10px;
+    padding: 18px;
+}
+.db-page .db-side-card h3 {
+    color: #f0dcaf;
+    margin: 0 0 8px;
+}
+.db-page.layout-galeri .db-gallery-placeholder {
+    margin-top: 24px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+}
+.db-page.layout-galeri .db-gallery-placeholder div {
+    min-height: 160px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, rgba(197,160,89,.25), rgba(19,26,39,.7));
+    border: 1px solid rgba(197,160,89,.35);
+}
+.db-page.layout-iletisim .db-contact-layout {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: 24px;
+    align-items: start;
+}
+@media (max-width: 920px) {
+    .db-page.layout-iki-kolon .db-layout-grid,
+    .db-page.layout-iletisim .db-contact-layout,
+    .db-page.layout-galeri .db-gallery-placeholder {
+        grid-template-columns: 1fr;
+    }
+    .db-page .db-page-content { padding: 18px; }
+}

@@ -65,7 +65,9 @@ CREATE TABLE IF NOT EXISTS pages (
   content_en MEDIUMTEXT NULL,
   content_ar MEDIUMTEXT NULL,
   page_type VARCHAR(40) DEFAULT 'standart',
+  layout_template VARCHAR(40) NOT NULL DEFAULT 'standart',
   banner_image VARCHAR(255) DEFAULT '',
+  static_file VARCHAR(120) DEFAULT NULL,
   show_in_menu TINYINT(1) NOT NULL DEFAULT 1,
   is_active TINYINT(1) NOT NULL DEFAULT 1,
   sort_order INT DEFAULT 0,
@@ -186,6 +188,31 @@ INSERT IGNORE INTO sliders (title_tr,subtitle_tr,image_url,link_url,sort_order) 
 ('WORK INN','İş dünyasına yön veren anıtsal ve vizyoner mimari.','images/banner-2.png','proje-detay.html?id=workinn',2),
 ('BUYAPI SILENCE','Doğa ile entegre, rafine ve özgün detaylar.','images/banner-3.png','proje-detay.html?id=silence',3),
 ('POMEGA ENERJİ','Büyük ölçekli, yüksek mühendislik odaklı sanayi yatırımı.','images/banner-4.png','projeler.html',4);
+
+-- Üst menü ve genel sayfa yönetimi için çekirdek sayfalar
+INSERT INTO pages (
+  slug, title_tr, title_en, title_ar,
+  content_tr, content_en, content_ar,
+  page_type, layout_template, banner_image, static_file,
+  show_in_menu, is_active, sort_order,
+  seo_title, seo_desc, seo_keywords
+) VALUES
+('anasayfa', 'Anasayfa', 'Home', 'الصفحة الرئيسية', '', '', '', 'standart', 'standart', '', 'index.html', 1, 1, 1, '', '', ''),
+('projeler', 'Projeler', 'Projects', 'المشاريع', '', '', '', 'projeler', 'genis', '', 'projeler.html', 1, 1, 2, '', '', ''),
+('kurumsal', 'Kurumsal', 'Corporate', 'المؤسسية', '', '', '', 'hakkimizda', 'iki-kolon', '', 'kurumsal.html', 1, 1, 3, '', '', ''),
+('kentsel-donusum', 'Kentsel Dönüşüm', 'Urban Renewal', 'التجديد الحضري', '', '', '', 'kentsel_donusum', 'iletisim', '', 'kentsel-donusum.html', 1, 1, 4, '', '', ''),
+('iletisim', 'İletişim', 'Contact', 'اتصل بنا', '', '', '', 'iletisim', 'iletisim', '', 'iletisim.html', 1, 1, 5, '', '', ''),
+('harita', 'Harita', 'Map', 'الخريطة', '', '', '', 'ozel', 'genis', '', 'harita.html', 0, 1, 6, '', '', '')
+ON DUPLICATE KEY UPDATE
+  title_tr = VALUES(title_tr),
+  title_en = VALUES(title_en),
+  title_ar = VALUES(title_ar),
+  page_type = VALUES(page_type),
+  layout_template = VALUES(layout_template),
+  static_file = VALUES(static_file),
+  show_in_menu = VALUES(show_in_menu),
+  is_active = VALUES(is_active),
+  sort_order = VALUES(sort_order);
 
 INSERT IGNORE INTO seo_settings (lang,title,description,keywords) VALUES
 ('tr','BUYAPI | Mimari & İnşaat Mühendisliği','Sakarya merkezli prestijli konut, ticari ve endüstriyel projeler.','buyapı, inşaat, sakarya, konut, rezidans'),

@@ -1429,8 +1429,10 @@
                     const data = await res.json();
 
                     if (res.ok && data.ok) {
-                        alert("Kentsel dönüşüm ön başvurunuz başarıyla alınmıştır. Mühendislik ve proje ekibimiz en kısa sürede sizinle iletişime geçecektir.");
-                        form.reset();
+                        const lang = localStorage.getItem('selectedLang') || window.currentLang || 'tr';
+                        const q = new URLSearchParams({ tip: 'kentsel-donusum', lang });
+                        if (data?.id) q.set('ref', String(data.id));
+                        window.location.href = `tesekkur.html?${q.toString()}`;
                     } else {
                         alert(data.error || "Başvuru iletilirken bir sorun oluştu. Lütfen bilgilerinizi kontrol edip tekrar deneyin.");
                     }

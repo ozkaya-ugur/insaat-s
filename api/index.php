@@ -188,21 +188,53 @@ try {
         $menuOnly = !empty($_GET['menu']);
         $sql = 'SELECT * FROM pages WHERE is_active=1' . ($menuOnly ? ' AND show_in_menu=1' : '') . ' ORDER BY sort_order ASC, id ASC';
         $rows = q($sql)->fetchAll();
+
+        $currentPath = trim((string)($_GET['current'] ?? ''), '/');
         $list = [];
+
         foreach ($rows as $r) {
-            $list[] = [
+            $resolvedTitle = trim((string)pick($r, 'title', $lang));
+            if ($resolvedTitle === '') {
+                $resolvedTitle = trim((string)$r['title_tr']);
+            }
+
+            $staticFile = trim((string)($r['static_file'] ?? ''));
+            if ($staticFile !== '') {
+                $url = '/' . ltrim($staticFile, '/');
+            } else {
+                $url = '/sayfa/' . rawurlencode($r['slug']);
+            }
+
+            $target = false;
+            if ($currentPath !== '') {
+                $normalizedUrlPath = trim(parse_url($url, PHP_URL_PATH) ?? '', '/');
+                $target = ($normalizedUrlPath === $currentPath);
+            }
+
+            $row = [
                 'id'          => (int)$r['id'],
                 'slug'        => $r['slug'],
-                'title'       => pick($r, 'title', $lang),
+                'title'       => $resolvedTitle,
+                'url'         => $url,
+                'target'      => $target,
                 'pageType'    => $r['page_type'],
-                'bannerImage' => asset($r['banner_image']),
-                'content'     => pick($r, 'content', $lang),
+                'layout'      => $r['layout_template'] ?? 'standart',
                 'showInMenu'  => (bool)$r['show_in_menu'],
-                'seoTitle'    => $r['seo_title'],
-                'seoDesc'     => $r['seo_desc'],
-                'seoKeywords' => $r['seo_keywords'],
+                'isActive'    => (bool)$r['is_active'],
             ];
+
+            if (!$menuOnly) {
+                $row['bannerImage'] = asset($r['banner_image']);
+                $row['content'] = pick($r, 'content', $lang);
+                $row['seoTitle'] = $r['seo_title'];
+                $row['seoDesc'] = $r['seo_desc'];
+                $row['seoKeywords'] = $r['seo_keywords'];
+                $row['staticFile'] = $staticFile;
+            }
+
+            $list[] = $row;
         }
+
         out($list);
     }
 
@@ -338,6 +370,7 @@ try {
             mb_substr($name,0,120), mb_substr($phone,0,40), mb_substr($email,0,160),
             mb_substr($proj,0,160), mb_substr($msg,0,5000), $src, client_ip(),
         ]);
+        $messageId = (int)db()->lastInsertId();
 
         $notify = setting('notify_email');
         if ($notify && filter_var($notify, FILTER_VALIDATE_EMAIL)) {
@@ -346,7 +379,7 @@ try {
             @mail($notify, '=?UTF-8?B?' . base64_encode($subj) . '?=', $body,
                 "Content-Type: text/plain; charset=UTF-8\r\n" . ($email ? 'Reply-To: ' . str_replace(["\r","\n"], '', $email) . "\r\n" : ''));
         }
-        out(['ok' => true, 'message' => 'Mesajınız başarıyla iletildi.']);
+        out(['ok' => true, 'id' => $messageId, 'message' => 'Mesajınız başarıyla iletildi.']);
     }
 
     out(['error' => 'Bulunamadı'], 404);

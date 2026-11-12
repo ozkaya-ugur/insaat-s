@@ -322,8 +322,11 @@
                         throw new Error(data?.error || data?.message || `Gönderim başarısız (HTTP ${res.status}).`);
                     }
 
-                    setNotice('success', data.message || 'Mesajınız başarıyla ekibimize iletildi.');
-                    form.reset();
+                    const ref = data?.id ? encodeURIComponent(String(data.id)) : '';
+                    const lang = localStorage.getItem('selectedLang') || window.currentLang || 'tr';
+                    const q = new URLSearchParams({ tip: 'iletisim', lang });
+                    if (ref) q.set('ref', ref);
+                    window.location.href = `tesekkur.html?${q.toString()}`;
                 } catch (err) {
                     console.error('[İletişim Formu] Gönderim hatası:', err);
                     setNotice('error', err.message || 'Mesaj gönderilemedi. Lütfen tekrar deneyin.');
