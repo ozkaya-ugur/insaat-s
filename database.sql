@@ -96,6 +96,25 @@ CREATE TABLE IF NOT EXISTS sliders (
   is_active TINYINT(1) DEFAULT 1
 ) ENGINE=InnoDB;
 
+CREATE TABLE IF NOT EXISTS languages (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  code VARCHAR(10) NOT NULL UNIQUE,
+  name VARCHAR(80) NOT NULL,
+  flag VARCHAR(16) DEFAULT '🌐',
+  direction ENUM('ltr','rtl') NOT NULL DEFAULT 'ltr',
+  is_default TINYINT(1) NOT NULL DEFAULT 0,
+  is_active TINYINT(1) NOT NULL DEFAULT 1,
+  sort_order INT NOT NULL DEFAULT 0,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+INSERT INTO languages (code, name, flag, direction, is_default, is_active, sort_order) VALUES
+  ('tr', 'Türkçe',  '🇹🇷', 'ltr', 1, 1, 1),
+  ('en', 'English', '🇬🇧', 'ltr', 0, 1, 2),
+  ('ar', 'العربية', '🇸🇦', 'rtl', 0, 1, 3)
+ON DUPLICATE KEY UPDATE name=VALUES(name), flag=VALUES(flag), direction=VALUES(direction),
+  is_default=VALUES(is_default), is_active=VALUES(is_active), sort_order=VALUES(sort_order);
+
 CREATE TABLE IF NOT EXISTS translations (
   id INT AUTO_INCREMENT PRIMARY KEY,
   lang CHAR(2) NOT NULL,

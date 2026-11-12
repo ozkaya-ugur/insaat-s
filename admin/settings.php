@@ -18,6 +18,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // 1. İletişim & Sosyal Medya
     foreach ($FIELDS_CONTACT as $k => [$l, $t]) {
+        // Alan formda yoksa mevcut değeri koru (kısmi gönderimlerde veri kaybını önler)
+        if (!array_key_exists($k, $_POST)) continue;
         $val = trim((string)($_POST[$k] ?? ''));
         if ($t === 'url' && $val !== '' && !preg_match('#^https?://#i', $val)) { flash("$l: http(s):// ile başlamalı.", 'err'); redirect('settings.php'); }
         if ($t === 'email' && $val !== '' && !filter_var($val, FILTER_VALIDATE_EMAIL)) { flash("$l: geçersiz e-posta.", 'err'); redirect('settings.php'); }
