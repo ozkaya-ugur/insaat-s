@@ -175,7 +175,7 @@ $prev = fn($path) => strpos($path, 'uploads/') === 0 ? '../' . $path : rtrim(SIT
         </div>
         <div class="field" style="margin-top:10px">
           <label>veya harici dosya yolu</label>
-          <input type="text" name="cover_path" placeholder="images/banner-1.png" value="">
+          <input type="text" name="cover_path" placeholder="images/banner-1.webp" value="">
         </div>
       </div>
       <div>

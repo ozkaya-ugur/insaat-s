@@ -254,7 +254,7 @@ admin_header('Site & Sayfa Ayarları', 'settings');
         <?php if ($isDefault): ?>
           <div class="field" style="margin-bottom:14px">
             <label>Arka Plan Görseli (dosya yolu veya tam adres)</label>
-            <input type="text" name="home_slide_<?= $i ?>_image" value="<?= e(setting("home_slide_{$i}_image")) ?>" placeholder="images/banner-1.png">
+            <input type="text" name="home_slide_<?= $i ?>_image" value="<?= e(setting("home_slide_{$i}_image")) ?>" placeholder="images/banner-1.webp">
           </div>
         <?php endif; ?>
       <?php endfor; ?>

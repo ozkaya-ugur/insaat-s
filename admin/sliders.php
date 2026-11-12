@@ -58,7 +58,7 @@ $s = fn($k, $d = '') => e($edit[$k] ?? $d);
     <div>
       <?php if ($edit): ?><img class="thumb" style="width:200px;height:110px" src="<?= e($prev($edit['image_url'])) ?>" alt=""><?php endif; ?>
       <div class="field"><label>Görsel Yükle</label><input type="file" name="image" accept="image/*"></div>
-      <div class="field"><label>veya dosya yolu</label><input type="text" name="image_path" placeholder="images/banner-1.png"></div>
+      <div class="field"><label>veya dosya yolu</label><input type="text" name="image_path" placeholder="images/banner-1.webp"></div>
     </div>
     <div>
       <div class="field"><label>Buton Bağlantısı</label><input type="text" name="link_url" value="<?= $s('link_url', 'projeler.html') ?>"><div class="hint">Boş bırakılırsa projeler.html. Örn: proje-detay.html?id=intense</div></div>

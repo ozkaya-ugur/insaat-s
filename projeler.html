@@ -279,12 +279,12 @@
                 
                 const imagePath = proj.coverImage
                     ? resolveAssetUrl(proj.coverImage)
-                    : 'images/banner-1.png';
+                    : 'images/banner-1.webp';
 
                 return `
                     <a href="proje-detay.html?id=${proj.slug || proj.id}" class="showcase-card project-item">
                         <span class="status-badge ${statusClass}">${statusText}</span>
-                        <div class="card-image-wrap"><img src="${imagePath}" alt="${proj.title}" onerror="this.src='images/banner-1.png'"></div>
+                        <div class="card-image-wrap"><img src="${imagePath}" alt="${proj.title}" onerror="this.src='images/banner-1.webp'"></div>
                         <div class="card-glass-overlay"></div>
                         <div class="card-inner-content">
                             <span class="sc-num">${numStr}</span>
@@ -447,11 +447,11 @@
             cardsContainer.innerHTML = filteredProjects.map(proj => {
                 const imagePath = proj.coverImage
                     ? resolveAssetUrl(proj.coverImage)
-                    : 'images/banner-1.png';
+                    : 'images/banner-1.webp';
 
                 return `
                     <a href="proje-detay.html?id=${proj.slug || proj.id}" style="display:flex; gap:12px; background:#181818; padding:10px; border-radius:6px; border:1px solid rgba(255,255,255,0.05); text-decoration:none; color:#fff;">
-                        <img src="${imagePath}" style="width:70px; height:50px; object-fit:cover; border-radius:4px;" onerror="this.src='images/banner-1.png'">
+                        <img src="${imagePath}" style="width:70px; height:50px; object-fit:cover; border-radius:4px;" onerror="this.src='images/banner-1.webp'">
                         <div>
                             <strong style="font-size:14px; display:block; color:#fff;">${proj.title}</strong>
                             <small style="color:#d4af37; font-size:11px;">${proj.loc || cityName}</small>

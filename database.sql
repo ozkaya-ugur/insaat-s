@@ -33,6 +33,8 @@ CREATE TABLE IF NOT EXISTS projects (
   city_key VARCHAR(20) DEFAULT 'tr-sk',   -- Highcharts hc-key (tr-sk, tr-ib, tr-an ...)
   type VARCHAR(200) DEFAULT 'konut',      -- virgülle: konut,ticari,sanayi,kentsel
   status ENUM('devam-eden','tamamlanan','yeni-proje') DEFAULT 'devam-eden',
+  is_new TINYINT(1) NOT NULL DEFAULT 0,          -- "Yeni Proje" rozeti / Yeni Projeler sekmesi
+  is_urban_renewal TINYINT(1) NOT NULL DEFAULT 0, -- Kentsel dönüşüm projesi
   cover_image VARCHAR(255) DEFAULT '',
   area VARCHAR(60) DEFAULT '',
   concept VARCHAR(120) DEFAULT '',
@@ -47,7 +49,9 @@ CREATE TABLE IF NOT EXISTS projects (
   seo_desc VARCHAR(300) DEFAULT '',
   seo_keywords VARCHAR(300) DEFAULT '',
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  INDEX idx_projects_is_new (is_new),
+  INDEX idx_projects_is_urban_renewal (is_urban_renewal)
 ) ENGINE=InnoDB;
 
 -- Galeri: render, plan, site (şantiye), video
@@ -349,3 +353,34 @@ INSERT INTO urban_renewal_faqs (question_tr,answer_tr,question_en,answer_en,ques
 INSERT INTO urban_renewal_slides (image_url,title_tr,title_en,title_ar,subtitle_tr,subtitle_en,subtitle_ar,is_active,sort_order) SELECT 'images/banner-1.png','Geleceğe Güvenle Bakan Kentsel Dönüşüm','Urban Renewal with Confidence for the Future','تحول حضري بثقة نحو المستقبل','Depreme dayanıklı yeni yaşam alanları','Earthquake-resistant new living spaces','مساحات سكنية جديدة مقاومة للزلازل',1,1 WHERE NOT EXISTS (SELECT 1 FROM urban_renewal_slides WHERE image_url='images/banner-1.png');
 INSERT INTO urban_renewal_slides (image_url,title_tr,title_en,title_ar,subtitle_tr,subtitle_en,subtitle_ar,is_active,sort_order) SELECT 'images/banner-4.png','Yüksek Mühendislik ve Hukuki Güvence','Advanced Engineering and Legal Assurance','هندسة متقدمة وضمان قانوني','Şeffaf süreç, güçlü teslim modeli','Transparent process, strong delivery model','عملية شفافة ونموذج تسليم قوي',1,2 WHERE NOT EXISTS (SELECT 1 FROM urban_renewal_slides WHERE image_url='images/banner-4.png');
 INSERT INTO urban_renewal_slides (image_url,title_tr,title_en,title_ar,subtitle_tr,subtitle_en,subtitle_ar,is_active,sort_order) SELECT 'images/banner-2.png','Prestij ve Değer Üreten Dönüşüm','Renewal that Creates Prestige and Value','تحول يصنع الهيبة والقيمة','Hak sahiplerine odaklı sürdürülebilir dönüşüm','Sustainable renewal focused on rights holders','تحول مستدام يركز على أصحاب الحقوق',1,3 WHERE NOT EXISTS (SELECT 1 FROM urban_renewal_slides WHERE image_url='images/banner-2.png');
+-- Menü (nav) çevirileri: dil değişince üst menü ve mobil menü de değişsin.
+INSERT INTO translations (lang, t_key, t_value) VALUES
+('tr','nav.home','ANASAYFA'),
+('tr','nav.about','KURUMSAL'),
+('tr','nav.projects','PROJELER'),
+('tr','nav.contact','İLETİŞİM'),
+('tr','nav.urban_renewal','KENTSEL DÖNÜŞÜM'),
+('tr','nav.map','HARİTA'),
+('tr','nav.offices','OFİSLERİMİZ'),
+('en','nav.home','HOME'),
+('en','nav.about','CORPORATE'),
+('en','nav.projects','PROJECTS'),
+('en','nav.contact','CONTACT'),
+('en','nav.urban_renewal','URBAN RENEWAL'),
+('en','nav.map','MAP'),
+('en','nav.offices','OUR OFFICES'),
+('ar','nav.home','الرئيسية'),
+('ar','nav.about','الشركة'),
+('ar','nav.projects','المشاريع'),
+('ar','nav.contact','اتصل بنا'),
+('ar','nav.urban_renewal','التجديد الحضري'),
+('ar','nav.map','الخريطة'),
+('ar','nav.offices','مكاتبنا'),
+('de','nav.home','STARTSEITE'),
+('de','nav.about','UNTERNEHMEN'),
+('de','nav.projects','PROJEKTE'),
+('de','nav.contact','KONTAKT'),
+('de','nav.urban_renewal','STADTERNEUERUNG'),
+('de','nav.map','KARTE'),
+('de','nav.offices','UNSERE BÜROS')
+ON DUPLICATE KEY UPDATE t_value = VALUES(t_value);

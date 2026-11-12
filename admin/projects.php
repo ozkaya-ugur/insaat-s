@@ -18,6 +18,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } elseif ($act === 'feature' && $id) {
         q('UPDATE projects SET is_featured = 1 - is_featured WHERE id=?', [$id]);
         flash('Ana sayfa vitrini güncellendi.');
+    } elseif ($act === 'new' && $id) {
+        q('UPDATE projects SET is_new = 1 - is_new WHERE id=?', [$id]);
+        flash('Yeni proje durumu değiştirildi.');
     }
     redirect('projects.php');
 }
@@ -47,6 +50,7 @@ $rows = q('SELECT * FROM projects ORDER BY sort_order ASC, id DESC')->fetchAll()
         <td>
           <form method="post" style="display:inline"><?= csrf_field() ?><input type="hidden" name="id" value="<?= (int)$r['id'] ?>">
             <button name="action" value="toggle" class="badge <?= $r['is_active'] ? 'b-tamamlanan' : 'b-off' ?>" style="cursor:pointer;background:none"><?= $r['is_active'] ? 'Yayında' : 'Gizli' ?></button>
+            <button name="action" value="new" class="badge <?= !empty($r['is_new']) ? 'b-devam-eden' : 'b-off' ?>" style="cursor:pointer;background:none" title="Yeni Proje olarak işaretle"><?= !empty($r['is_new']) ? 'Yeni' : 'Yeni değil' ?></button>
             <button name="action" value="feature" class="badge <?= $r['is_featured'] ? 'b-devam-eden' : 'b-off' ?>" style="cursor:pointer;background:none" title="Ana sayfa vitrini"><?= $r['is_featured'] ? '★ Vitrin' : '☆ Vitrin' ?></button>
           </form>
         </td>

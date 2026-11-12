@@ -772,15 +772,15 @@
         <div id="kdSliderTrack" style="position:absolute;top:0;left:0;width:100%;height:100%;">
             <!-- Varsayılan / Yedek Slaytlar -->
             <div class="kd-slide-item active" data-index="0">
-                <div class="kd-slide-bg" style="background-image: url('images/banner-1.png');"></div>
+                <div class="kd-slide-bg" style="background-image: url('images/banner-1.webp');"></div>
                 <div class="kd-slide-overlay"></div>
             </div>
             <div class="kd-slide-item" data-index="1">
-                <div class="kd-slide-bg" style="background-image: url('images/banner-4.png');"></div>
+                <div class="kd-slide-bg" style="background-image: url('images/banner-4.webp');"></div>
                 <div class="kd-slide-overlay"></div>
             </div>
             <div class="kd-slide-item" data-index="2">
-                <div class="kd-slide-bg" style="background-image: url('images/banner-2.png');"></div>
+                <div class="kd-slide-bg" style="background-image: url('images/banner-2.webp');"></div>
                 <div class="kd-slide-overlay"></div>
             </div>
         </div>
@@ -1331,7 +1331,7 @@
             container.innerHTML = kdProjects.map(proj => {
                 const imagePath = proj.coverImage
                     ? resolveAssetUrl(proj.coverImage)
-                    : 'images/banner-1.png';
+                    : 'images/banner-1.webp';
 
                 const statusText = (proj.status || 'DEVAM EDİYOR').toUpperCase();
 
@@ -1339,7 +1339,7 @@
                     <a href="proje-detay.html?id=${proj.slug || proj.id}" class="kd-proj-card">
                         <div class="kd-proj-img-wrap">
                             <span class="kd-proj-badge-top"><i class="fa-solid fa-building-shield"></i> KENTSEL DÖNÜŞÜM</span>
-                            <img src="${imagePath}" alt="${proj.title}" onerror="this.src='images/banner-1.png'">
+                            <img src="${imagePath}" alt="${proj.title}" onerror="this.src='images/banner-1.webp'">
                         </div>
                         <div class="kd-proj-body">
                             <div>

@@ -42,7 +42,6 @@ function initHeaderComponent() {
                         <a href="javascript:void(0)" onclick="setLanguage('tr')" class="lang-opt-link active" data-lang="tr"><span class="flag-icon">🇹🇷</span> TÜRKÇE (TR)</a>
                         <a href="javascript:void(0)" onclick="setLanguage('en')" class="lang-opt-link" data-lang="en"><span class="flag-icon">🇬🇧</span> ENGLISH (EN)</a>
                         <a href="javascript:void(0)" onclick="setLanguage('ar')" class="lang-opt-link" data-lang="ar"><span class="flag-icon">🇸🇦</span> العربية (AR)</a>
-                        <a href="javascript:void(0)" onclick="setLanguage('de')" class="lang-opt-link" data-lang="de"><span class="flag-icon">🇩🇪</span> DEUTSCH (DE)</a>
                     </div>
                 </div>
 
@@ -78,7 +77,6 @@ function initHeaderComponent() {
                     <a href="javascript:void(0)" onclick="setLanguage('tr')" class="m-lang-btn active" data-lang="tr">TR</a>
                     <a href="javascript:void(0)" onclick="setLanguage('en')" class="m-lang-btn" data-lang="en">EN</a>
                     <a href="javascript:void(0)" onclick="setLanguage('ar')" class="m-lang-btn" data-lang="ar">AR</a>
-                    <a href="javascript:void(0)" onclick="setLanguage('de')" class="m-lang-btn" data-lang="de">DE</a>
                 </div>
 
                 <a href="kentsel-donusum.html" class="mobile-nav-btn btn-kentsel-mob"><i class="fa-solid fa-building-shield"></i> <span data-i18n="nav.urban_renewal">KENTSEL DÖNÜŞÜM</span> <i class="fa-solid fa-arrow-right"></i></a>
