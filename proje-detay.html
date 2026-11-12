@@ -15,7 +15,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Poppins:wght@200;300;400;500;600;700&family=Raleway:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/michele-m/soria-font@master/soria.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css?v=202611122138">
+    <link rel="stylesheet" href="style.css?v=202611122147">
 </head>
 <body class="detail-page-body">
 
@@ -410,12 +410,12 @@
     <div id="site-footer"></div>
 
     <!-- KÜTÜPHANELER -->
-    <script src="components/header.js?v=202611122138"></script>
-    <script src="components/footer.js?v=202611122138"></script>
+    <script src="components/header.js?v=202611122147"></script>
+    <script src="components/footer.js?v=202611122147"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="components/highmaps.js"></script>
     <script src="components/tr-all.js"></script>
-    <script src="script.js?v=202611122138"></script>
+    <script src="script.js?v=202611122147"></script>
 
     <!-- KESİN VE ZORLAYICI (FORCE) DİNAMİK YÜKLEYİCİ -->
     <script>
@@ -740,7 +740,8 @@
                 if (proj.gallery) {
                     const renderList = (gridId, items) => {
                         const grid = document.querySelector(`#${gridId} .architectural-gallery-grid`);
-                        if (grid && items && items.length > 0) {
+                        if (grid && (!items || items.length === 0)) { grid.innerHTML = ''; grid.style.display = 'none'; return; }
+                        if (grid && items && items.length > 0) { grid.style.display = '';
                             grid.innerHTML = items.map(m => `
                                 <div class="gallery-item" data-src="${m.src}">
                                     <img src="${m.src}" alt="${m.caption || proj.title}">
