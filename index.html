@@ -13,9 +13,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Poppins:wght@200;300;400;500;600;700&family=Raleway:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/michele-m/soria-font@master/soria.css">
-    <link rel="stylesheet" href="style.css?v=202611131600.0">
+    <link rel="stylesheet" href="style.css?v=202611140100.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css?v=202611131600">
+    <link rel="stylesheet" href="style.css?v=202611140100">
 </head>
 <body>
 
@@ -296,6 +296,7 @@
 
                         const cardHTML = `
                             <a href="proje-detay.html?id=${proj.slug || proj.id}" class="showcase-card">
+                                ${proj.isOnSale === 1 || proj.isOnSale === true ? '<span class="sale-ribbon">SATIŞTA</span>' : ''}
                                 <span class="status-badge ${statusClass}">${(proj.status || 'DEVAM EDİYOR').toUpperCase()}</span>
                                 <div class="card-image-wrap">
                                     <img src="${imagePath}" alt="${proj.title}">

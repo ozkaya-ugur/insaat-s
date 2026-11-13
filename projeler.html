@@ -14,7 +14,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Poppins:wght@200;300;400;500;600;700&family=Raleway:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/michele-m/soria-font@master/soria.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css?v=202611132300">
+    <link rel="stylesheet" href="style.css?v=202611140145">
 </head>
 <body>
 
@@ -49,51 +49,57 @@
         <div class="container">
             
             <div class="advanced-filter-panel">
-                <div class="filter-group-status">
-                    <button class="status-tab active" data-status="all" data-i18n="projects.tab_all">TÜM PROJELER</button>
-                    <button class="status-tab" data-status="devam-eden" data-i18n="projects.tab_ongoing">DEVAM EDİYOR</button>
-                    <button class="status-tab" data-status="tamamlanan" data-i18n="projects.tab_completed">TAMAMLANDI</button>
-                    <button class="status-tab" data-status="yeni-proje" data-i18n="projects.tab_new">YENİ PROJELER</button>
+                <div class="filter-panel-head">
+                    <div class="filter-group-status">
+                        <button class="status-tab active" data-status="all" data-i18n="projects.tab_all">TÜM PROJELER</button>
+                        <button class="status-tab" data-status="devam-eden" data-i18n="projects.tab_ongoing">DEVAM EDİYOR</button>
+                        <button class="status-tab" data-status="tamamlanan" data-i18n="projects.tab_completed">TAMAMLANDI</button>
+                        <button class="status-tab" data-status="yeni-proje" data-i18n="projects.tab_new">YENİ PROJELER</button>
+                    </div>
+                    <div class="view-segmented-control">
+                        <button class="view-btn active" data-view="grid" title="Kart Görünümü" data-i18n-title="projects.view_grid_title">
+                            <i class="fa-solid fa-border-all"></i>
+                            <span data-i18n="projects.view_grid">KART</span>
+                        </button>
+                        <button class="view-btn" data-view="list" title="Liste Görünümü" data-i18n-title="projects.view_list_title">
+                            <i class="fa-solid fa-list-ul"></i>
+                            <span data-i18n="projects.view_list">LİSTE</span>
+                        </button>
+                        <button class="view-btn" data-view="map" title="Harita Görünümü" data-i18n-title="projects.view_map_title">
+                            <i class="fa-solid fa-map-location-dot"></i>
+                            <span data-i18n="projects.view_map">HARİTA</span>
+                        </button>
+                    </div>
                 </div>
 
-                <div class="projects-filter-toolbar">
-                    <div class="projects-filter-controls">
+                <div class="filter-panel-body">
+                    <div class="filter-field filter-field-search">
                         <div class="projects-search-box">
                             <i class="fa-solid fa-magnifying-glass"></i>
                             <input type="search" id="projectsSearch" autocomplete="off" placeholder="Proje ara..." data-i18n-placeholder="projects.search_placeholder" aria-label="Proje ara">
                             <button type="button" class="projects-search-clear" id="projectsSearchClear" aria-label="Aramayı temizle" data-i18n-title="projects.search_clear"><i class="fa-solid fa-xmark"></i></button>
                         </div>
+                    </div>
+                    <div class="filter-field">
+                        <span class="filter-field-label" data-i18n="projects.filter_location">Lokasyon</span>
                         <div class="custom-select-box filter-select" id="locationSelectBox">
                             <i class="fa-solid fa-location-dot"></i>
                             <select id="filterLocation" aria-label="Lokasyon" data-i18n-aria-label="projects.filter_location"></select>
                             <i class="fa-solid fa-chevron-down select-caret"></i>
                         </div>
+                    </div>
+                    <div class="filter-field">
+                        <span class="filter-field-label" data-i18n="projects.filter_district">İlçe</span>
                         <div class="custom-select-box filter-select is-disabled" id="districtSelectBox">
                             <i class="fa-solid fa-map-pin"></i>
                             <select id="filterDistrict" aria-label="İlçe" data-i18n-aria-label="projects.filter_district"></select>
                             <i class="fa-solid fa-chevron-down select-caret"></i>
                         </div>
                     </div>
-                    <div class="filter-pill-row filter-type-row">
-                        <span class="filter-pill-label" data-i18n="projects.filter_type">Yapı Türü</span>
+                    <div class="filter-field filter-field-type">
+                        <span class="filter-field-label" data-i18n="projects.filter_type">Yapı Türü</span>
                         <div class="filter-pill-group" id="typePills"></div>
                     </div>
-                </div>
-
-                <!-- SEGMENTED GÖRÜNÜM DEĞİŞTİRİCİ -->
-                <div class="view-segmented-control">
-                    <button class="view-btn active" data-view="grid" title="Kart Görünümü" data-i18n-title="projects.view_grid_title">
-                        <i class="fa-solid fa-border-all"></i>
-                        <span data-i18n="projects.view_grid">KART</span>
-                    </button>
-                    <button class="view-btn" data-view="list" title="Liste Görünümü" data-i18n-title="projects.view_list_title">
-                        <i class="fa-solid fa-list-ul"></i>
-                        <span data-i18n="projects.view_list">LİSTE</span>
-                    </button>
-                    <button class="view-btn" data-view="map" title="Harita Görünümü" data-i18n-title="projects.view_map_title">
-                        <i class="fa-solid fa-map-location-dot"></i>
-                        <span data-i18n="projects.view_map">HARİTA</span>
-                    </button>
                 </div>
             </div>
 
@@ -165,10 +171,10 @@
     <!-- Ortak Footer Yükleme Alanı -->
     <div id="site-footer"></div>
 
-    <script src="components/header.js?v=202611132300"></script>
-    <script src="components/footer.js?v=202611132300"></script>
+    <script src="components/header.js?v=202611140145"></script>
+    <script src="components/footer.js?v=202611140145"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <script src="script.js?v=202611132300"></script>
+    <script src="script.js?v=202611140145"></script>
 <!-- HIGHMAPS CANLI CDN BAGLANTILARI -->
     <script src="https://code.highcharts.com/maps/highmaps.js"></script>
     <script src="https://code.highcharts.com/mapdata/countries/tr/tr-all.js"></script>
