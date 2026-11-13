@@ -15,7 +15,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/michele-m/soria-font@master/soria.css">
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css?v=202611140500">
+    <link rel="stylesheet" href="style.css?v=202611140700">
 </head>
 <body>
 
@@ -41,30 +41,35 @@
                 <div class="map-image-container">
                     <img src="images/harita.svg.webp" alt="Türkiye Haritası" class="turkey-map-img">
 
-                    <div class="map-pin pin-sakarya active has-projects" data-city="sakarya" style="top: 26%; left: 30%;">
+                    <div class="map-pin pin-sakarya active has-projects" data-city="tr-sk" style="top: 26%; left: 30%;">
                         <div class="pulse-ring"></div>
                         <div class="pin-badge"><span class="pin-count">28</span></div>
                         <span class="pin-tooltip">SAKARYA</span>
                     </div>
 
-                    <div class="map-pin pin-istanbul has-projects" data-city="istanbul" style="top: 22%; left: 21%;">
+                    <div class="map-pin pin-istanbul has-projects" data-city="tr-ib" style="top: 22%; left: 21%;">
                         <div class="pulse-ring"></div>
                         <div class="pin-badge"><span class="pin-count">4</span></div>
                         <span class="pin-tooltip">İSTANBUL</span>
                     </div>
 
-                    <div class="map-pin pin-ankara has-projects" data-city="ankara" style="top: 40%; left: 42%;">
+                    <div class="map-pin pin-ankara has-projects" data-city="tr-an" style="top: 40%; left: 42%;">
                         <div class="pulse-ring"></div>
                         <div class="pin-badge"><span class="pin-count">1</span></div>
                         <span class="pin-tooltip">ANKARA</span>
                     </div>
 
-                    <div class="map-pin pin-giresun has-projects" data-city="giresun" style="top: 26%; left: 71%;">
+                    <div class="map-pin pin-giresun has-projects" data-city="tr-gi" style="top: 26%; left: 71%;">
                         <div class="pulse-ring"></div>
                         <div class="pin-badge"><span class="pin-count">1</span></div>
                         <span class="pin-tooltip">GİRESUN</span>
                     </div>
                 </div>
+
+                <button type="button" class="map-scroll-hint" id="mapScrollHint" aria-label="Projelere gitmek için tıklayın">
+                    <span>Projelere gitmek için tıklayın</span>
+                    <i class="fa-solid fa-arrow-down"></i>
+                </button>
 
                 <div class="map-projects-panel" id="mapProjectsPanel">
                     <div class="panel-header">
@@ -93,6 +98,6 @@
     <!-- Animasyon & Proje Scriptleri -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
-    <script src="script.js?v=202611131600"></script>
+    <script src="script.js?v=202611140700"></script>
 </body>
 </html>

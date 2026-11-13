@@ -232,7 +232,11 @@ window.scrollToMapProjects = function(cityKey) {
     }
     const panel = document.getElementById("mapProjectsPanel");
     if (panel) {
-        panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        // Sabit üst menü panelin başlığını kapatmasın diye pay bırakılır.
+        const header = document.querySelector('.site-header, header');
+        const offset = (header ? header.getBoundingClientRect().height : 0) + 18;
+        const top = panel.getBoundingClientRect().top + window.scrollY - offset;
+        window.scrollTo({ top: Math.max(top, 0), behavior: 'smooth' });
     }
 };
 
@@ -691,7 +695,8 @@ async function fetchProjectsAndMapData() {
     // Projeler/map bileşeni olmayan sayfalarda gereksiz çağrı yapmayalım.
     const needsProjectsData = document.getElementById('highchartsTurkeyMap')
         || document.getElementById('projectGridContainer')
-        || document.getElementById('projectListContainer');
+        || document.getElementById('projectListContainer')
+        || document.getElementById('panelCardsContainer');
     if (!needsProjectsData) return;
 
     try {
@@ -1050,3 +1055,14 @@ async function initProjectDetailPage() {
         console.error("Proje detay verisi ve SEO bilgileri yüklenemedi:", err);
     }
 }
+// Harita üzerindeki "Projelere gitmek için tıklayın" ipucu: alt paneldeki projelere kaydırır.
+document.addEventListener('DOMContentLoaded', () => {
+    const hint = document.getElementById('mapScrollHint');
+    if (!hint) return;
+    hint.addEventListener('click', (e) => {
+        e.preventDefault();
+        const activePin = document.querySelector('.map-pin.active:not(.disabled-pin)')
+            || document.querySelector('.map-pin:not(.disabled-pin)');
+        window.scrollToMapProjects(activePin ? activePin.getAttribute('data-city') : 'tr-sk');
+    });
+});
