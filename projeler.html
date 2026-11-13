@@ -14,7 +14,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Poppins:wght@200;300;400;500;600;700&family=Raleway:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/michele-m/soria-font@master/soria.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css?v=202611131920">
+    <link rel="stylesheet" href="style.css?v=202611132200">
 </head>
 <body>
 
@@ -166,16 +166,18 @@
     <!-- Ortak Footer Yükleme Alanı -->
     <div id="site-footer"></div>
 
-    <script src="components/header.js?v=202611131920"></script>
-    <script src="components/footer.js?v=202611131920"></script>
+    <script src="components/header.js?v=202611132200"></script>
+    <script src="components/footer.js?v=202611132200"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <script src="script.js?v=202611131920"></script>
+    <script src="script.js?v=202611132200"></script>
 <!-- HIGHMAPS CANLI CDN BAGLANTILARI -->
     <script src="https://code.highcharts.com/maps/highmaps.js"></script>
     <script src="https://code.highcharts.com/mapdata/countries/tr/tr-all.js"></script>
 
     <!-- OTOMATİK DİNAMİK YÜKLEME VE FİLTRELEME MOTORU -->
     <script>
+        // Bu sayfa filtreleri kendi içinde yönetir; script.js'teki eski kopya devre dışı kalır.
+        window.__projectsInlineFilters = true;
         let allProjects = [];
         let mapChartInstance = null;
         let currentStatusFilter = 'all';
@@ -349,6 +351,7 @@
             renderGrid(pageData.items, pageData.startIndex);
             renderList(pageData.items, pageData.startIndex);
             renderPagination(pageData);
+            refreshMapData();
         }
 
         
@@ -519,13 +522,14 @@
             }).join('');
         }
 
-        // 3. Highcharts Türkiye Haritasını Oluşturma
-        // 3. Highcharts Türkiye Haritasını Oluşturma (İl Kodları Otomatik Eşleştirmeli)
-        function renderTurkeyMap() {
-            const mapContainer = document.getElementById('highchartsTurkeyMap');
-            if (!mapContainer || typeof Highcharts === 'undefined' || !Highcharts.maps || !Highcharts.maps['countries/tr/tr-all']) return;
+        // Harita, aktif filtrelerden geçen proje listesini kullanır
+        let mapSelectedCity = { name: 'Sakarya', key: 'tr-sk' };
 
-            // Veritabanı şehir anahtarlarını Highcharts "hc-key" kodlarına dönüştürme sözlüğü
+        function mapSourceProjects() {
+            return Array.isArray(lastFiltered) ? lastFiltered : allProjects;
+        }
+
+        function buildMapData() {
             const cityKeyMap = {
                 'tr-54': 'tr-sk', 'sakarya': 'tr-sk', 'serdivan': 'tr-sk', 'sapanca': 'tr-sk', 'adapazari': 'tr-sk',
                 'tr-34': 'tr-ib', 'istanbul': 'tr-ib', 'kadikoy': 'tr-ib', 'caddebostan': 'tr-ib',
@@ -533,13 +537,9 @@
                 'tr-41': 'tr-kc', 'kocaeli': 'tr-kc', 'gebze': 'tr-kc',
                 'tr-28': 'tr-gi', 'giresun': 'tr-gi', 'bulancak': 'tr-gi'
             };
-
-            // İl kodlarına göre veritabanındaki projeleri sayma
             const cityCounts = {};
-            allProjects.forEach(p => {
+            mapSourceProjects().forEach(p => {
                 const rawKey = (p.cityKey || p.loc || 'tr-sk').toLowerCase();
-                
-                // Sözlükten eşleşeni bul, yoksa ham değeri veya 'tr-sk' kullan
                 let hcKey = cityKeyMap[rawKey];
                 if (!hcKey) {
                     if (rawKey.includes('sakarya') || rawKey.includes('serdivan') || rawKey.includes('sapanca') || rawKey.includes('54')) hcKey = 'tr-sk';
@@ -548,23 +548,39 @@
                     else if (rawKey.includes('kocaeli') || rawKey.includes('gebze') || rawKey.includes('41')) hcKey = 'tr-kc';
                     else hcKey = rawKey;
                 }
-
                 cityCounts[hcKey] = (cityCounts[hcKey] || 0) + 1;
             });
-
-            // Highcharts Veri Setini Hazırlama
-            const mapData = Highcharts.maps['countries/tr/tr-all'].features.map(f => {
+            return Highcharts.maps['countries/tr/tr-all'].features.map(f => {
                 const hcKey = f.properties['hc-key'];
                 const cnt = cityCounts[hcKey] || 0;
                 return {
                     'hc-key': hcKey,
                     name: f.properties.name,
                     value: cnt,
-                    // Projesi olan her il tam altın sarısı yanar, olmayan koyu kalır.
                     color: cnt > 0 ? '#d4af37' : '#1c1c1c',
                     dataLabels: { style: { color: cnt > 0 ? '#ffffff' : '#aaaaaa', fontWeight: cnt > 0 ? '700' : '400' } }
                 };
             });
+        }
+
+        // Filtre değişince haritayı ve alt paneli tazele
+        function refreshMapData() {
+            // Lokasyon filtresi seçiliyse harita o ile odaklanır
+            if (currentLoc && currentLoc !== 'all') {
+                mapSelectedCity = { name: CITY_LABELS[currentLoc] || currentLoc, key: currentLoc };
+            }
+            if (!mapChartInstance || !mapChartInstance.series || !mapChartInstance.series[0]) return;
+            mapChartInstance.series[0].setData(buildMapData(), true, false, false);
+            updateMapBottomPanel(mapSelectedCity.name, mapSelectedCity.key);
+        }
+
+        // 3. Highcharts Türkiye Haritasını Oluşturma (İl Kodları Otomatik Eşleştirmeli)
+        function renderTurkeyMap() {
+            const mapContainer = document.getElementById('highchartsTurkeyMap');
+            if (!mapContainer || typeof Highcharts === 'undefined' || !Highcharts.maps || !Highcharts.maps['countries/tr/tr-all']) return;
+
+            // Highcharts Veri Setini Hazırlama
+            const mapData = buildMapData();
 
             mapChartInstance = Highcharts.mapChart('highchartsTurkeyMap', {
                 chart: {
@@ -598,6 +614,7 @@
                     point: {
                         events: {
                             click: function () {
+                                mapSelectedCity = { name: this.name, key: this['hc-key'] };
                                 updateMapBottomPanel(this.name, this['hc-key']);
                             }
                         }
@@ -606,7 +623,7 @@
                 credits: { enabled: false }
             });
 
-            updateMapBottomPanel('Sakarya', 'tr-sk');
+            updateMapBottomPanel(mapSelectedCity.name, mapSelectedCity.key);
         }
 
         // Haritada Şehre Tıklanınca Alt Paneli Güncelleme
@@ -624,8 +641,8 @@
                 titleEl.innerText = tpl2.replace('{city}', cityName);
             }
 
-            // Seçilen şehir için esnek eşleşme
-            const filteredProjects = allProjects.filter(p => {
+            // Seçilen şehir için esnek eşleşme (aktif filtreler uygulanmış liste)
+            const filteredProjects = mapSourceProjects().filter(p => {
                 const loc = ((p.cityKey || '') + ' ' + (p.loc || '')).toLowerCase();
                 if (cityCode === 'tr-sk' && (loc.includes('sakarya') || loc.includes('serdivan') || loc.includes('sapanca') || loc.includes('54'))) return true;
                 if (cityCode === 'tr-ib' && (loc.includes('istanbul') || loc.includes('kadikoy') || loc.includes('34'))) return true;

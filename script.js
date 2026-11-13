@@ -729,6 +729,9 @@ async function fetchProjectsAndMapData() {
 }
 
 function initFiltersAndMap(cityProjectsData) {
+    // projeler.html filtreleri kendi içinde (arama + select + pill + harita) yönetir.
+    // Bu eski kopya çalışırsa filtreleri ezer ve haritada tüm projeleri gösterir.
+    if (window.__projectsInlineFilters) return;
     const statusTabs = document.querySelectorAll(".status-tab");
     const locationSelect = document.getElementById("filterLocation");
     const typeSelect = document.getElementById("filterType");
