@@ -14,7 +14,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Poppins:wght@200;300;400;500;600;700&family=Raleway:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/michele-m/soria-font@master/soria.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css?v=202611141000">
+    <link rel="stylesheet" href="style.css?v=202611141100">
 </head>
 <body>
 
@@ -600,6 +600,7 @@
                     mapData: Highcharts.maps['countries/tr/tr-all'],
                     joinBy: 'hc-key',
                     name: 'Proje Sayısı',
+                    cursor: 'pointer',
                     borderColor: 'rgba(255, 255, 255, 0.1)',
                     borderWidth: 0.8,
                     states: {
@@ -615,14 +616,45 @@
                             click: function () {
                                 mapSelectedCity = { name: this.name, key: this['hc-key'] };
                                 updateMapBottomPanel(this.name, this['hc-key']);
+                                // Projesi olan ile tıklanınca alttaki proje listesine kaydır
+                                if ((this.value || 0) > 0) scrollToMapPanel();
                             }
                         }
                     }
                 }],
+                tooltip: {
+                    useHTML: true,
+                    backgroundColor: 'rgba(8,10,14,0.96)',
+                    borderColor: '#d4af37',
+                    borderRadius: 6,
+                    padding: 10,
+                    style: { color: '#ffffff', fontSize: '12px' },
+                    formatter: function () {
+                        const cnt = this.point.value || 0;
+                        const lang = localStorage.getItem('selectedLang') || window.currentLang || 'tr';
+                        const dict = window.UI_TRANSLATIONS?.[lang] || {};
+                        const countTxt = cnt > 0
+                            ? (dict['projects.map_tooltip_count'] || '{n} Proje').replace('{n}', cnt)
+                            : (dict['projects.map_tooltip_none'] || 'Proje bulunmuyor');
+                        const hint = cnt > 0
+                            ? `<div class="map-tip-hint"><i class="fa-solid fa-arrow-down"></i> ${dict['projects.map_tooltip_hint'] || 'Projelere gitmek için tıklayın'}</div>`
+                            : '';
+                        return `<div class="map-tip"><strong>${this.point.name}</strong><div class="map-tip-count">${countTxt}</div>${hint}</div>`;
+                    }
+                },
                 credits: { enabled: false }
             });
 
             updateMapBottomPanel(mapSelectedCity.name, mapSelectedCity.key);
+        }
+
+        function scrollToMapPanel() {
+            const panel = document.getElementById('mapProjectsPanel');
+            if (!panel) return;
+            const header = document.querySelector('.site-header, header');
+            const offset = (header ? header.getBoundingClientRect().height : 0) + 18;
+            const top = panel.getBoundingClientRect().top + window.scrollY - offset;
+            window.scrollTo({ top: Math.max(top, 0), behavior: 'smooth' });
         }
 
         // Haritada Şehre Tıklanınca Alt Paneli Güncelleme
