@@ -74,7 +74,7 @@ try {
         $featured = ($seg[1] ?? '') === 'featured';
         $saleFirst = setting('projects_sale_first') === '1';
         $order = $saleFirst
-            ? " ORDER BY (status='satista') DESC, sort_order ASC, id DESC"
+            ? " ORDER BY is_on_sale DESC, sort_order ASC, id DESC"
             : ' ORDER BY sort_order ASC, id DESC';
         $sql = 'SELECT * FROM projects WHERE is_active=1' . ($featured ? ' AND is_featured=1' : '') . $order;
         $rows = q($sql)->fetchAll();
@@ -108,7 +108,7 @@ try {
                 'isNew'          => (int)($r['is_new'] ?? (($r['status'] ?? '') === 'yeni-proje' ? 1 : 0)),
                 'isUrbanRenewal' => (int)($r['is_urban_renewal'] ?? 0),
                 'statusLabel'    => PROJECT_STATUS[$r['status']] ?? $r['status'],
-                'isOnSale'       => ($r['status'] ?? '') === 'satista' ? 1 : 0,
+                'isOnSale'       => (int)($r['is_on_sale'] ?? 0),
                 'coverImage'     => asset($r['cover_image']),
                 'area'           => $r['area'],
                 'concept'        => $r['concept'],

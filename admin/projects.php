@@ -162,6 +162,7 @@ admin_header('Projeler', 'projects');
           <td><?= e($r['loc']) ?><?php if (!empty($r['district'])): ?><br><span class="muted"><?= e($r['district']) ?></span><?php endif; ?></td>
           <td>
             <span class="badge b-<?= e($r['status']) ?>"><?= e(PROJECT_STATUS[$r['status']] ?? $r['status']) ?></span>
+            <?php if (!empty($r['is_on_sale'])): ?><span class="badge b-satista" title="Satışta">Satışta</span><?php endif; ?>
             <?php if (!empty($r['is_new'])): ?><span class="badge b-devam-eden" title="Yeni Proje">Yeni</span><?php endif; ?>
             <?php if (!empty($r['is_urban_renewal'])): ?><span class="badge b-tamamlanan" title="Kentsel Dönüşüm">Kentsel</span><?php endif; ?>
           </td>

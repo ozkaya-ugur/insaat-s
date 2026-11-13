@@ -140,13 +140,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $f('subtitle_tr'), $f('slogan_tr'), $f('subtitle_en'), $f('slogan_en'), $f('subtitle_ar'), $f('slogan_ar'), $f('subtitle_de'),
             $f('description_tr'), $f('description_en'), $f('description_ar'), $f('description_de'),
             $f('cat'), $f('loc'), $cityKey, $district, $featuresJson, implode(',', $types), $status,
-            !empty($_POST['is_new']) ? 1 : 0, !empty($_POST['is_urban_renewal']) ? 1 : 0,
+            !empty($_POST['is_new']) ? 1 : 0, !empty($_POST['is_urban_renewal']) ? 1 : 0, !empty($_POST['is_on_sale']) ? 1 : 0,
             $cover, $f('area'), $f('concept'), $f('delivery'), $catalog,
             $streetViewCode, $googleMapCode,
             !empty($_POST['is_featured']) ? 1 : 0, !empty($_POST['is_active']) ? 1 : 0, (int)$f('sort_order', '0'),
             $f('seo_title'), $f('seo_desc'), $f('seo_keywords'),
         ];
-        $cols = 'slug,title_tr,title_en,title_ar,title_de,subtitle_tr,slogan_tr,subtitle_en,slogan_en,subtitle_ar,slogan_ar,subtitle_de,description_tr,description_en,description_ar,description_de,cat,loc,city_key,district,features,type,status,is_new,is_urban_renewal,cover_image,area,concept,delivery,catalog_file,street_view_code,google_map_code,is_featured,is_active,sort_order,seo_title,seo_desc,seo_keywords';
+        $cols = 'slug,title_tr,title_en,title_ar,title_de,subtitle_tr,slogan_tr,subtitle_en,slogan_en,subtitle_ar,slogan_ar,subtitle_de,description_tr,description_en,description_ar,description_de,cat,loc,city_key,district,features,type,status,is_new,is_urban_renewal,is_on_sale,cover_image,area,concept,delivery,catalog_file,street_view_code,google_map_code,is_featured,is_active,sort_order,seo_title,seo_desc,seo_keywords';
         if ($p) {
             $set = implode(',', array_map(fn($c) => "$c=?", explode(',', $cols)));
             q("UPDATE projects SET $set WHERE id=?", [...$data, $id]);
@@ -230,6 +230,7 @@ $prev = fn($path) => strpos($path, 'uploads/') === 0 ? '../' . $path : rtrim(SIT
     <div class="row" style="margin-top:10px">
       <label class="chk"><input type="checkbox" name="is_new" value="1" <?= ($p['is_new'] ?? 0) ? 'checked' : '' ?>><span>Yeni Proje</span></label>
       <label class="chk"><input type="checkbox" name="is_urban_renewal" value="1" <?= ($p['is_urban_renewal'] ?? 0) ? 'checked' : '' ?>><span>Kentsel Dönüşüm Projesi</span></label>
+      <label class="chk"><input type="checkbox" name="is_on_sale" value="1" <?= ($p['is_on_sale'] ?? 0) ? 'checked' : '' ?>><span>Satışta</span></label>
     </div>
     <p class="hint">"Yeni Proje" projeler sayfasındaki <b>Yeni Projeler</b> filtresinde, "Kentsel Dönüşüm Projesi" ise Kentsel Dönüşüm sayfasında listelenir.</p>
   </div>

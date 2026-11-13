@@ -14,7 +14,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Poppins:wght@200;300;400;500;600;700&family=Raleway:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/michele-m/soria-font@master/soria.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css?v=202611131428">
+    <link rel="stylesheet" href="style.css?v=202611131600">
 </head>
 <body>
 
@@ -54,29 +54,30 @@
                     <button class="status-tab" data-status="devam-eden" data-i18n="projects.tab_ongoing">DEVAM EDİYOR</button>
                     <button class="status-tab" data-status="tamamlanan" data-i18n="projects.tab_completed">TAMAMLANDI</button>
                     <button class="status-tab" data-status="yeni-proje" data-i18n="projects.tab_new">YENİ PROJELER</button>
-                    <button class="status-tab" data-status="satista" data-i18n="projects.tab_sale">SATIŞTA</button>
                     <button class="status-tab kd-tab-highlight" data-type-target="kentsel" id="kdTabBtn" style="border-color:rgba(197,160,89,0.55);color:#ecdba8;background:rgba(197,160,89,0.08);"><i class="fa-solid fa-building-shield" style="margin-right:6px;color:#c5a059;"></i><span data-i18n="projects.tab_kentsel">KENTSEL DÖNÜŞÜM</span></button>
                 </div>
 
                 <div class="projects-filter-toolbar">
-                    <div class="projects-search-box">
-                        <i class="fa-solid fa-magnifying-glass"></i>
-                        <input type="search" id="projectsSearch" autocomplete="off" placeholder="Proje adı, lokasyon veya anahtar kelime ara..." data-i18n-placeholder="projects.search_placeholder" aria-label="Proje ara">
-                        <button type="button" class="projects-search-clear" id="projectsSearchClear" aria-label="Aramayı temizle" data-i18n-title="projects.search_clear"><i class="fa-solid fa-xmark"></i></button>
+                    <div class="projects-filter-controls">
+                        <div class="projects-search-box">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                            <input type="search" id="projectsSearch" autocomplete="off" placeholder="Proje ara..." data-i18n-placeholder="projects.search_placeholder" aria-label="Proje ara">
+                            <button type="button" class="projects-search-clear" id="projectsSearchClear" aria-label="Aramayı temizle" data-i18n-title="projects.search_clear"><i class="fa-solid fa-xmark"></i></button>
+                        </div>
+                        <div class="custom-select-box filter-select" id="locationSelectBox">
+                            <i class="fa-solid fa-location-dot"></i>
+                            <select id="filterLocation" aria-label="Lokasyon" data-i18n-aria-label="projects.filter_location"></select>
+                            <i class="fa-solid fa-chevron-down select-caret"></i>
+                        </div>
+                        <div class="custom-select-box filter-select is-disabled" id="districtSelectBox">
+                            <i class="fa-solid fa-map-pin"></i>
+                            <select id="filterDistrict" aria-label="İlçe" data-i18n-aria-label="projects.filter_district"></select>
+                            <i class="fa-solid fa-chevron-down select-caret"></i>
+                        </div>
                     </div>
-                    <div class="filter-pill-rows">
-                        <div class="filter-pill-row">
-                            <span class="filter-pill-label" data-i18n="projects.filter_location">Lokasyon</span>
-                            <div class="filter-pill-group" id="locationPills"></div>
-                        </div>
-                        <div class="filter-pill-row">
-                            <span class="filter-pill-label" data-i18n="projects.filter_district">İlçe</span>
-                            <div class="filter-pill-group is-disabled" id="districtPills"></div>
-                        </div>
-                        <div class="filter-pill-row">
-                            <span class="filter-pill-label" data-i18n="projects.filter_type">Yapı Türü</span>
-                            <div class="filter-pill-group" id="typePills"></div>
-                        </div>
+                    <div class="filter-pill-row filter-type-row">
+                        <span class="filter-pill-label" data-i18n="projects.filter_type">Yapı Türü</span>
+                        <div class="filter-pill-group" id="typePills"></div>
                     </div>
                 </div>
 
@@ -165,10 +166,10 @@
     <!-- Ortak Footer Yükleme Alanı -->
     <div id="site-footer"></div>
 
-    <script src="components/header.js?v=202611131428"></script>
-    <script src="components/footer.js?v=202611131428"></script>
+    <script src="components/header.js?v=202611131600"></script>
+    <script src="components/footer.js?v=202611131600"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <script src="script.js?v=202611131428"></script>
+    <script src="script.js?v=202611131600"></script>
 <!-- HIGHMAPS CANLI CDN BAGLANTILARI -->
     <script src="https://code.highcharts.com/maps/highmaps.js"></script>
     <script src="https://code.highcharts.com/mapdata/countries/tr/tr-all.js"></script>
@@ -238,7 +239,7 @@
                 const sp = new URLSearchParams(window.location.search);
                 const qp = parseInt(sp.get('sayfa') || '1', 10);
                 currentPage = Number.isFinite(qp) && qp > 0 ? qp : 1;
-                renderFilterPills();
+                renderFilterSelects();
                 populateDistricts();
                 applyFilters();
             } catch (err) {
@@ -264,16 +265,16 @@
 
         const CITY_LABELS = { 'tr-sk': 'Sakarya', 'tr-ib': 'İstanbul', 'tr-an': 'Ankara', 'tr-kc': 'Kocaeli', 'tr-gi': 'Giresun' };
 
-        function renderFilterPills() {
-            const locBox = document.getElementById('locationPills');
-            if (locBox) {
+        function renderFilterSelects() {
+            const locSel = document.getElementById('filterLocation');
+            if (locSel) {
                 const keys = new Set();
                 allProjects.forEach(p => { const k = normalizeCityKey(p.cityKey || p.loc || ''); if (k) keys.add(k); });
+                if (currentLoc !== 'all' && !keys.has(currentLoc)) currentLoc = 'all';
                 const items = [{ v: 'all', l: t('projects.filter_location_all', 'Tüm Lokasyonlar') }];
                 Array.from(keys).sort((a, b) => (CITY_LABELS[a] || a).localeCompare(CITY_LABELS[b] || b, 'tr'))
                     .forEach(k => items.push({ v: k, l: CITY_LABELS[k] || k }));
-                if (currentLoc !== 'all' && !keys.has(currentLoc)) currentLoc = 'all';
-                locBox.innerHTML = pillHTML(items, currentLoc);
+                locSel.innerHTML = items.map(it => `<option value="${esc(it.v)}"${it.v === currentLoc ? ' selected' : ''}>${esc(it.l)}</option>`).join('');
             }
             const typeBox = document.getElementById('typePills');
             if (typeBox) {
@@ -289,15 +290,16 @@
         }
 
         function populateDistricts() {
-            const box = document.getElementById('districtPills');
-            if (!box) return;
+            const sel = document.getElementById('filterDistrict');
+            const box = document.getElementById('districtSelectBox');
+            if (!sel) return;
             if (currentLoc === 'all') {
-                box.innerHTML = pillHTML([{ v: 'all', l: t('projects.filter_district_all', 'Tüm İlçeler') }], 'all');
-                box.classList.add('is-disabled');
+                sel.innerHTML = `<option value="all" selected>${esc(t('projects.filter_district_all', 'Tüm İlçeler'))}</option>`;
+                box?.classList.add('is-disabled');
                 currentDistrict = 'all';
                 return;
             }
-            box.classList.remove('is-disabled');
+            box?.classList.remove('is-disabled');
             const set = new Set();
             allProjects.forEach(p => {
                 if (normalizeCityKey(p.cityKey || p.loc || '') !== currentLoc) return;
@@ -307,7 +309,7 @@
             const list = Array.from(set).sort((a, b) => a.localeCompare(b, 'tr'));
             if (currentDistrict !== 'all' && !list.includes(currentDistrict)) currentDistrict = 'all';
             const items = [{ v: 'all', l: t('projects.filter_district_all', 'Tüm İlçeler') }].concat(list.map(d => ({ v: d, l: d })));
-            box.innerHTML = pillHTML(items, currentDistrict);
+            sel.innerHTML = items.map(it => `<option value="${esc(it.v)}"${it.v === currentDistrict ? ' selected' : ''}>${esc(it.l)}</option>`).join('');
         }
 
         function applyFilters(resetPage) {
@@ -454,7 +456,8 @@
             gridContainer.innerHTML = projects.map((proj, index) => {
                 const numStr = String(startIndex + index + 1).padStart(2, '0');
                 const stRaw = (proj.status || '').toLowerCase();
-                const statusClass = stRaw.includes('tamam') ? 'tamamlanan' : (stRaw.includes('satis') ? 'satista' : (stRaw.includes('yeni') ? 'yeni-proje' : 'devam-eden'));
+                const statusClass = stRaw.includes('tamam') ? 'tamamlanan' : (stRaw.includes('yeni') ? 'yeni-proje' : 'devam-eden');
+                const onSale = proj.isOnSale === 1 || proj.isOnSale === true;
                 
                 let statusText = (proj.status || 'DEVAM EDİYOR').toUpperCase();
                 if (typeof getStatusLabel === 'function') {
@@ -468,6 +471,7 @@
                 return `
                     <a href="proje-detay.html?id=${proj.slug || proj.id}" class="showcase-card project-item">
                         <span class="status-badge ${statusClass}">${statusText}</span>
+                        ${onSale ? `<span class="status-badge satista sale-flag">${t('status.satista', 'Satışta').toUpperCase()}</span>` : ''}
                         <div class="card-image-wrap"><img src="${imagePath}" alt="${proj.title}" onerror="this.src='images/banner-1.webp'"></div>
                         <div class="card-glass-overlay"></div>
                         <div class="card-inner-content">
@@ -495,7 +499,8 @@
             listContainer.innerHTML = projects.map((proj, index) => {
                 const numStr = String(startIndex + index + 1).padStart(2, '0');
                 const stRaw = (proj.status || '').toLowerCase();
-                const statusClass = stRaw.includes('tamam') ? 'tamamlanan' : (stRaw.includes('satis') ? 'satista' : (stRaw.includes('yeni') ? 'yeni-proje' : 'devam-eden'));
+                const statusClass = stRaw.includes('tamam') ? 'tamamlanan' : (stRaw.includes('yeni') ? 'yeni-proje' : 'devam-eden');
+                const onSale = proj.isOnSale === 1 || proj.isOnSale === true;
                 
                 let statusText = (proj.status || 'DEVAM EDİYOR').toUpperCase();
                 if (typeof getStatusLabel === 'function') {
@@ -506,7 +511,7 @@
                     <a href="proje-detay.html?id=${proj.slug || proj.id}" class="editorial-row project-item">
                         <div class="col-num"><span class="row-num">${numStr}</span></div>
                         <div class="col-title"><h4 class="row-title">${proj.title}</h4></div>
-                        <div class="col-cat"><span class="status-badge ${statusClass}">${statusText}</span></div>
+                        <div class="col-cat"><span class="status-badge ${statusClass}">${statusText}</span>${onSale ? `<span class="status-badge satista">${t('status.satista', 'Satışta').toUpperCase()}</span>` : ''}</div>
                         <div class="col-desc"><p class="row-desc">${proj.slogan || proj.subtitle || proj.cat || ''}</p><span class="row-loc"><i class="fa-solid fa-location-dot"></i> ${proj.loc || 'Sakarya'}</span></div>
                         <div class="col-action"><span class="row-action-btn"><span>${detailLabel}</span><i class="fa-solid fa-arrow-up-right-from-square"></i></span></div>
                     </a>
@@ -666,7 +671,7 @@
                         currentStatusFilter = btn.getAttribute('data-status') || 'all';
                         if (currentType === 'kentsel') currentType = 'all';
                     }
-                    renderFilterPills();
+                    renderFilterSelects();
                     currentPage = 1;
                     updatePageQuery(currentPage);
                     applyFilters();
@@ -682,17 +687,14 @@
             }
 
             // Select Dropdown Filtreleri
-            document.getElementById('locationPills')?.addEventListener('click', (e) => {
-                const b = e.target.closest('.filter-pill'); if (!b) return;
-                currentLoc = b.dataset.value || 'all';
+            document.getElementById('filterLocation')?.addEventListener('change', (e) => {
+                currentLoc = e.target.value || 'all';
                 currentDistrict = 'all';
-                renderFilterPills(); populateDistricts();
+                populateDistricts();
                 currentPage = 1; updatePageQuery(1); applyFilters();
             });
-            document.getElementById('districtPills')?.addEventListener('click', (e) => {
-                const b = e.target.closest('.filter-pill'); if (!b) return;
-                currentDistrict = b.dataset.value || 'all';
-                populateDistricts();
+            document.getElementById('filterDistrict')?.addEventListener('change', (e) => {
+                currentDistrict = e.target.value || 'all';
                 currentPage = 1; updatePageQuery(1); applyFilters();
             });
             document.getElementById('typePills')?.addEventListener('click', (e) => {
@@ -706,7 +708,7 @@
                     document.querySelector('.status-tab[data-status="all"]')?.classList.add('active');
                     currentStatusFilter = 'all';
                 }
-                renderFilterPills();
+                renderFilterSelects();
                 currentPage = 1; updatePageQuery(1); applyFilters();
             });
 
