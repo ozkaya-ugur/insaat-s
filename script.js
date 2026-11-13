@@ -716,6 +716,8 @@ async function fetchProjectsAndMapData() {
                 cat: p.cat,
                 link: `proje-detay.html?slug=${p.slug}`,
                 status: p.status,
+                statusLabel: p.statusLabel,
+                isOnSale: p.isOnSale,
                 type: p.type,
                 loc: p.loc
             });
@@ -792,7 +794,8 @@ function initFiltersAndMap(cityProjectsData) {
         cardsContainer.innerHTML = data.projects.map(proj => `
             <a href="${proj.link}" class="map-mini-card-bottom">
                 <div class="mini-card-top-head">
-                    <span class="status-badge ${proj.status}">${getStatusLabel(proj.status)}</span>
+                    <span class="status-badge ${proj.status}">${(proj.statusLabel || getStatusLabel(proj.status)).toLocaleUpperCase('tr-TR')}</span>
+                    ${(proj.isOnSale === 1 || proj.isOnSale === true) ? `<span class="status-badge satista">${getStatusLabel('satista').toLocaleUpperCase('tr-TR')}</span>` : ''}
                     <i class="fa-solid fa-arrow-up-right-from-square mini-card-arrow"></i>
                 </div>
                 <div class="mini-card-info">
