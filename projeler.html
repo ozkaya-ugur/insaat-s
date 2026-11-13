@@ -14,7 +14,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Poppins:wght@200;300;400;500;600;700&family=Raleway:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/michele-m/soria-font@master/soria.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css?v=202611131600">
+    <link rel="stylesheet" href="style.css?v=202611131730">
 </head>
 <body>
 
@@ -166,10 +166,10 @@
     <!-- Ortak Footer Yükleme Alanı -->
     <div id="site-footer"></div>
 
-    <script src="components/header.js?v=202611131600"></script>
-    <script src="components/footer.js?v=202611131600"></script>
+    <script src="components/header.js?v=202611131730"></script>
+    <script src="components/footer.js?v=202611131730"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <script src="script.js?v=202611131600"></script>
+    <script src="script.js?v=202611131730"></script>
 <!-- HIGHMAPS CANLI CDN BAGLANTILARI -->
     <script src="https://code.highcharts.com/maps/highmaps.js"></script>
     <script src="https://code.highcharts.com/mapdata/countries/tr/tr-all.js"></script>
@@ -555,10 +555,14 @@
             // Highcharts Veri Setini Hazırlama
             const mapData = Highcharts.maps['countries/tr/tr-all'].features.map(f => {
                 const hcKey = f.properties['hc-key'];
+                const cnt = cityCounts[hcKey] || 0;
                 return {
                     'hc-key': hcKey,
                     name: f.properties.name,
-                    value: cityCounts[hcKey] || 0
+                    value: cnt,
+                    // Projesi olan her il tam altın sarısı yanar, olmayan koyu kalır.
+                    color: cnt > 0 ? '#d4af37' : '#1c1c1c',
+                    dataLabels: { style: { color: cnt > 0 ? '#ffffff' : '#aaaaaa', fontWeight: cnt > 0 ? '700' : '400' } }
                 };
             });
 
@@ -568,9 +572,11 @@
                     style: { fontFamily: 'Plus Jakarta Sans, sans-serif' }
                 },
                 title: { text: null },
-                mapNavigation: { enabled: true, buttonOptions: { verticalAlign: 'bottom' } },
+                // Harita büyümesin: zoom butonları, tekerlek ve çift tık zoomu kapalı.
+                mapNavigation: { enabled: false, enableMouseWheelZoom: false, enableDoubleClickZoom: false },
                 colorAxis: {
                     min: 0,
+                    max: 1,
                     minColor: '#1c1c1c',
                     maxColor: '#d4af37'
                 },
@@ -771,7 +777,6 @@
                                 renderTurkeyMap();
                             } else {
                                 mapChartInstance.refit();
-                                mapChartInstance.setSize(null, null, false);
                             }
                         }, 50);
                     }
