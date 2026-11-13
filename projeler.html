@@ -14,7 +14,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Poppins:wght@200;300;400;500;600;700&family=Raleway:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/michele-m/soria-font@master/soria.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css?v=202611131730">
+    <link rel="stylesheet" href="style.css?v=202611131920">
 </head>
 <body>
 
@@ -166,10 +166,10 @@
     <!-- Ortak Footer Yükleme Alanı -->
     <div id="site-footer"></div>
 
-    <script src="components/header.js?v=202611131730"></script>
-    <script src="components/footer.js?v=202611131730"></script>
+    <script src="components/header.js?v=202611131920"></script>
+    <script src="components/footer.js?v=202611131920"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <script src="script.js?v=202611131730"></script>
+    <script src="script.js?v=202611131920"></script>
 <!-- HIGHMAPS CANLI CDN BAGLANTILARI -->
     <script src="https://code.highcharts.com/maps/highmaps.js"></script>
     <script src="https://code.highcharts.com/mapdata/countries/tr/tr-all.js"></script>
@@ -766,6 +766,8 @@
                     
                     btn.classList.add('active');
                     const targetView = btn.getAttribute('data-view');
+                    // Harita görünümünde sayfalandırma gizlenir
+                    document.querySelector('.projects-main-section')?.classList.toggle('is-map-view', targetView === 'map');
                     
                     if (targetView === 'grid') document.getElementById('viewGrid').classList.add('active');
                     if (targetView === 'list') document.getElementById('viewList').classList.add('active');

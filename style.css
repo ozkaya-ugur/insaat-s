@@ -4536,3 +4536,23 @@ body.detail-page-body {
 .showcase-card .status-badge.sale-flag{top:56px}
 .editorial-row .status-badge + .status-badge{margin-left:6px}
 @media(max-width:768px){.projects-search-box{width:100%}.filter-select{flex:1 1 140px}.filter-select select{max-width:100%;width:100%}.filter-pill-label{min-width:100%}.filter-pill-group{width:100%}.filter-pill{flex:1 1 auto;text-align:center}}
+
+/* ===== HARİTA GÖRÜNÜMÜNDE SAYFALANDIRMA YOK ===== */
+.projects-main-section.is-map-view #projectsPagination{display:none!important}
+
+/* ===== FİLTRE ALANLARI = DURUM SEKMESİ BOYUTU ===== */
+.projects-search-box,.filter-select,.filter-pill{height:35px;min-height:35px;box-sizing:border-box;border-radius:0;background:rgba(255,255,255,.02);border:1px solid var(--border-hairline)}
+.projects-search-box{width:220px;padding:0 14px}
+.projects-search-box input,.filter-select select{font-size:.62rem;font-weight:600;letter-spacing:.22em;padding:0;height:100%;line-height:normal}
+.projects-search-box input::placeholder{letter-spacing:.22em;text-transform:uppercase;font-size:.58rem}
+.filter-select{padding:0 30px 0 16px}
+.filter-select select{max-width:170px}
+.filter-select select option{letter-spacing:normal}
+.projects-search-box:focus-within,.filter-select:hover{border-color:var(--accent-gold);box-shadow:none}
+.filter-pill-group{background:transparent;border:0;padding:0;gap:10px;border-radius:0}
+.filter-pill{display:inline-flex;align-items:center;padding:0 20px;font-size:.62rem;font-weight:600;letter-spacing:.22em;color:var(--text-dim)}
+.filter-pill:hover{border-color:var(--accent-gold);color:var(--accent-gold);background:rgba(197,160,89,.1)}
+.filter-pill.active{border-color:var(--accent-gold);color:var(--accent-gold);background:rgba(197,160,89,.1);box-shadow:none}
+@media(max-width:768px){.projects-search-box{width:100%}.filter-pill{flex:0 1 auto}}
+.filter-select select{max-width:280px;text-transform:uppercase;text-overflow:ellipsis;padding-right:6px}
+@media(max-width:768px){.filter-select{flex:1 1 100%}.filter-select select{max-width:100%;width:100%}}
