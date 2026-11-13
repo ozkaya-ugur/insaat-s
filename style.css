@@ -4590,3 +4590,9 @@ body.detail-page-body {
 @keyframes hintBounce{0%,100%{transform:translateY(0)}50%{transform:translateY(3px)}}
 .map-wrapper{display:flex;flex-direction:column;align-items:stretch}
 @media (prefers-reduced-motion:reduce){.map-scroll-hint i{animation:none}}
+
+/* ===== HARİTA ROZETİ: "PROJELERE GİTMEK İÇİN TIKLAYIN" ===== */
+.pin-tooltip{display:flex;flex-direction:column;align-items:center;gap:5px;padding:9px 15px;line-height:1.25;font-size:.72rem;box-shadow:0 8px 22px rgba(0,0,0,.55)}
+.pin-tooltip-hint{font-family:'Plus Jakarta Sans',sans-serif;font-size:.62rem;font-weight:600;letter-spacing:.04em;color:#d9bd7a;text-transform:none;white-space:nowrap}
+.map-pin.active .pin-tooltip-hint{color:#e8d9b0}
+.map-pin:hover .pin-tooltip-hint{color:#fff}
