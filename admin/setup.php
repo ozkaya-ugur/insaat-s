@@ -29,7 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
 <title>Kurulum | BUYAPI Panel</title>
-<link rel="stylesheet" href="assets/admin.css">
+<link rel="stylesheet" href="assets/admin.css?v=202611130635">
 </head><body>
 <div class="login-wrap"><form class="login-box" method="post" autocomplete="off">
   <h1>İLK KURULUM</h1><p class="sub">İlk yönetici hesabını oluşturun</p>
