@@ -50,12 +50,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <title>Giriş | BUYAPI Panel</title>
 <link rel="stylesheet" href="assets/admin.css">
 </head><body>
-<div class="login-wrap"><form class="login-box" method="post" autocomplete="off">
-  <h1>BUYAPI</h1><p class="sub">YÖNETİM PANELİ</p>
-  <?php if ($error): ?><div class="alert err"><?= e($error) ?></div><?php endif; ?>
-  <?= csrf_field() ?>
-  <div class="field"><label>Kullanıcı Adı</label><input type="text" name="username" required autofocus></div>
-  <div class="field"><label>Şifre</label><input type="password" name="password" required></div>
-  <button class="btn" style="width:100%;justify-content:center">Giriş Yap</button>
-</form></div>
+<div class="login-page">
+  <aside class="login-brand">
+    <div class="lb-top">
+      <img src="../images/l-white.svg" alt="BUYAPI" class="lb-logo">
+    </div>
+    <div class="lb-mid">
+      <span class="lb-eyebrow">Yönetim Paneli</span>
+      <h2 class="lb-title">Her projede aynı özen,<br><em>aynı imza.</em></h2>
+      <p class="lb-text">Projeler, galeriler, sayfa içerikleri ve mesajlar tek panelden yönetilir. Bu alan yalnızca yetkili kullanıcılar içindir.</p>
+      <div class="lb-stats">
+        <div class="lb-stat"><b>44</b><span>Proje</span></div>
+        <div class="lb-stat"><b>35+</b><span>Yıl</span></div>
+        <div class="lb-stat"><b>3</b><span>Dil</span></div>
+      </div>
+    </div>
+    <div class="lb-bottom">
+      <div class="lb-credit"><span>Tasarım ve kodlama:</span> <a href="https://www.sosyobyte.com" target="_blank" rel="noopener">Sosyobyte</a></div>
+    </div>
+  </aside>
+  <main class="login-panel">
+    <form class="login-card" method="post" autocomplete="off">
+      <h1>Panele giriş</h1>
+      <p class="sub">Devam etmek için hesabınızla oturum açın.</p>
+      <?php if ($error): ?><div class="alert err"><?= e($error) ?></div><?php endif; ?>
+      <?= csrf_field() ?>
+      <div class="field"><label for="username">Kullanıcı Adı</label><input type="text" id="username" name="username" required autofocus autocomplete="username"></div>
+      <div class="field"><label for="password">Şifre</label><input type="password" id="password" name="password" required autocomplete="current-password"></div>
+      <button class="btn" type="submit">Giriş Yap</button>
+      <p class="lc-foot"><a href="../index.html">Siteye dön</a> &nbsp;·&nbsp; BUYAPI Yönetim Paneli</p>
+    </form>
+  </main>
+</div>
 </body></html>
