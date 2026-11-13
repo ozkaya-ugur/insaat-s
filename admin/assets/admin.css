@@ -226,3 +226,16 @@ tr:hover td{background:rgba(255,255,255,.02)}
 .projects-filter select{height:40px;border-radius:999px;padding-left:14px}
 .projects-filter-actions .btn{height:40px;border-radius:999px}
 .badge.b-satista{background:rgba(197,160,89,.16);color:#e6c98a;border:1px solid rgba(197,160,89,.45)}
+
+/* ===== PROJELER LİSTESİ: SATIR İÇİ DURUM DEĞİŞTİRME ===== */
+.cell-status{min-width:150px}
+.status-inline-form{display:inline-flex;align-items:center;gap:6px;margin:0}
+.status-select{appearance:none;-webkit-appearance:none;padding:4px 24px 4px 10px;border-radius:20px;font-size:11px;font-weight:700;cursor:pointer;
+  background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%23b9b9b9' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 8px center;background-size:9px 6px;border:1px solid var(--line);color:var(--text);transition:border-color .2s ease}
+.status-select:hover,.status-select:focus{border-color:var(--gold,#c5a059);outline:none}
+.status-select.b-devam-eden{background-color:rgba(197,160,89,.14);border-color:rgba(197,160,89,.45);color:#e6c98a}
+.status-select.b-tamamlanan{background-color:rgba(76,175,125,.14);border-color:rgba(76,175,125,.45);color:#8fe0b4}
+.status-select.b-yeni-proje{background-color:rgba(120,160,255,.14);border-color:rgba(120,160,255,.45);color:#a9c4ff}
+.status-select option{background:#12161f;color:#e8e8e8}
+.status-flags{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}

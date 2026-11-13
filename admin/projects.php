@@ -72,6 +72,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (!admin_can('projects', 'edit')) admin_deny();
         q('UPDATE projects SET is_new = 1 - is_new WHERE id=?', [$id]);
         flash('Yeni proje durumu değiştirildi.');
+    } elseif ($act === 'status' && $id) {
+        if (!admin_can('projects', 'edit')) admin_deny();
+        $st = (string)($_POST['status'] ?? '');
+        if (!isset(PROJECT_STATUS[$st])) {
+            flash('Geçersiz proje durumu.', 'error');
+        } else {
+            q('UPDATE projects SET status=? WHERE id=?', [$st, $id]);
+            flash('Proje durumu "' . PROJECT_STATUS[$st] . '" olarak güncellendi.');
+        }
+    } elseif ($act === 'sale' && $id) {
+        if (!admin_can('projects', 'edit')) admin_deny();
+        q('UPDATE projects SET is_on_sale = 1 - is_on_sale WHERE id=?', [$id]);
+        flash('Satış durumu değiştirildi.');
     }
     redirect('projects.php' . (!empty($_POST['return_qs']) ? '?' . $_POST['return_qs'] : ''));
 }
@@ -160,11 +173,35 @@ admin_header('Projeler', 'projects');
           <td><?php if ($r['cover_image']): ?><img class="thumb" src="<?= e(strpos($r['cover_image'], 'uploads/') === 0 ? '../' . $r['cover_image'] : rtrim(SITE_URL, '/') . '/' . $r['cover_image']) ?>" alt=""><?php endif; ?></td>
           <td><strong><?= e($r['title_tr']) ?></strong><br><span class="muted"><?= e($r['slug']) ?></span></td>
           <td><?= e($r['loc']) ?><?php if (!empty($r['district'])): ?><br><span class="muted"><?= e($r['district']) ?></span><?php endif; ?></td>
-          <td>
-            <span class="badge b-<?= e($r['status']) ?>"><?= e(PROJECT_STATUS[$r['status']] ?? $r['status']) ?></span>
-            <?php if (!empty($r['is_on_sale'])): ?><span class="badge b-satista" title="Satışta">Satışta</span><?php endif; ?>
-            <?php if (!empty($r['is_new'])): ?><span class="badge b-devam-eden" title="Yeni Proje">Yeni</span><?php endif; ?>
-            <?php if (!empty($r['is_urban_renewal'])): ?><span class="badge b-tamamlanan" title="Kentsel Dönüşüm">Kentsel</span><?php endif; ?>
+          <td class="cell-status">
+            <?php if (admin_can('projects', 'edit')): ?>
+              <form method="post" class="status-inline-form"><?= csrf_field() ?>
+                <input type="hidden" name="id" value="<?= (int)$r['id'] ?>">
+                <input type="hidden" name="return_qs" value="<?= e($returnQs) ?>">
+                <input type="hidden" name="action" value="status">
+                <select name="status" class="status-select b-<?= e($r['status']) ?>" onchange="this.form.submit()" title="Proje durumunu değiştir" aria-label="Proje durumu">
+                  <?php foreach (PROJECT_STATUS as $sk => $sl): ?>
+                    <option value="<?= e($sk) ?>" <?= $r['status'] === $sk ? 'selected' : '' ?>><?= e($sl) ?></option>
+                  <?php endforeach; ?>
+                </select>
+                <noscript><button class="btn sm" type="submit">Kaydet</button></noscript>
+              </form>
+            <?php else: ?>
+              <span class="badge b-<?= e($r['status']) ?>"><?= e(PROJECT_STATUS[$r['status']] ?? $r['status']) ?></span>
+            <?php endif; ?>
+            <div class="status-flags">
+              <?php if (admin_can('projects', 'edit')): ?>
+                <form method="post" style="display:inline"><?= csrf_field() ?>
+                  <input type="hidden" name="id" value="<?= (int)$r['id'] ?>">
+                  <input type="hidden" name="return_qs" value="<?= e($returnQs) ?>">
+                  <button name="action" value="sale" class="badge <?= !empty($r['is_on_sale']) ? 'b-satista' : 'b-off' ?>" style="cursor:pointer;background:none" title="Satışta işaretini aç/kapat"><?= !empty($r['is_on_sale']) ? 'Satışta' : 'Satışa Kapalı' ?></button>
+                </form>
+              <?php elseif (!empty($r['is_on_sale'])): ?>
+                <span class="badge b-satista" title="Satışta">Satışta</span>
+              <?php endif; ?>
+              <?php if (!empty($r['is_new'])): ?><span class="badge b-devam-eden" title="Yeni Proje">Yeni</span><?php endif; ?>
+              <?php if (!empty($r['is_urban_renewal'])): ?><span class="badge b-tamamlanan" title="Kentsel Dönüşüm">Kentsel</span><?php endif; ?>
+            </div>
           </td>
           <td class="row-order"><?= $idx + 1 ?></td>
           <td>

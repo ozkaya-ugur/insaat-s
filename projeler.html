@@ -14,7 +14,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Poppins:wght@200;300;400;500;600;700&family=Raleway:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/michele-m/soria-font@master/soria.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css?v=202611141300">
+    <link rel="stylesheet" href="style.css?v=202611141500">
 </head>
 <body>
 
@@ -58,6 +58,11 @@
 
                 <div class="projects-filter-toolbar">
                     <div class="projects-filter-controls">
+                        <div class="projects-search-box">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                            <input type="search" id="projectsSearch" autocomplete="off" placeholder="Proje ara..." data-i18n-placeholder="projects.search_placeholder" aria-label="Proje ara">
+                            <button type="button" class="projects-search-clear" id="projectsSearchClear" aria-label="Aramayı temizle" data-i18n-title="projects.search_clear"><i class="fa-solid fa-xmark"></i></button>
+                        </div>
                         <div class="custom-select-box filter-select" id="locationSelectBox">
                             <i class="fa-solid fa-location-dot"></i>
                             <select id="filterLocation" aria-label="Lokasyon" data-i18n-aria-label="projects.filter_location"></select>
@@ -91,14 +96,6 @@
                     </button>
                 </div>
 
-                <!-- PROJE ARAMA (Kart/Liste/Harita seçicisinin altında, sağa yaslı) -->
-                <div class="projects-search-row">
-                    <div class="projects-search-box">
-                        <i class="fa-solid fa-magnifying-glass"></i>
-                        <input type="search" id="projectsSearch" autocomplete="off" placeholder="Proje ara..." data-i18n-placeholder="projects.search_placeholder" aria-label="Proje ara">
-                        <button type="button" class="projects-search-clear" id="projectsSearchClear" aria-label="Aramayı temizle" data-i18n-title="projects.search_clear"><i class="fa-solid fa-xmark"></i></button>
-                    </div>
-                </div>
             </div>
 
             <!-- KENTSEL DÖNÜŞÜM VIP SPOTLIGHT BANT -->
@@ -396,13 +393,18 @@
             const nums = document.getElementById('projectsPageNumbers');
             if (!box || !summary || !indicator || !prev || !next || !nums) return;
 
+            // Özet metni her durumda güncellenir; sayfalama gizlense bile eski sayı kalmaz.
+            if (!meta.total) {
+                summary.textContent = t('projects.pagination_empty', 'Bu filtreye uygun proje bulunamadı');
+            } else {
+                summary.textContent = t('projects.pagination_summary', '{total} projeden {start}-{end} arası gösteriliyor')
+                    .replace('{total}', String(meta.total)).replace('{start}', String(meta.start)).replace('{end}', String(meta.end));
+            }
             if (!meta.total || meta.pages <= 1) {
                 box.style.display = 'none';
                 return;
             }
             box.style.display = 'flex';
-            summary.textContent = t('projects.pagination_summary', '{total} projeden {start}-{end} arası gösteriliyor')
-                .replace('{total}', String(meta.total)).replace('{start}', String(meta.start)).replace('{end}', String(meta.end));
             indicator.textContent = t('projects.pagination_page', '{current} / {total}')
                 .replace('{current}', String(meta.currentPage)).replace('{total}', String(meta.pages));
             const prevLbl = t('projects.pagination_prev', 'Önceki');

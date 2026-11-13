@@ -4604,10 +4604,6 @@ body.detail-page-body {
 .map-tip-hint{margin-top:4px;padding-top:6px;border-top:1px solid rgba(212,175,55,.3);font-size:11px;color:#e8d9b0;display:flex;align-items:center;gap:6px}
 .map-tip-hint i{color:#d4af37;font-size:10px}
 
-/* ===== PROJE ARAMA: KART/LİSTE/HARİTA SEÇİCİSİNİN ALTINDA, SAĞA YASLI ===== */
-.projects-search-row{order:2;flex:1 1 100%;display:flex;justify-content:flex-end;align-items:center;margin:-4px 0 14px}
-.projects-filter-toolbar{order:3}
-@media(max-width:768px){.projects-search-row{justify-content:stretch;margin:0 0 12px}.projects-search-row .projects-search-box{width:100%}}
 
 /* ===== SATIŞA KAPALI ROZETİ ===== */
 .status-badge.satista-kapali{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.22);color:#b9b9b9;box-shadow:none;backdrop-filter:none;-webkit-backdrop-filter:none}
