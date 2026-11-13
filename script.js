@@ -800,7 +800,7 @@ function initFiltersAndMap(cityProjectsData) {
             <a href="${proj.link}" class="map-mini-card-bottom">
                 <div class="mini-card-top-head">
                     <span class="status-badge ${proj.status}">${(proj.statusLabel || getStatusLabel(proj.status)).toLocaleUpperCase('tr-TR')}</span>
-                    ${(proj.isOnSale === 1 || proj.isOnSale === true) ? `<span class="status-badge satista">${getStatusLabel('satista').toLocaleUpperCase('tr-TR')}</span>` : ''}
+                    ${(proj.isOnSale === 1 || proj.isOnSale === true) ? `<span class="status-badge satista">${getStatusLabel('satista').toLocaleUpperCase('tr-TR')}</span>` : `<span class="status-badge satista-kapali">${getStatusLabel('satista_kapali').toLocaleUpperCase('tr-TR')}</span>`}
                     <i class="fa-solid fa-arrow-up-right-from-square mini-card-arrow"></i>
                 </div>
                 <div class="mini-card-info">

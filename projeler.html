@@ -14,7 +14,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Poppins:wght@200;300;400;500;600;700&family=Raleway:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/michele-m/soria-font@master/soria.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css?v=202611141100">
+    <link rel="stylesheet" href="style.css?v=202611141300">
 </head>
 <body>
 
@@ -58,11 +58,6 @@
 
                 <div class="projects-filter-toolbar">
                     <div class="projects-filter-controls">
-                        <div class="projects-search-box">
-                            <i class="fa-solid fa-magnifying-glass"></i>
-                            <input type="search" id="projectsSearch" autocomplete="off" placeholder="Proje ara..." data-i18n-placeholder="projects.search_placeholder" aria-label="Proje ara">
-                            <button type="button" class="projects-search-clear" id="projectsSearchClear" aria-label="Aramayı temizle" data-i18n-title="projects.search_clear"><i class="fa-solid fa-xmark"></i></button>
-                        </div>
                         <div class="custom-select-box filter-select" id="locationSelectBox">
                             <i class="fa-solid fa-location-dot"></i>
                             <select id="filterLocation" aria-label="Lokasyon" data-i18n-aria-label="projects.filter_location"></select>
@@ -94,6 +89,15 @@
                         <i class="fa-solid fa-map-location-dot"></i>
                         <span data-i18n="projects.view_map">HARİTA</span>
                     </button>
+                </div>
+
+                <!-- PROJE ARAMA (Kart/Liste/Harita seçicisinin altında, sağa yaslı) -->
+                <div class="projects-search-row">
+                    <div class="projects-search-box">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <input type="search" id="projectsSearch" autocomplete="off" placeholder="Proje ara..." data-i18n-placeholder="projects.search_placeholder" aria-label="Proje ara">
+                        <button type="button" class="projects-search-clear" id="projectsSearchClear" aria-label="Aramayı temizle" data-i18n-title="projects.search_clear"><i class="fa-solid fa-xmark"></i></button>
+                    </div>
                 </div>
             </div>
 
@@ -461,9 +465,9 @@
                 const statusClass = stRaw.includes('tamam') ? 'tamamlanan' : (stRaw.includes('yeni') ? 'yeni-proje' : 'devam-eden');
                 const onSale = proj.isOnSale === 1 || proj.isOnSale === true;
                 
-                let statusText = (proj.status || 'DEVAM EDİYOR').toUpperCase();
+                let statusText = (proj.status || 'DEVAM EDİYOR').toLocaleUpperCase('tr-TR');
                 if (typeof getStatusLabel === 'function') {
-                    statusText = getStatusLabel(proj.status, curLang).toUpperCase();
+                    statusText = getStatusLabel(proj.status, curLang).toLocaleUpperCase('tr-TR');
                 }
                 
                 const imagePath = proj.coverImage
@@ -473,7 +477,7 @@
                 return `
                     <a href="proje-detay.html?id=${proj.slug || proj.id}" class="showcase-card project-item">
                         <span class="status-badge ${statusClass}">${statusText}</span>
-                        ${onSale ? `<span class="status-badge satista sale-flag">${t('status.satista', 'Satışta').toLocaleUpperCase('tr-TR')}</span>` : ''}
+                        ${onSale ? `<span class="status-badge satista sale-flag">${t('status.satista', 'Satışta').toLocaleUpperCase('tr-TR')}</span>` : `<span class="status-badge satista-kapali sale-flag">${t('status.satista_kapali', 'Satışa Kapalı').toLocaleUpperCase('tr-TR')}</span>`}
                         <div class="card-image-wrap"><img src="${imagePath}" alt="${proj.title}" onerror="this.src='images/banner-1.webp'"></div>
                         <div class="card-glass-overlay"></div>
                         <div class="card-inner-content">
@@ -504,16 +508,16 @@
                 const statusClass = stRaw.includes('tamam') ? 'tamamlanan' : (stRaw.includes('yeni') ? 'yeni-proje' : 'devam-eden');
                 const onSale = proj.isOnSale === 1 || proj.isOnSale === true;
                 
-                let statusText = (proj.status || 'DEVAM EDİYOR').toUpperCase();
+                let statusText = (proj.status || 'DEVAM EDİYOR').toLocaleUpperCase('tr-TR');
                 if (typeof getStatusLabel === 'function') {
-                    statusText = getStatusLabel(proj.status, curLang).toUpperCase();
+                    statusText = getStatusLabel(proj.status, curLang).toLocaleUpperCase('tr-TR');
                 }
 
                 return `
                     <a href="proje-detay.html?id=${proj.slug || proj.id}" class="editorial-row project-item">
                         <div class="col-num"><span class="row-num">${numStr}</span></div>
                         <div class="col-title"><h4 class="row-title">${proj.title}</h4></div>
-                        <div class="col-cat"><span class="status-badge ${statusClass}">${statusText}</span>${onSale ? `<span class="status-badge satista">${t('status.satista', 'Satışta').toLocaleUpperCase('tr-TR')}</span>` : ''}</div>
+                        <div class="col-cat"><span class="status-badge ${statusClass}">${statusText}</span>${onSale ? `<span class="status-badge satista">${t('status.satista', 'Satışta').toLocaleUpperCase('tr-TR')}</span>` : `<span class="status-badge satista-kapali">${t('status.satista_kapali', 'Satışa Kapalı').toLocaleUpperCase('tr-TR')}</span>`}</div>
                         <div class="col-desc"><p class="row-desc">${proj.slogan || proj.subtitle || proj.cat || ''}</p><span class="row-loc"><i class="fa-solid fa-location-dot"></i> ${proj.loc || 'Sakarya'}</span></div>
                         <div class="col-action"><span class="row-action-btn"><span>${detailLabel}</span><i class="fa-solid fa-arrow-up-right-from-square"></i></span></div>
                     </a>
@@ -569,7 +573,18 @@
                 mapSelectedCity = { name: CITY_LABELS[currentLoc] || currentLoc, key: currentLoc };
             }
             if (!mapChartInstance || !mapChartInstance.series || !mapChartInstance.series[0]) return;
-            mapChartInstance.series[0].setData(buildMapData(), true, false, false);
+            const mapData = buildMapData();
+            mapChartInstance.series[0].setData(mapData, true, false, false);
+
+            // Seçili ilde filtreye uyan proje kalmadıysa, sonucu olan en kalabalık ile geç.
+            const counts = {};
+            mapData.forEach(d => { if ((d.value || 0) > 0) counts[d['hc-key']] = d.value; });
+            if (!counts[mapSelectedCity.key]) {
+                const best = Object.keys(counts).sort((a, b) => counts[b] - counts[a])[0];
+                if (best) {
+                    mapSelectedCity = { name: CITY_LABELS[best] || best, key: best };
+                }
+            }
             updateMapBottomPanel(mapSelectedCity.name, mapSelectedCity.key);
         }
 
@@ -707,7 +722,7 @@
                             <small class="map-panel-card-loc">${proj.loc || cityName}</small>
                             <div class="map-panel-card-badges">
                                 <span class="status-badge ${statusKey}">${statusText}</span>
-                                ${onSale ? `<span class="status-badge satista">${t('status.satista', 'Satışta').toLocaleUpperCase('tr-TR')}</span>` : ''}
+                                ${onSale ? `<span class="status-badge satista">${t('status.satista', 'Satışta').toLocaleUpperCase('tr-TR')}</span>` : `<span class="status-badge satista-kapali">${t('status.satista_kapali', 'Satışa Kapalı').toLocaleUpperCase('tr-TR')}</span>`}
                             </div>
                         </div>
                     </a>

@@ -15,7 +15,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Poppins:wght@200;300;400;500;600;700&family=Raleway:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/michele-m/soria-font@master/soria.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css?v=202611141100">
+    <link rel="stylesheet" href="style.css?v=202611141300">
 </head>
 <body class="detail-page-body">
 
@@ -634,8 +634,11 @@
                 const saleEl = document.getElementById('detailSaleBadge');
                 if (saleEl) {
                     const onSale = proj.isOnSale === 1 || proj.isOnSale === true;
-                    saleEl.style.display = onSale ? 'inline-flex' : 'none';
-                    saleEl.innerText = (dict['status.satista'] || 'Satışta').toUpperCase();
+                    saleEl.style.display = 'inline-flex';
+                    saleEl.className = onSale ? 'status-badge satista' : 'status-badge satista-kapali';
+                    saleEl.innerText = (onSale
+                        ? (dict['status.satista'] || 'Satışta')
+                        : (dict['status.satista_kapali'] || 'Satışa Kapalı')).toLocaleUpperCase('tr-TR');
                 }
 
                 if (specStatusEl) {
