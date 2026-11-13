@@ -15,7 +15,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Poppins:wght@200;300;400;500;600;700&family=Raleway:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/michele-m/soria-font@master/soria.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css?v=202611122147">
+    <link rel="stylesheet" href="style.css?v=202611131428">
 </head>
 <body class="detail-page-body">
 
@@ -410,12 +410,12 @@
     <div id="site-footer"></div>
 
     <!-- KÜTÜPHANELER -->
-    <script src="components/header.js?v=202611122147"></script>
-    <script src="components/footer.js?v=202611122147"></script>
+    <script src="components/header.js?v=202611131428"></script>
+    <script src="components/footer.js?v=202611131428"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="components/highmaps.js"></script>
     <script src="components/tr-all.js"></script>
-    <script src="script.js?v=202611122147"></script>
+    <script src="script.js?v=202611131428"></script>
 
     <!-- KESİN VE ZORLAYICI (FORCE) DİNAMİK YÜKLEYİCİ -->
     <script>
@@ -759,6 +759,28 @@
                 if (proj.catalog) {
                     const catBtn = document.getElementById('catalogDownloadBtn');
                     if (catBtn) catBtn.href = proj.catalog;
+                }
+
+                // 8b. BOŞ SEKMELERİ GİZLE (katalog yok / şantiye görseli yok)
+                const setTabVisible = (tabId, visible) => {
+                    const btn = document.querySelector(`.v-tab-btn[data-tab="${tabId}"]`);
+                    const pane = document.getElementById(tabId);
+                    if (btn) btn.style.display = visible ? '' : 'none';
+                    if (pane) {
+                        pane.style.display = visible ? '' : 'none';
+                        if (!visible) pane.classList.remove('active');
+                    }
+                };
+                const catUrl = (proj.catalog || '').toString().trim();
+                const hasCatalog = catUrl !== '' && !/l-white\.svg$/i.test(catUrl);
+                setTabVisible('tab-catalog', hasCatalog);
+                const siteItems = (proj.gallery && Array.isArray(proj.gallery.site)) ? proj.gallery.site : [];
+                setTabVisible('tab-site', siteItems.length > 0);
+
+                const activeBtn = document.querySelector('.v-tab-btn.active');
+                if (activeBtn && activeBtn.style.display === 'none') {
+                    const firstVisible = Array.from(document.querySelectorAll('.v-tab-btn')).find(b => b.style.display !== 'none');
+                    if (firstVisible) firstVisible.click();
                 }
 
                 // 9. İLETİŞİM LİNKLERİNİ AYARLARDAN DİNAMİK GÜNCELLE

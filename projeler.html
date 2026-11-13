@@ -14,7 +14,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Poppins:wght@200;300;400;500;600;700&family=Raleway:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/michele-m/soria-font@master/soria.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css?v=202611122147">
+    <link rel="stylesheet" href="style.css?v=202611131428">
 </head>
 <body>
 
@@ -54,38 +54,29 @@
                     <button class="status-tab" data-status="devam-eden" data-i18n="projects.tab_ongoing">DEVAM EDİYOR</button>
                     <button class="status-tab" data-status="tamamlanan" data-i18n="projects.tab_completed">TAMAMLANDI</button>
                     <button class="status-tab" data-status="yeni-proje" data-i18n="projects.tab_new">YENİ PROJELER</button>
+                    <button class="status-tab" data-status="satista" data-i18n="projects.tab_sale">SATIŞTA</button>
                     <button class="status-tab kd-tab-highlight" data-type-target="kentsel" id="kdTabBtn" style="border-color:rgba(197,160,89,0.55);color:#ecdba8;background:rgba(197,160,89,0.08);"><i class="fa-solid fa-building-shield" style="margin-right:6px;color:#c5a059;"></i><span data-i18n="projects.tab_kentsel">KENTSEL DÖNÜŞÜM</span></button>
                 </div>
 
-                <div class="filter-dropdowns-wrap">
-                    <div class="custom-select-box">
-                        <i class="fa-solid fa-location-dot"></i>
-                        <select id="filterLocation">
-                            <option value="all" data-i18n-opt="projects.filter_location_all">Tüm Lokasyonlar (İl / İlçe)</option>
-                            <option value="tr-sk">Sakarya</option>
-                            <option value="tr-ib">İstanbul</option>
-                            <option value="tr-an">Ankara</option>
-                            <option value="tr-kc">Kocaeli</option>
-                            <option value="tr-gi">Giresun</option>
-                        </select>
+                <div class="projects-filter-toolbar">
+                    <div class="projects-search-box">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <input type="search" id="projectsSearch" autocomplete="off" placeholder="Proje adı, lokasyon veya anahtar kelime ara..." data-i18n-placeholder="projects.search_placeholder" aria-label="Proje ara">
+                        <button type="button" class="projects-search-clear" id="projectsSearchClear" aria-label="Aramayı temizle" data-i18n-title="projects.search_clear"><i class="fa-solid fa-xmark"></i></button>
                     </div>
-
-                    <div class="custom-select-box">
-                        <i class="fa-solid fa-map-location-dot"></i>
-                        <select id="filterDistrict">
-                            <option value="all" data-i18n-opt="projects.filter_district_all">Tüm İlçeler</option>
-                        </select>
-                    </div>
-
-                    <div class="custom-select-box">
-                        <i class="fa-solid fa-building-user"></i>
-                        <select id="filterType">
-                            <option value="all" data-i18n-opt="projects.filter_type_all">Tüm Yapı Türleri</option>
-                            <option value="konut" data-i18n-opt="projects.type_konut">Konut & Rezidans</option>
-                            <option value="ticari" data-i18n-opt="projects.type_ticari">İş Merkezi & Ticari</option>
-                            <option value="sanayi" data-i18n-opt="projects.type_sanayi">Sanayi & Endüstriyel Tesis</option>
-                            <option value="kentsel" data-i18n-opt="projects.type_kentsel">Kentsel Dönüşüm</option>
-                        </select>
+                    <div class="filter-pill-rows">
+                        <div class="filter-pill-row">
+                            <span class="filter-pill-label" data-i18n="projects.filter_location">Lokasyon</span>
+                            <div class="filter-pill-group" id="locationPills"></div>
+                        </div>
+                        <div class="filter-pill-row">
+                            <span class="filter-pill-label" data-i18n="projects.filter_district">İlçe</span>
+                            <div class="filter-pill-group is-disabled" id="districtPills"></div>
+                        </div>
+                        <div class="filter-pill-row">
+                            <span class="filter-pill-label" data-i18n="projects.filter_type">Yapı Türü</span>
+                            <div class="filter-pill-group" id="typePills"></div>
+                        </div>
                     </div>
                 </div>
 
@@ -174,10 +165,10 @@
     <!-- Ortak Footer Yükleme Alanı -->
     <div id="site-footer"></div>
 
-    <script src="components/header.js?v=202611122147"></script>
-    <script src="components/footer.js?v=202611122147"></script>
+    <script src="components/header.js?v=202611131428"></script>
+    <script src="components/footer.js?v=202611131428"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <script src="script.js?v=202611122147"></script>
+    <script src="script.js?v=202611131428"></script>
 <!-- HIGHMAPS CANLI CDN BAGLANTILARI -->
     <script src="https://code.highcharts.com/maps/highmaps.js"></script>
     <script src="https://code.highcharts.com/mapdata/countries/tr/tr-all.js"></script>
@@ -187,6 +178,10 @@
         let allProjects = [];
         let mapChartInstance = null;
         let currentStatusFilter = 'all';
+        let currentLoc = 'all';
+        let currentDistrict = 'all';
+        let currentType = 'all';
+        let currentSearch = '';
         let currentPage = 1;
         let projectsPerPage = 9;
         let lastFiltered = [];
@@ -243,6 +238,7 @@
                 const sp = new URLSearchParams(window.location.search);
                 const qp = parseInt(sp.get('sayfa') || '1', 10);
                 currentPage = Number.isFinite(qp) && qp > 0 ? qp : 1;
+                renderFilterPills();
                 populateDistricts();
                 applyFilters();
             } catch (err) {
@@ -258,43 +254,68 @@
             return raw.split('/')[0].trim();
         }
 
+        function esc(s) {
+            return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+        }
+
+        function pillHTML(items, active) {
+            return items.map(it => `<button type="button" class="filter-pill${it.v === active ? ' active' : ''}" data-value="${esc(it.v)}">${esc(it.l)}</button>`).join('');
+        }
+
+        const CITY_LABELS = { 'tr-sk': 'Sakarya', 'tr-ib': 'İstanbul', 'tr-an': 'Ankara', 'tr-kc': 'Kocaeli', 'tr-gi': 'Giresun' };
+
+        function renderFilterPills() {
+            const locBox = document.getElementById('locationPills');
+            if (locBox) {
+                const keys = new Set();
+                allProjects.forEach(p => { const k = normalizeCityKey(p.cityKey || p.loc || ''); if (k) keys.add(k); });
+                const items = [{ v: 'all', l: t('projects.filter_location_all', 'Tüm Lokasyonlar') }];
+                Array.from(keys).sort((a, b) => (CITY_LABELS[a] || a).localeCompare(CITY_LABELS[b] || b, 'tr'))
+                    .forEach(k => items.push({ v: k, l: CITY_LABELS[k] || k }));
+                if (currentLoc !== 'all' && !keys.has(currentLoc)) currentLoc = 'all';
+                locBox.innerHTML = pillHTML(items, currentLoc);
+            }
+            const typeBox = document.getElementById('typePills');
+            if (typeBox) {
+                const items = [
+                    { v: 'all', l: t('projects.filter_type_all', 'Tüm Yapı Türleri') },
+                    { v: 'konut', l: t('projects.type_konut', 'Konut & Rezidans') },
+                    { v: 'ticari', l: t('projects.type_ticari', 'İş Merkezi & Ticari') },
+                    { v: 'sanayi', l: t('projects.type_sanayi', 'Sanayi & Endüstriyel') },
+                    { v: 'kentsel', l: t('projects.type_kentsel', 'Kentsel Dönüşüm') }
+                ];
+                typeBox.innerHTML = pillHTML(items, currentType);
+            }
+        }
+
         function populateDistricts() {
-            const sel = document.getElementById('filterDistrict');
-            if (!sel) return;
-            const locVal = normalizeCityKey(document.getElementById('filterLocation')?.value || 'all');
-            const keep = sel.value;
-            // İl seçilmeden ilçe listesi gösterilmez.
-            if (locVal === 'all') {
-                sel.innerHTML = '<option value="all">' + (t('projects.filter_district_all', 'Tüm İlçeler')) + '</option>';
-                sel.value = 'all';
-                sel.disabled = true;
-                sel.closest('.custom-select-box')?.classList.add('is-disabled');
+            const box = document.getElementById('districtPills');
+            if (!box) return;
+            if (currentLoc === 'all') {
+                box.innerHTML = pillHTML([{ v: 'all', l: t('projects.filter_district_all', 'Tüm İlçeler') }], 'all');
+                box.classList.add('is-disabled');
+                currentDistrict = 'all';
                 return;
             }
-            sel.disabled = false;
-            sel.closest('.custom-select-box')?.classList.remove('is-disabled');
+            box.classList.remove('is-disabled');
             const set = new Set();
             allProjects.forEach(p => {
-                if (normalizeCityKey(p.cityKey || p.loc || '') !== locVal) return;
+                if (normalizeCityKey(p.cityKey || p.loc || '') !== currentLoc) return;
                 const d = districtOf(p);
                 if (d) set.add(d);
             });
             const list = Array.from(set).sort((a, b) => a.localeCompare(b, 'tr'));
-            sel.innerHTML = '<option value="all">' + (t('projects.filter_district_all', 'Tüm İlçeler')) + '</option>';
-            list.forEach(d => {
-                const o = document.createElement('option');
-                o.value = d; o.textContent = d;
-                sel.appendChild(o);
-            });
-            if (keep !== 'all' && list.includes(keep)) sel.value = keep;
+            if (currentDistrict !== 'all' && !list.includes(currentDistrict)) currentDistrict = 'all';
+            const items = [{ v: 'all', l: t('projects.filter_district_all', 'Tüm İlçeler') }].concat(list.map(d => ({ v: d, l: d })));
+            box.innerHTML = pillHTML(items, currentDistrict);
         }
 
         function applyFilters(resetPage) {
             if (resetPage) { currentPage = 1; updatePageQuery(1); }
-            const locValRaw = document.getElementById('filterLocation')?.value || 'all';
-            const locVal = normalizeCityKey(locValRaw);
-            const typeVal = document.getElementById('filterType')?.value || 'all';
-            const distVal = document.getElementById('filterDistrict')?.value || 'all';
+            const locVal = normalizeCityKey(currentLoc);
+            const typeVal = currentType;
+            const distVal = currentDistrict;
+            const q = currentSearch.trim().toLocaleLowerCase('tr');
 
             const filtered = allProjects.filter(p => {
                 const statusVal = (p.status || '').toLowerCase();
@@ -314,7 +335,11 @@
                 const isUrban = p.isUrbanRenewal === 1 || p.isUrbanRenewal === true || projectTypes.includes('kentsel');
                 const matchType = (typeVal === 'all') || (typeVal === 'kentsel' ? isUrban : projectTypes.includes(typeVal.toLowerCase()));
 
-                return matchStatus && matchLoc && matchDist && matchType;
+                const hay = [p.title, p.slogan, p.subtitle, p.cat, p.loc, p.district, p.type, p.statusLabel, p.description]
+                    .filter(Boolean).join(' ').toLocaleLowerCase('tr');
+                const matchSearch = !q || hay.includes(q);
+
+                return matchStatus && matchLoc && matchDist && matchType && matchSearch;
             });
 
             lastFiltered = filtered;
@@ -428,7 +453,8 @@
 
             gridContainer.innerHTML = projects.map((proj, index) => {
                 const numStr = String(startIndex + index + 1).padStart(2, '0');
-                const statusClass = (proj.status || '').toLowerCase().includes('tamam') ? 'tamamlanan' : 'devam-eden';
+                const stRaw = (proj.status || '').toLowerCase();
+                const statusClass = stRaw.includes('tamam') ? 'tamamlanan' : (stRaw.includes('satis') ? 'satista' : (stRaw.includes('yeni') ? 'yeni-proje' : 'devam-eden'));
                 
                 let statusText = (proj.status || 'DEVAM EDİYOR').toUpperCase();
                 if (typeof getStatusLabel === 'function') {
@@ -468,7 +494,8 @@
 
             listContainer.innerHTML = projects.map((proj, index) => {
                 const numStr = String(startIndex + index + 1).padStart(2, '0');
-                const statusClass = (proj.status || '').toLowerCase().includes('tamam') ? 'tamamlanan' : 'devam-eden';
+                const stRaw = (proj.status || '').toLowerCase();
+                const statusClass = stRaw.includes('tamam') ? 'tamamlanan' : (stRaw.includes('satis') ? 'satista' : (stRaw.includes('yeni') ? 'yeni-proje' : 'devam-eden'));
                 
                 let statusText = (proj.status || 'DEVAM EDİYOR').toUpperCase();
                 if (typeof getStatusLabel === 'function') {
@@ -633,15 +660,13 @@
 
                     const targetType = btn.getAttribute('data-type-target');
                     if (targetType === 'kentsel') {
-                        const ft = document.getElementById('filterType');
-                        if (ft) ft.value = 'kentsel';
+                        currentType = 'kentsel';
                         currentStatusFilter = 'all';
                     } else {
                         currentStatusFilter = btn.getAttribute('data-status') || 'all';
-                        // Eğer başka bir tab'a basıldıysa ve type kentsel ise tüm tiplere dön
-                        const ft = document.getElementById('filterType');
-                        if (ft && ft.value === 'kentsel') ft.value = 'all';
+                        if (currentType === 'kentsel') currentType = 'all';
                     }
+                    renderFilterPills();
                     currentPage = 1;
                     updatePageQuery(currentPage);
                     applyFilters();
@@ -651,22 +676,55 @@
             // URL Parametre Kontrolü (?type=kentsel)
             const urlParams = new URLSearchParams(window.location.search);
             if (urlParams.get('type') === 'kentsel') {
-                const ft = document.getElementById('filterType');
-                if (ft) ft.value = 'kentsel';
+                currentType = 'kentsel';
                 document.querySelectorAll('.status-tab').forEach(b => b.classList.remove('active'));
                 document.getElementById('kdTabBtn')?.classList.add('active');
             }
 
             // Select Dropdown Filtreleri
-            document.getElementById('filterLocation')?.addEventListener('change', () => { populateDistricts(); currentPage = 1; updatePageQuery(currentPage); applyFilters(); });
-            document.getElementById('filterDistrict')?.addEventListener('change', () => { currentPage = 1; updatePageQuery(currentPage); applyFilters(); });
-            document.getElementById('filterType')?.addEventListener('change', () => {
-                const ftVal = document.getElementById('filterType')?.value;
-                if (ftVal === 'kentsel') {
-                    document.querySelectorAll('.status-tab').forEach(b => b.classList.remove('active'));
+            document.getElementById('locationPills')?.addEventListener('click', (e) => {
+                const b = e.target.closest('.filter-pill'); if (!b) return;
+                currentLoc = b.dataset.value || 'all';
+                currentDistrict = 'all';
+                renderFilterPills(); populateDistricts();
+                currentPage = 1; updatePageQuery(1); applyFilters();
+            });
+            document.getElementById('districtPills')?.addEventListener('click', (e) => {
+                const b = e.target.closest('.filter-pill'); if (!b) return;
+                currentDistrict = b.dataset.value || 'all';
+                populateDistricts();
+                currentPage = 1; updatePageQuery(1); applyFilters();
+            });
+            document.getElementById('typePills')?.addEventListener('click', (e) => {
+                const b = e.target.closest('.filter-pill'); if (!b) return;
+                currentType = b.dataset.value || 'all';
+                if (currentType === 'kentsel') {
+                    document.querySelectorAll('.status-tab').forEach(x => x.classList.remove('active'));
                     document.getElementById('kdTabBtn')?.classList.add('active');
+                } else if (document.getElementById('kdTabBtn')?.classList.contains('active')) {
+                    document.getElementById('kdTabBtn')?.classList.remove('active');
+                    document.querySelector('.status-tab[data-status="all"]')?.classList.add('active');
+                    currentStatusFilter = 'all';
                 }
-                currentPage = 1; updatePageQuery(currentPage); applyFilters();
+                renderFilterPills();
+                currentPage = 1; updatePageQuery(1); applyFilters();
+            });
+
+            const searchInput = document.getElementById('projectsSearch');
+            const searchClear = document.getElementById('projectsSearchClear');
+            let searchTimer = null;
+            searchInput?.addEventListener('input', () => {
+                currentSearch = searchInput.value || '';
+                searchClear?.classList.toggle('show', currentSearch.trim() !== '');
+                clearTimeout(searchTimer);
+                searchTimer = setTimeout(() => { currentPage = 1; updatePageQuery(1); applyFilters(); }, 220);
+            });
+            searchClear?.addEventListener('click', () => {
+                if (searchInput) searchInput.value = '';
+                currentSearch = '';
+                searchClear.classList.remove('show');
+                currentPage = 1; updatePageQuery(1); applyFilters();
+                searchInput?.focus();
             });
 
             document.getElementById('projectsPrevPage')?.addEventListener('click', () => {

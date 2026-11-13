@@ -706,7 +706,7 @@ const PROJECT_TYPES = [
     'konut' => 'Konut & Rezidans', 'ticari' => 'İş Merkezi & Ticari',
     'sanayi' => 'Sanayi & Endüstriyel Tesis', 'kentsel' => 'Kentsel Dönüşüm',
 ];
-const PROJECT_STATUS = ['devam-eden' => 'Devam Ediyor', 'tamamlanan' => 'Tamamlandı', 'yeni-proje' => 'Yeni Proje'];
+const PROJECT_STATUS = ['devam-eden' => 'Devam Ediyor', 'tamamlanan' => 'Tamamlandı', 'yeni-proje' => 'Yeni Proje', 'satista' => 'Satışta'];
 
 const PAGE_TYPES = [
     'standart'        => 'Standart Bilgi Sayfası',

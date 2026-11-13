@@ -72,7 +72,11 @@ try {
     // ---------- PROJELER ----------
     if (($seg[0] ?? '') === 'projects' && $method === 'GET') {
         $featured = ($seg[1] ?? '') === 'featured';
-        $sql = 'SELECT * FROM projects WHERE is_active=1' . ($featured ? ' AND is_featured=1' : '') . ' ORDER BY sort_order ASC, id DESC';
+        $saleFirst = setting('projects_sale_first') === '1';
+        $order = $saleFirst
+            ? " ORDER BY (status='satista') DESC, sort_order ASC, id DESC"
+            : ' ORDER BY sort_order ASC, id DESC';
+        $sql = 'SELECT * FROM projects WHERE is_active=1' . ($featured ? ' AND is_featured=1' : '') . $order;
         $rows = q($sql)->fetchAll();
 
         $media = [];
@@ -104,6 +108,7 @@ try {
                 'isNew'          => (int)($r['is_new'] ?? (($r['status'] ?? '') === 'yeni-proje' ? 1 : 0)),
                 'isUrbanRenewal' => (int)($r['is_urban_renewal'] ?? 0),
                 'statusLabel'    => PROJECT_STATUS[$r['status']] ?? $r['status'],
+                'isOnSale'       => ($r['status'] ?? '') === 'satista' ? 1 : 0,
                 'coverImage'     => asset($r['cover_image']),
                 'area'           => $r['area'],
                 'concept'        => $r['concept'],

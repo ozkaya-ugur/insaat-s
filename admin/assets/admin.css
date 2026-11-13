@@ -225,3 +225,4 @@ tr:hover td{background:rgba(255,255,255,.02)}
 .projects-filter .search-box .clear:hover{color:var(--gold)}
 .projects-filter select{height:40px;border-radius:999px;padding-left:14px}
 .projects-filter-actions .btn{height:40px;border-radius:999px}
+.badge.b-satista{background:rgba(197,160,89,.16);color:#e6c98a;border:1px solid rgba(197,160,89,.45)}

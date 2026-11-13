@@ -76,6 +76,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($pp > 48) $pp = 48;
     q('INSERT INTO site_settings (s_key,s_value) VALUES (?,?) ON DUPLICATE KEY UPDATE s_value=VALUES(s_value)', ['projects_per_page', (string)$pp]);
 
+    // Satıştaki projeleri listede öne çıkar (0/1)
+    q('INSERT INTO site_settings (s_key,s_value) VALUES (?,?) ON DUPLICATE KEY UPDATE s_value=VALUES(s_value)',
+      ['projects_sale_first', isset($_POST['projects_sale_first']) ? '1' : '0']);
+
     foreach ($officeKeys as $ok) {
         if (isset($_POST[$ok])) {
             q('INSERT INTO site_settings (s_key,s_value) VALUES (?,?) ON DUPLICATE KEY UPDATE s_value=VALUES(s_value)', [$ok, trim($_POST[$ok])]);
@@ -212,6 +216,13 @@ admin_header('Site & Sayfa Ayarları', 'settings');
         <label>Projeler Sayfası - Sayfa Başına Proje</label>
         <input type="number" name="projects_per_page" min="3" max="48" step="1" value="<?= e(setting('projects_per_page', '9')) ?>">
         <div class="hint">İzin verilen aralık: 3 - 48. Varsayılan: 9</div>
+      </div>
+      <div class="field" style="margin-top:10px;max-width:340px">
+        <label style="display:flex;align-items:center;gap:10px;cursor:pointer;text-transform:none;letter-spacing:0;font-size:13px;color:var(--text)">
+          <input type="checkbox" name="projects_sale_first" value="1" style="width:auto;margin:0" <?= setting('projects_sale_first') === '1' ? 'checked' : '' ?>>
+          Satıştaki projeleri öne çıkar
+        </label>
+        <div class="hint">İşaretlenirse "Satışta" durumundaki projeler sıralama gözetilmeksizin listenin en üstünde gösterilir. İşaretlenmezse projelere verdiğiniz sıralama korunur.</div>
       </div>
       <span class="muted">/projeler.html banner alanı ve /kentsel-donusum.html bölüm başlıkları</span>
     </div>
