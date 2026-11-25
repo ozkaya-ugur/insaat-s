@@ -140,7 +140,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $f('subtitle_tr'), $f('slogan_tr'), $f('subtitle_en'), $f('slogan_en'), $f('subtitle_ar'), $f('slogan_ar'), $f('subtitle_de'),
             $f('description_tr'), $f('description_en'), $f('description_ar'), $f('description_de'),
             $f('cat'), $f('loc'), $cityKey, $district, $featuresJson, implode(',', $types), $status,
-            !empty($_POST['is_new']) ? 1 : 0, !empty($_POST['is_urban_renewal']) ? 1 : 0, !empty($_POST['is_on_sale']) ? 1 : 0,
+            !empty($_POST['is_new']) ? 1 : 0, !empty($_POST['is_urban_renewal']) ? 1 : 0, !empty($_POST['is_on_sale']) ? 1 : 0, !empty($_POST['is_for_rent']) ? 1 : 0,
             $cover, $f('area'), $f('concept'), $f('delivery'), $catalog,
             $streetViewCode, $googleMapCode,
             !empty($_POST['is_featured']) ? 1 : 0, !empty($_POST['is_active']) ? 1 : 0, (int)$f('sort_order', '0'),
@@ -230,7 +230,7 @@ $prev = fn($path) => strpos($path, 'uploads/') === 0 ? '../' . $path : rtrim(SIT
     <div class="row" style="margin-top:10px">
       <label class="chk"><input type="checkbox" name="is_new" value="1" <?= ($p['is_new'] ?? 0) ? 'checked' : '' ?>><span>Yeni Proje</span></label>
       <label class="chk"><input type="checkbox" name="is_urban_renewal" value="1" <?= ($p['is_urban_renewal'] ?? 0) ? 'checked' : '' ?>><span>Kentsel Dönüşüm Projesi</span></label>
-      <label class="chk"><input type="checkbox" name="is_on_sale" value="1" <?= ($p['is_on_sale'] ?? 0) ? 'checked' : '' ?>><span>Satışta</span></label>
+      <label class="chk"><input type="checkbox" name="is_on_sale" value="1" <?= ($p['is_on_sale'] ?? 0) ? 'checked' : '' ?>><span>Satışta</span></label><label class="chk"><input type="checkbox" name="is_for_rent" value="1" <?= ($p['is_for_rent'] ?? 0) ? 'checked' : '' ?>><span>Kiralık</span></label>
     </div>
     <p class="hint">"Yeni Proje" projeler sayfasındaki <b>Yeni Projeler</b> filtresinde, "Kentsel Dönüşüm Projesi" ise Kentsel Dönüşüm sayfasında listelenir.</p>
   </div>

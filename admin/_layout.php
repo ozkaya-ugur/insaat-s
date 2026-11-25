@@ -3,6 +3,7 @@ require_once __DIR__ . '/../includes/core.php';
 
 function admin_header(string $title, string $active = ''): array {
     $u = require_login();
+    ensure_project_rent_column();
     // Emniyet kemeri: sayfa kendi kontrolünü yapmayı unutsa bile yetkisiz erişim engellenir.
     if ($active !== '' && !admin_can_any($active, $u)) admin_deny();
     $unread = 0;

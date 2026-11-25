@@ -68,6 +68,20 @@ function slugify(string $s): string {
     return $s ?: 'proje';
 }
 
+// 022: projects.is_for_rent kolonu yoksa bir kez ekler (idempotent, ayar ile korunur).
+function ensure_project_rent_column(): void {
+    if (setting('schema_022_rent') === '1') return;
+    try {
+        $has = (int)q("SELECT COUNT(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME='projects' AND COLUMN_NAME='is_for_rent'")->fetchColumn();
+        if ($has === 0) {
+            q("ALTER TABLE `projects` ADD COLUMN `is_for_rent` TINYINT(1) NOT NULL DEFAULT 0 AFTER `is_on_sale`");
+        }
+        q('INSERT INTO site_settings (s_key,s_value) VALUES (?,?) ON DUPLICATE KEY UPDATE s_value=VALUES(s_value)', ['schema_022_rent', '1']);
+    } catch (Throwable $ex) {
+        // Sessiz: kolon zaten varsa veya yetki yoksa sayfa çalışmaya devam eder.
+    }
+}
+
 function setting(string $key, string $default = ''): string {
     static $cache = null;
     if ($cache === null) {

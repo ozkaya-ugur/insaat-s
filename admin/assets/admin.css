@@ -239,3 +239,6 @@ tr:hover td{background:rgba(255,255,255,.02)}
 .status-select.b-yeni-proje{background-color:rgba(120,160,255,.14);border-color:rgba(120,160,255,.45);color:#a9c4ff}
 .status-select option{background:#12161f;color:#e8e8e8}
 .status-flags{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}
+
+/* Kiralık bayrağı */
+.badge.b-kiralik{background:rgba(220,38,38,.16);border:1px solid rgba(220,38,38,.5);color:#ff7b7b}

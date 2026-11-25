@@ -109,6 +109,7 @@ try {
                 'isUrbanRenewal' => (int)($r['is_urban_renewal'] ?? 0),
                 'statusLabel'    => PROJECT_STATUS[$r['status']] ?? $r['status'],
                 'isOnSale'       => (int)($r['is_on_sale'] ?? 0),
+                'isForRent'      => (int)($r['is_for_rent'] ?? 0),
                 'coverImage'     => asset($r['cover_image']),
                 'area'           => $r['area'],
                 'concept'        => $r['concept'],

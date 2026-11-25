@@ -80,6 +80,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     q('INSERT INTO site_settings (s_key,s_value) VALUES (?,?) ON DUPLICATE KEY UPDATE s_value=VALUES(s_value)',
       ['projects_sale_first', isset($_POST['projects_sale_first']) ? '1' : '0']);
 
+    // Kat planı görseli olmayan projelerde gösterilecek metin (boşsa sekme gizlenir)
+    q('INSERT INTO site_settings (s_key,s_value) VALUES (?,?) ON DUPLICATE KEY UPDATE s_value=VALUES(s_value)',
+      ['plans_empty_text', trim((string)($_POST['plans_empty_text'] ?? ''))]);
+
     foreach ($officeKeys as $ok) {
         if (isset($_POST[$ok])) {
             q('INSERT INTO site_settings (s_key,s_value) VALUES (?,?) ON DUPLICATE KEY UPDATE s_value=VALUES(s_value)', [$ok, trim($_POST[$ok])]);
@@ -223,6 +227,11 @@ admin_header('Site & Sayfa Ayarları', 'settings');
           Satıştaki projeleri öne çıkar
         </label>
         <div class="hint">İşaretlenirse "Satışta" durumundaki projeler sıralama gözetilmeksizin listenin en üstünde gösterilir. İşaretlenmezse projelere verdiğiniz sıralama korunur.</div>
+      </div>
+      <div class="field" style="margin-top:10px;max-width:420px">
+        <label>Kat Planı Olmayan Projeler İçin Metin</label>
+        <input type="text" name="plans_empty_text" value="<?= e(setting('plans_empty_text')) ?>" placeholder="Kat planları için bizi arayınız">
+        <div class="hint">Proje detayında kat planı görseli yoksa bu metin gösterilir. Boş bırakılırsa "Kat Planları" sekmesi tamamen gizlenir.</div>
       </div>
       <span class="muted">/projeler.html banner alanı ve /kentsel-donusum.html bölüm başlıkları</span>
     </div>

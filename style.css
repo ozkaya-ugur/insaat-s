@@ -4632,3 +4632,15 @@ body.detail-page-body {
   .city-pill{flex:0 0 auto;padding:0 13px;font-size:.58rem;height:40px}
   .showcase-city-hint{margin:-2px 0 14px;font-size:.56rem;letter-spacing:.1em}
 }
+
+/* ===== KİRALIK BAYRAĞI (kırmızı) ===== */
+.status-badge.kiralik{background:rgba(220,38,38,.16);border:1px solid rgba(220,38,38,.55);color:#ff6b6b;box-shadow:0 0 0 1px rgba(220,38,38,.12) inset}
+.status-badge.kiralik::before{background:#ef4444;box-shadow:0 0 8px rgba(239,68,68,.8);animation:statusPulse 2s infinite ease-in-out}
+.sale-ribbon.kiralik-ribbon{background:linear-gradient(135deg,#dc2626,#ef4444);color:#fff}
+.sale-ribbon.kiralik-ribbon::before{background:#fff}
+.showcase-card .status-badge.kiralik.sale-flag{top:56px}
+.map-panel-card-badges .status-badge.kiralik{box-shadow:none}
+
+/* ===== KAT PLANI BOŞ UYARISI ===== */
+.plans-empty-note{margin:0;padding:34px 26px;border:1px dashed var(--border-hairline);background:rgba(255,255,255,.02);color:var(--text-dim);font-family:var(--font-heading);font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;text-align:center;line-height:1.9}
+.plans-empty-note[hidden]{display:none}

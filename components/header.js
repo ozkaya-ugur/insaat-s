@@ -52,13 +52,13 @@ function buildMenuLinks(menuItems) {
         const dLink = document.createElement('a');
         dLink.href = href;
         dLink.className = 'nav-link';
-        dLink.innerHTML = `<span>${(item.title || item.slug || '').toUpperCase()}</span>`;
+        dLink.innerHTML = `<span>${(item.title || item.slug || '').toLocaleUpperCase('tr-TR')}</span>`;
         desktopNav.appendChild(dLink);
 
         const mLink = document.createElement('a');
         mLink.href = href;
         mLink.className = 'mobile-nav-link';
-        mLink.textContent = (item.title || item.slug || '').toUpperCase();
+        mLink.textContent = (item.title || item.slug || '').toLocaleUpperCase('tr-TR');
         mobileNav.appendChild(mLink);
     });
 

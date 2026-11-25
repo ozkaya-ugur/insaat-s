@@ -85,6 +85,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (!admin_can('projects', 'edit')) admin_deny();
         q('UPDATE projects SET is_on_sale = 1 - is_on_sale WHERE id=?', [$id]);
         flash('Satış durumu değiştirildi.');
+    } elseif ($act === 'rent' && $id) {
+        if (!admin_can('projects', 'edit')) admin_deny();
+        q('UPDATE projects SET is_for_rent = 1 - is_for_rent WHERE id=?', [$id]);
+        flash('Kiralık durumu değiştirildi.');
     }
     redirect('projects.php' . (!empty($_POST['return_qs']) ? '?' . $_POST['return_qs'] : ''));
 }
@@ -198,6 +202,15 @@ admin_header('Projeler', 'projects');
                 </form>
               <?php elseif (!empty($r['is_on_sale'])): ?>
                 <span class="badge b-satista" title="Satışta">Satışta</span>
+              <?php endif; ?>
+              <?php if (admin_can('projects', 'edit')): ?>
+                <form method="post" style="display:inline"><?= csrf_field() ?>
+                  <input type="hidden" name="id" value="<?= (int)$r['id'] ?>">
+                  <input type="hidden" name="return_qs" value="<?= e($returnQs) ?>">
+                  <button name="action" value="rent" class="badge <?= !empty($r['is_for_rent']) ? 'b-kiralik' : 'b-off' ?>" style="cursor:pointer;background:none" title="Kiralık işaretini aç/kapat"><?= !empty($r['is_for_rent']) ? 'Kiralık' : 'Kiralık Değil' ?></button>
+                </form>
+              <?php elseif (!empty($r['is_for_rent'])): ?>
+                <span class="badge b-kiralik" title="Kiralık">Kiralık</span>
               <?php endif; ?>
               <?php if (!empty($r['is_new'])): ?><span class="badge b-devam-eden" title="Yeni Proje">Yeni</span><?php endif; ?>
               <?php if (!empty($r['is_urban_renewal'])): ?><span class="badge b-tamamlanan" title="Kentsel Dönüşüm">Kentsel</span><?php endif; ?>
