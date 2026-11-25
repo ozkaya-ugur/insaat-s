@@ -4610,3 +4610,25 @@ body.detail-page-body {
 .status-badge.satista-kapali::before{background:#8a8a8a;box-shadow:none;animation:none}
 .showcase-card .status-badge.satista-kapali.sale-flag{top:56px}
 .map-panel-card-badges .status-badge.satista-kapali{box-shadow:none}
+
+/* ===== ANA SAYFA VİTRİN: ŞEHİR FİLTRESİ ===== */
+.showcase-head-actions{display:flex;align-items:center;gap:14px;flex-wrap:wrap;justify-content:flex-end}
+.showcase-city-filter{display:inline-flex;align-items:center;gap:8px;flex-wrap:wrap}
+.city-pill{display:inline-flex;align-items:center;gap:7px;height:35px;padding:0 16px;background:rgba(255,255,255,.02);border:1px solid var(--border-hairline);color:var(--text-dim);font-family:var(--font-heading);font-size:.62rem;font-weight:600;letter-spacing:.18em;text-transform:uppercase;cursor:pointer;transition:all .25s ease;white-space:nowrap}
+.city-pill:hover{border-color:var(--accent-gold);color:var(--accent-gold);background:rgba(197,160,89,.1)}
+.city-pill.active{border-color:var(--accent-gold);color:var(--accent-gold);background:rgba(197,160,89,.1);box-shadow:none}
+.city-pill-count{display:inline-flex;align-items:center;justify-content:center;min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:rgba(255,255,255,.08);font-size:.55rem;letter-spacing:0;color:inherit}
+.city-pill.active .city-pill-count{background:rgba(197,160,89,.25)}
+.showcase-city-hint{display:flex;align-items:center;gap:8px;margin:-6px 0 18px;font-family:var(--font-heading);font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;color:var(--text-dim)}
+.showcase-city-hint i{color:var(--accent-gold);font-size:.7rem}
+.showcase-empty{width:100%;padding:36px 0;text-align:center;color:var(--text-dim);font-family:var(--font-heading);font-size:.7rem;letter-spacing:.16em;text-transform:uppercase}
+@media(max-width:768px){
+  .showcase-header-nav{flex-direction:column;align-items:stretch;gap:14px;margin-bottom:28px}
+  .showcase-head-actions{width:100%;justify-content:space-between;align-items:center;gap:10px;flex-wrap:nowrap}
+  .showcase-city-filter{order:1;flex:1 1 auto;min-width:0;overflow-x:auto;flex-wrap:nowrap;padding-bottom:2px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+  .showcase-city-filter::-webkit-scrollbar{display:none}
+  .showcase-arrows{order:2;flex:0 0 auto;gap:8px}
+  .showcase-arrows button{width:40px;height:40px}
+  .city-pill{flex:0 0 auto;padding:0 13px;font-size:.58rem;height:40px}
+  .showcase-city-hint{margin:-2px 0 14px;font-size:.56rem;letter-spacing:.1em}
+}
