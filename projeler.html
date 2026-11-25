@@ -14,7 +14,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Poppins:wght@200;300;400;500;600;700&family=Raleway:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/michele-m/soria-font@master/soria.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css?v=202611251000">
+    <link rel="stylesheet" href="style.css?v=202611251100">
 </head>
 <body>
 
@@ -57,26 +57,61 @@
                 </div>
 
                 <div class="projects-filter-toolbar">
-                    <div class="projects-filter-controls">
-                        <div class="projects-search-box">
-                            <i class="fa-solid fa-magnifying-glass"></i>
-                            <input type="search" id="projectsSearch" autocomplete="off" placeholder="Proje ara..." data-i18n-placeholder="projects.search_placeholder" aria-label="Proje ara">
-                            <button type="button" class="projects-search-clear" id="projectsSearchClear" aria-label="Aramayı temizle" data-i18n-title="projects.search_clear"><i class="fa-solid fa-xmark"></i></button>
-                        </div>
-                        <div class="custom-select-box filter-select" id="locationSelectBox">
-                            <i class="fa-solid fa-location-dot"></i>
-                            <select id="filterLocation" aria-label="Lokasyon" data-i18n-aria-label="projects.filter_location"></select>
-                            <i class="fa-solid fa-chevron-down select-caret"></i>
-                        </div>
-                        <div class="custom-select-box filter-select is-disabled" id="districtSelectBox">
-                            <i class="fa-solid fa-map-pin"></i>
-                            <select id="filterDistrict" aria-label="İlçe" data-i18n-aria-label="projects.filter_district"></select>
-                            <i class="fa-solid fa-chevron-down select-caret"></i>
-                        </div>
+                    <div class="projects-search-box">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <input type="search" id="projectsSearch" autocomplete="off" placeholder="Proje ara..." data-i18n-placeholder="projects.search_placeholder" aria-label="Proje ara">
+                        <button type="button" class="projects-search-clear" id="projectsSearchClear" aria-label="Aramayı temizle" data-i18n-title="projects.search_clear"><i class="fa-solid fa-xmark"></i></button>
                     </div>
-                    <div class="filter-pill-row filter-type-row">
-                        <span class="filter-pill-label" data-i18n="projects.filter_type">Yapı Türü</span>
-                        <div class="filter-pill-group" id="typePills"></div>
+                    <div class="projects-filter-grid">
+                        <label class="filter-field" for="filterStatusSelect">
+                            <span class="filter-field-label">Proje Durumu</span>
+                            <div class="custom-select-box filter-select">
+                                <i class="fa-solid fa-layer-group"></i>
+                                <select id="filterStatusSelect" aria-label="Proje Durumu">
+                                    <option value="all">Tümü</option>
+                                    <option value="devam-eden">Devam Eden</option>
+                                    <option value="tamamlanan">Tamamlanan</option>
+                                    <option value="yeni-proje">Yeni Proje</option>
+                                </select>
+                                <i class="fa-solid fa-chevron-down select-caret"></i>
+                            </div>
+                        </label>
+                        <label class="filter-field" for="filterLocation">
+                            <span class="filter-field-label">İl</span>
+                            <div class="custom-select-box filter-select" id="locationSelectBox">
+                                <i class="fa-solid fa-location-dot"></i>
+                                <select id="filterLocation" aria-label="İl" data-i18n-aria-label="projects.filter_location"></select>
+                                <i class="fa-solid fa-chevron-down select-caret"></i>
+                            </div>
+                        </label>
+                        <label class="filter-field" for="filterDistrict">
+                            <span class="filter-field-label">İlçe</span>
+                            <div class="custom-select-box filter-select is-disabled" id="districtSelectBox">
+                                <i class="fa-solid fa-map-pin"></i>
+                                <select id="filterDistrict" aria-label="İlçe" data-i18n-aria-label="projects.filter_district"></select>
+                                <i class="fa-solid fa-chevron-down select-caret"></i>
+                            </div>
+                        </label>
+                        <label class="filter-field" for="filterRent">
+                            <span class="filter-field-label">Kiralık</span>
+                            <div class="custom-select-box filter-select">
+                                <i class="fa-solid fa-tag"></i>
+                                <select id="filterRent" aria-label="Kiralık">
+                                    <option value="all">Tümü</option>
+                                    <option value="rent">Kiralık</option>
+                                    <option value="sale">Satılık</option>
+                                </select>
+                                <i class="fa-solid fa-chevron-down select-caret"></i>
+                            </div>
+                        </label>
+                        <label class="filter-field" for="filterType">
+                            <span class="filter-field-label" data-i18n="projects.filter_type">Bina Tipi</span>
+                            <div class="custom-select-box filter-select">
+                                <i class="fa-solid fa-building"></i>
+                                <select id="filterType" aria-label="Bina Tipi"></select>
+                                <i class="fa-solid fa-chevron-down select-caret"></i>
+                            </div>
+                        </label>
                     </div>
                 </div>
 
@@ -166,10 +201,10 @@
     <!-- Ortak Footer Yükleme Alanı -->
     <div id="site-footer"></div>
 
-    <script src="components/header.js?v=202611251000"></script>
-    <script src="components/footer.js?v=202611251000"></script>
+    <script src="components/header.js?v=202611251100"></script>
+    <script src="components/footer.js?v=202611251100"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <script src="script.js?v=202611251000"></script>
+    <script src="script.js?v=202611251100"></script>
 <!-- HIGHMAPS CANLI CDN BAGLANTILARI -->
     <script src="https://code.highcharts.com/maps/highmaps.js"></script>
     <script src="https://code.highcharts.com/mapdata/countries/tr/tr-all.js"></script>
@@ -184,6 +219,7 @@
         let currentLoc = 'all';
         let currentDistrict = 'all';
         let currentType = 'all';
+        let currentRent = 'all';
         let currentSearch = '';
         let currentPage = 1;
         let projectsPerPage = 9;
@@ -273,21 +309,37 @@
                 const keys = new Set();
                 allProjects.forEach(p => { const k = normalizeCityKey(p.cityKey || p.loc || ''); if (k) keys.add(k); });
                 if (currentLoc !== 'all' && !keys.has(currentLoc)) currentLoc = 'all';
-                const items = [{ v: 'all', l: t('projects.filter_location_all', 'Tüm Lokasyonlar') }];
+                const items = [{ v: 'all', l: t('projects.filter_location_all', 'Tümü') }];
                 Array.from(keys).sort((a, b) => (CITY_LABELS[a] || a).localeCompare(CITY_LABELS[b] || b, 'tr'))
                     .forEach(k => items.push({ v: k, l: CITY_LABELS[k] || k }));
                 locSel.innerHTML = items.map(it => `<option value="${esc(it.v)}"${it.v === currentLoc ? ' selected' : ''}>${esc(it.l)}</option>`).join('');
             }
-            const typeBox = document.getElementById('typePills');
-            if (typeBox) {
+
+            const typeSel = document.getElementById('filterType');
+            if (typeSel) {
                 const items = [
-                    { v: 'all', l: t('projects.filter_type_all', 'Tüm Yapı Türleri') },
+                    { v: 'all', l: t('projects.filter_type_all', 'Tümü') },
                     { v: 'konut', l: t('projects.type_konut', 'Konut & Rezidans') },
                     { v: 'ticari', l: t('projects.type_ticari', 'İş Merkezi & Ticari') },
                     { v: 'sanayi', l: t('projects.type_sanayi', 'Sanayi & Endüstriyel') },
                     { v: 'kentsel', l: t('projects.type_kentsel', 'Kentsel Dönüşüm') }
                 ];
-                typeBox.innerHTML = pillHTML(items, currentType);
+                typeSel.innerHTML = items.map(it => `<option value="${esc(it.v)}"${it.v === currentType ? ' selected' : ''}>${esc(it.l)}</option>`).join('');
+            }
+
+            const rentSel = document.getElementById('filterRent');
+            if (rentSel) {
+                const rentItems = [
+                    { v: 'all', l: 'Tümü' },
+                    { v: 'rent', l: 'Kiralık' },
+                    { v: 'sale', l: 'Satılık' }
+                ];
+                rentSel.innerHTML = rentItems.map(it => `<option value="${it.v}"${it.v === currentRent ? ' selected' : ''}>${it.l}</option>`).join('');
+            }
+
+            const statusSel = document.getElementById('filterStatusSelect');
+            if (statusSel) {
+                statusSel.value = currentStatusFilter || 'all';
             }
         }
 
@@ -319,6 +371,7 @@
             const locVal = normalizeCityKey(currentLoc);
             const typeVal = currentType;
             const distVal = currentDistrict;
+            const rentVal = currentRent;
             const q = currentSearch.trim().toLocaleLowerCase('tr');
 
             const filtered = allProjects.filter(p => {
@@ -339,11 +392,14 @@
                 const isUrban = p.isUrbanRenewal === 1 || p.isUrbanRenewal === true || projectTypes.includes('kentsel');
                 const matchType = (typeVal === 'all') || (typeVal === 'kentsel' ? isUrban : projectTypes.includes(typeVal.toLowerCase()));
 
+                const onRent = p.isForRent === 1 || p.isForRent === true;
+                const matchRent = (rentVal === 'all') || (rentVal === 'rent' ? onRent : !onRent);
+
                 const hay = [p.title, p.slogan, p.subtitle, p.cat, p.loc, p.district, p.type, p.statusLabel, p.description]
                     .filter(Boolean).join(' ').toLocaleLowerCase('tr');
                 const matchSearch = !q || hay.includes(q);
 
-                return matchStatus && matchLoc && matchDist && matchType && matchSearch;
+                return matchStatus && matchLoc && matchDist && matchType && matchRent && matchSearch;
             });
 
             lastFiltered = filtered;
@@ -727,7 +783,7 @@
                             <small class="map-panel-card-loc">${proj.loc || cityName}</small>
                             <div class="map-panel-card-badges">
                                 <span class="status-badge ${statusKey}">${statusText}</span>
-                                ${onSale ? `<span class="status-badge satista">${t('status.satista', 'Satışta').toLocaleUpperCase('tr-TR')}</span>` : `<span class="status-badge satista-kapali">${t('status.satista_kapali', 'Satışa Kapalı').toLocaleUpperCase('tr-TR')}</span>`}
+                                ${onRent ? `<span class="status-badge kiralik">${t('status.kiralik', 'Kiralık').toLocaleUpperCase('tr-TR')}</span>` : (onSale ? `<span class="status-badge satista">${t('status.satista', 'Satışta').toLocaleUpperCase('tr-TR')}</span>` : `<span class="status-badge satista-kapali">${t('status.satista_kapali', 'Satışa Kapalı').toLocaleUpperCase('tr-TR')}</span>`)}
                             </div>
                         </div>
                     </a>
@@ -760,6 +816,11 @@
             }
 
             // Select Dropdown Filtreleri
+            document.getElementById('filterStatusSelect')?.addEventListener('change', (e) => {
+                currentStatusFilter = e.target.value || 'all';
+                document.querySelectorAll('.status-tab').forEach(b => b.classList.toggle('active', (b.getAttribute('data-status') || 'all') === currentStatusFilter));
+                currentPage = 1; updatePageQuery(1); applyFilters();
+            });
             document.getElementById('filterLocation')?.addEventListener('change', (e) => {
                 currentLoc = e.target.value || 'all';
                 currentDistrict = 'all';
@@ -770,10 +831,12 @@
                 currentDistrict = e.target.value || 'all';
                 currentPage = 1; updatePageQuery(1); applyFilters();
             });
-            document.getElementById('typePills')?.addEventListener('click', (e) => {
-                const b = e.target.closest('.filter-pill'); if (!b) return;
-                currentType = b.dataset.value || 'all';
-                renderFilterSelects();
+            document.getElementById('filterType')?.addEventListener('change', (e) => {
+                currentType = e.target.value || 'all';
+                currentPage = 1; updatePageQuery(1); applyFilters();
+            });
+            document.getElementById('filterRent')?.addEventListener('change', (e) => {
+                currentRent = e.target.value || 'all';
                 currentPage = 1; updatePageQuery(1); applyFilters();
             });
 

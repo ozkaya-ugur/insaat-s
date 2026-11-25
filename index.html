@@ -14,7 +14,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Poppins:wght@200;300;400;500;600;700&family=Raleway:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/michele-m/soria-font@master/soria.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css?v=202611251000">
+    <link rel="stylesheet" href="style.css?v=202611251100">
 </head>
 <body>
 
@@ -139,7 +139,14 @@
                     <h2 class="section-title" id="homeFeaturedTitle" data-i18n="home.featured_title">Satıştaki Projelerimiz</h2>
                 </div>
                 <div class="showcase-head-actions">
-                    <div class="showcase-city-filter" id="showcaseCityFilter" role="group" aria-label="Şehir seçimi"></div>
+                    <div class="showcase-city-filter" id="showcaseCityFilter">
+                        <label for="showcaseCitySelect" class="showcase-city-label">İl</label>
+                        <div class="custom-select-box showcase-city-select-box">
+                            <i class="fa-solid fa-location-dot"></i>
+                            <select id="showcaseCitySelect" aria-label="Şehir seçimi"></select>
+                            <i class="fa-solid fa-chevron-down select-caret"></i>
+                        </div>
+                    </div>
                     <div class="showcase-arrows">
                         <button id="showcasePrev" aria-label="Önceki"><i class="fa-solid fa-arrow-left"></i></button>
                         <button id="showcaseNext" aria-label="Sonraki"><i class="fa-solid fa-arrow-right"></i></button>
@@ -221,13 +228,13 @@
     <div id="site-footer"></div>
 
     <!-- Ortak Bileşen Scriptleri -->
-    <script src="components/header.js?v=202611251000"></script>
-    <script src="components/footer.js?v=202611251000"></script>
+    <script src="components/header.js?v=202611251100"></script>
+    <script src="components/footer.js?v=202611251100"></script>
     
     <!-- Animasyon & Proje Scriptleri -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
-    <script src="script.js?v=202611251000"></script>
+    <script src="script.js?v=202611251100"></script>
 
     <!-- ANA SAYFA METİNLERİNİ PANELDEN GELEN AYARLARLA GÜNCELLEME -->
     <script>
@@ -279,6 +286,10 @@
         const SHOWCASE_CITY_ORDER = ['tr-sk', 'tr-ib', 'tr-an', 'tr-gi', 'tr-kc'];
         const SHOWCASE_CITY_KEY = 'homeShowcaseCity';
         const SHOWCASE_MAX_CARDS = 8;
+        const SHOWCASE_CITY_AUTO_MS = 7000;
+        const SHOWCASE_CITY_MANUAL_KEY = 'homeShowcaseCityManual';
+        let showcaseCityAutoTimer = null;
+        let showcaseCityRotating = false;
 
         function showcaseNorm(v) {
             return String(v || '')
@@ -329,21 +340,46 @@
             return window.__showcaseDetectedCity || 'all';
         }
 
-        function renderShowcaseCityPills(cities, active) {
-            const box = document.getElementById('showcaseCityFilter');
-            if (!box) return;
-            const items = [{ key: 'all', label: 'Tümü', count: cities.reduce((a, c) => a + c.count, 0) }].concat(cities);
-            box.innerHTML = items.map(c => `
-                <button type="button" class="city-pill${c.key === active ? ' active' : ''}" data-city="${c.key}" aria-pressed="${c.key === active ? 'true' : 'false'}">
-                    ${c.label}<span class="city-pill-count">${c.count}</span>
-                </button>`).join('');
-            box.querySelectorAll('.city-pill').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    const key = btn.dataset.city || 'all';
+        function renderShowcaseCitySelect(cities, active) {
+            const select = document.getElementById('showcaseCitySelect');
+            if (!select) return;
+            const items = [{ key: 'all', label: 'TÜMÜ', count: cities.reduce((a, c) => a + c.count, 0) }].concat(cities);
+            select.innerHTML = items.map(c => `<option value="${c.key}">${c.label.toLocaleUpperCase('tr-TR')} — ${c.count}</option>`).join('');
+            const valid = items.some(c => c.key === active) ? active : 'all';
+            select.value = valid;
+            if (!select.dataset.bound) {
+                select.addEventListener('change', () => {
+                    const key = select.value || 'all';
                     localStorage.setItem(SHOWCASE_CITY_KEY, key);
+                    localStorage.setItem(SHOWCASE_CITY_MANUAL_KEY, '1');
+                    stopShowcaseCityAutoRotate();
                     loadFeaturedProjectsFromAPI();
                 });
-            });
+                select.dataset.bound = '1';
+            }
+        }
+
+        function stopShowcaseCityAutoRotate() {
+            showcaseCityRotating = false;
+            if (showcaseCityAutoTimer) {
+                clearTimeout(showcaseCityAutoTimer);
+                showcaseCityAutoTimer = null;
+            }
+        }
+
+        function startShowcaseCityAutoRotate(cities, active) {
+            stopShowcaseCityAutoRotate();
+            if (localStorage.getItem(SHOWCASE_CITY_MANUAL_KEY) === '1') return;
+            const visibleKeys = ['all'].concat(cities.map(c => c.key));
+            if (visibleKeys.length <= 1) return;
+            showcaseCityRotating = true;
+            showcaseCityAutoTimer = setTimeout(() => {
+                if (!showcaseCityRotating) return;
+                const idx = Math.max(0, visibleKeys.indexOf(active));
+                const next = visibleKeys[(idx + 1) % visibleKeys.length];
+                localStorage.setItem(SHOWCASE_CITY_KEY, next);
+                loadFeaturedProjectsFromAPI();
+            }, SHOWCASE_CITY_AUTO_MS);
         }
 
         function applyShowcaseTitle(active, label) {
@@ -379,6 +415,7 @@
         }
 
         async function loadFeaturedProjectsFromAPI() {
+            const section = document.getElementById('projects');
             const track = document.getElementById('showcaseTrack');
             if (!track) return;
 
@@ -386,15 +423,21 @@
                 const curLang = localStorage.getItem('selectedLang') || 'tr';
                 const apiBase = (window.location && window.location.origin && !window.location.origin.startsWith('file:')) ? window.location.origin : 'http://127.0.0.1:8000';
 
-                // Tüm projeler: şehir filtresi ve satışta önceliği için tek kaynak
                 const allRes = await fetch(`${apiBase}/api/projects?lang=${curLang}&t=${Date.now()}`);
                 if (!allRes.ok) throw new Error('API yanıt vermedi');
                 const allProjects = await allRes.json();
-                if (!Array.isArray(allProjects) || !allProjects.length) return;
+                if (!Array.isArray(allProjects)) return;
 
-                // Şehir listesi (projesi olan iller)
+                const saleProjects = allProjects.filter(p => p && (p.isOnSale === 1 || p.isOnSale === true));
+                if (!saleProjects.length) {
+                    stopShowcaseCityAutoRotate();
+                    if (section) section.style.display = 'none';
+                    return;
+                }
+                if (section) section.style.display = '';
+
                 const counts = {};
-                allProjects.forEach(p => {
+                saleProjects.forEach(p => {
                     const k = p.cityKey || showcaseCityFromText(p.loc) || '';
                     if (!k) return;
                     counts[k] = (counts[k] || 0) + 1;
@@ -407,7 +450,6 @@
                     })
                     .map(k => ({ key: k, label: SHOWCASE_CITY_LABELS[k] || k, count: counts[k] }));
 
-                // Kayıtlı seçim yoksa konuma göre bir kez tespit et
                 let detected = false;
                 if (!localStorage.getItem(SHOWCASE_CITY_KEY) && !window.__showcaseDetectedCity) {
                     const guess = await detectShowcaseCity();
@@ -416,29 +458,26 @@
                 }
                 let active = showcaseActiveCity();
                 if (active !== 'all' && !counts[active]) active = 'all';
+                localStorage.setItem(SHOWCASE_CITY_KEY, active);
 
-                renderShowcaseCityPills(cities, active);
+                renderShowcaseCitySelect(cities, active);
 
                 const activeLabel = active === 'all' ? '' : (SHOWCASE_CITY_LABELS[active] || active);
                 applyShowcaseTitle(active, activeLabel);
                 applyShowcaseHint(active, activeLabel, detected);
 
-                // Şehre göre süz, satışta olanlar önce
-                let list = allProjects.filter(p => {
+                let list = saleProjects.filter(p => {
                     if (active === 'all') return true;
                     const k = p.cityKey || showcaseCityFromText(p.loc);
                     return k === active;
                 });
-                list.sort((a, b) => {
-                    const sa = (a.isOnSale === 1 || a.isOnSale === true) ? 1 : 0;
-                    const sb = (b.isOnSale === 1 || b.isOnSale === true) ? 1 : 0;
-                    return sb - sa;
-                });
+
                 list = list.slice(0, SHOWCASE_MAX_CARDS);
 
                 if (!list.length) {
-                    track.innerHTML = '<p class="showcase-empty">Bu şehirde gösterilecek proje bulunamadı.</p>';
+                    track.innerHTML = '<p class="showcase-empty">Bu şehirde satışta proje bulunamadı.</p>';
                     if (typeof window.resetShowcase === 'function') window.resetShowcase();
+                    startShowcaseCityAutoRotate(cities, active);
                     return;
                 }
 
@@ -478,6 +517,7 @@
 
                 if (typeof window.resetShowcase === 'function') window.resetShowcase();
                 if (typeof window.showcaseStartAuto === 'function') window.showcaseStartAuto();
+                startShowcaseCityAutoRotate(cities, active);
             } catch (err) {
                 console.log('API bağlantı hatası:', err);
             }
