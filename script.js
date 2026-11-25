@@ -740,14 +740,14 @@ function initFiltersAndMap(cityProjectsData) {
     // projeler.html filtreleri kendi içinde (arama + select + pill + harita) yönetir.
     // Bu eski kopya çalışırsa filtreleri ezer ve haritada tüm projeleri gösterir.
     if (window.__projectsInlineFilters) return;
-    const statusTabs = document.querySelectorAll(".status-tab");
+    const statusSelect = document.getElementById("filterStatusSelect");
     const locationSelect = document.getElementById("filterLocation");
     const typeSelect = document.getElementById("filterType");
     const projectItems = document.querySelectorAll(".project-item");
     const pins = document.querySelectorAll(".map-pin");
 
     function applyFilters() {
-        const activeStatus = document.querySelector(".status-tab.active")?.getAttribute("data-status") || "all";
+        const activeStatus = statusSelect ? (statusSelect.value || "all") : "all";
         const selectedLocation = locationSelect ? locationSelect.value : "all";
         const selectedType = typeSelect ? typeSelect.value : "all";
 
@@ -855,15 +855,7 @@ function initFiltersAndMap(cityProjectsData) {
 
     initTurkeyMap();
 
-    statusTabs.forEach(tab => {
-        tab.onclick = (e) => {
-            e.preventDefault();
-            statusTabs.forEach(t => t.classList.remove("active"));
-            tab.classList.add("active");
-            applyFilters();
-        };
-    });
-
+    if (statusSelect) statusSelect.onchange = applyFilters;
     if (locationSelect) locationSelect.onchange = applyFilters;
     if (typeSelect) typeSelect.onchange = applyFilters;
 

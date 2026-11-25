@@ -14,7 +14,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Poppins:wght@200;300;400;500;600;700&family=Raleway:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/michele-m/soria-font@master/soria.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css?v=202611251100">
+    <link rel="stylesheet" href="style.css?v=202611251200">
 </head>
 <body>
 
@@ -49,13 +49,6 @@
         <div class="container">
             
             <div class="advanced-filter-panel">
-                <div class="filter-group-status">
-                    <button class="status-tab active" data-status="all" data-i18n="projects.tab_all">TÜM PROJELER</button>
-                    <button class="status-tab" data-status="devam-eden" data-i18n="projects.tab_ongoing">DEVAM EDİYOR</button>
-                    <button class="status-tab" data-status="tamamlanan" data-i18n="projects.tab_completed">TAMAMLANDI</button>
-                    <button class="status-tab" data-status="yeni-proje" data-i18n="projects.tab_new">YENİ PROJELER</button>
-                </div>
-
                 <div class="projects-filter-toolbar">
                     <div class="projects-search-box">
                         <i class="fa-solid fa-magnifying-glass"></i>
@@ -93,12 +86,12 @@
                             </div>
                         </label>
                         <label class="filter-field" for="filterRent">
-                            <span class="filter-field-label">Kiralık</span>
+                            <span class="filter-field-label">Satış Durumu</span>
                             <div class="custom-select-box filter-select">
                                 <i class="fa-solid fa-tag"></i>
-                                <select id="filterRent" aria-label="Kiralık">
+                                <select id="filterRent" aria-label="Satış Durumu">
                                     <option value="all">Tümü</option>
-                                    <option value="rent">Kiralık</option>
+                                    <option value="rent">KİRALIK</option>
                                     <option value="sale">Satılık</option>
                                 </select>
                                 <i class="fa-solid fa-chevron-down select-caret"></i>
@@ -201,10 +194,10 @@
     <!-- Ortak Footer Yükleme Alanı -->
     <div id="site-footer"></div>
 
-    <script src="components/header.js?v=202611251100"></script>
-    <script src="components/footer.js?v=202611251100"></script>
+    <script src="components/header.js?v=202611251200"></script>
+    <script src="components/footer.js?v=202611251200"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <script src="script.js?v=202611251100"></script>
+    <script src="script.js?v=202611251200"></script>
 <!-- HIGHMAPS CANLI CDN BAGLANTILARI -->
     <script src="https://code.highcharts.com/maps/highmaps.js"></script>
     <script src="https://code.highcharts.com/mapdata/countries/tr/tr-all.js"></script>
@@ -331,7 +324,7 @@
             if (rentSel) {
                 const rentItems = [
                     { v: 'all', l: 'Tümü' },
-                    { v: 'rent', l: 'Kiralık' },
+                    { v: 'rent', l: 'Kiralık'.toLocaleUpperCase('tr-TR') },
                     { v: 'sale', l: 'Satılık' }
                 ];
                 rentSel.innerHTML = rentItems.map(it => `<option value="${it.v}"${it.v === currentRent ? ' selected' : ''}>${it.l}</option>`).join('');
@@ -402,8 +395,22 @@
                 return matchStatus && matchLoc && matchDist && matchType && matchRent && matchSearch;
             });
 
-            lastFiltered = filtered;
-            const pageData = paginateProjects(filtered);
+            const sorted = filtered
+                .map((project, index) => ({ project, index }))
+                .sort((a, b) => {
+                    const aSale = a.project.isOnSale === 1 || a.project.isOnSale === true;
+                    const bSale = b.project.isOnSale === 1 || b.project.isOnSale === true;
+                    const aRent = a.project.isForRent === 1 || a.project.isForRent === true;
+                    const bRent = b.project.isForRent === 1 || b.project.isForRent === true;
+                    const aGroup = aSale ? 0 : (aRent ? 1 : 2);
+                    const bGroup = bSale ? 0 : (bRent ? 1 : 2);
+                    if (aGroup !== bGroup) return aGroup - bGroup;
+                    return a.index - b.index;
+                })
+                .map(item => item.project);
+
+            lastFiltered = sorted;
+            const pageData = paginateProjects(sorted);
             renderGrid(pageData.items, pageData.startIndex);
             renderList(pageData.items, pageData.startIndex);
             renderPagination(pageData);
@@ -795,20 +802,6 @@
         document.addEventListener('DOMContentLoaded', () => {
             fetchDynamicProjects();
 
-            // Status Tab Butonları
-            document.querySelectorAll('.status-tab').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    document.querySelectorAll('.status-tab').forEach(b => b.classList.remove('active'));
-                    btn.classList.add('active');
-
-                    currentStatusFilter = btn.getAttribute('data-status') || 'all';
-                    renderFilterSelects();
-                    currentPage = 1;
-                    updatePageQuery(currentPage);
-                    applyFilters();
-                });
-            });
-
             // URL Parametre Kontrolü (?type=kentsel)
             const urlParams = new URLSearchParams(window.location.search);
             if (urlParams.get('type') === 'kentsel') {
@@ -818,7 +811,6 @@
             // Select Dropdown Filtreleri
             document.getElementById('filterStatusSelect')?.addEventListener('change', (e) => {
                 currentStatusFilter = e.target.value || 'all';
-                document.querySelectorAll('.status-tab').forEach(b => b.classList.toggle('active', (b.getAttribute('data-status') || 'all') === currentStatusFilter));
                 currentPage = 1; updatePageQuery(1); applyFilters();
             });
             document.getElementById('filterLocation')?.addEventListener('change', (e) => {

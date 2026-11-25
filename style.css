@@ -105,7 +105,7 @@ html {
     letter-spacing: 0.15em !important;
 }
 
-.nav-link, .nav-btn, .hero-btn, .row-action-btn, .office-map-btn, .f-cta-btn, .all-projects-btn, .catalog-cta-btn, .view-btn, .tab-btn, .status-tab {
+.nav-link, .nav-btn, .hero-btn, .row-action-btn, .office-map-btn, .f-cta-btn, .all-projects-btn, .catalog-cta-btn, .view-btn, .tab-btn {
     font-family: var(--font-heading) !important;
     font-size: 0.65rem !important;
     font-weight: 600 !important;
@@ -1338,31 +1338,6 @@ html {
     margin-bottom: 45px;
     border-bottom: 1px solid var(--border-hairline);
     flex-wrap: wrap;
-}
-
-.filter-group-status {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-}
-
-.status-tab {
-    padding: 10px 20px;
-    background: rgba(255, 255, 255, 0.02);
-    border: 1px solid var(--border-hairline);
-    color: var(--text-dim);
-    font-family: var(--font-heading);
-    font-size: 0.62rem;
-    font-weight: 600;
-    letter-spacing: 0.22em;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.status-tab:hover, .status-tab.active {
-    border-color: var(--accent-gold);
-    color: var(--accent-gold);
-    background: rgba(197, 160, 89, 0.1);
 }
 
 .filter-dropdowns-wrap {

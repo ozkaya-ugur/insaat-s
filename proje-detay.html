@@ -15,7 +15,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Poppins:wght@200;300;400;500;600;700&family=Raleway:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/michele-m/soria-font@master/soria.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css?v=202611251100">
+    <link rel="stylesheet" href="style.css?v=202611251200">
 </head>
 <body class="detail-page-body">
 
@@ -87,10 +87,6 @@
                     <div class="spec-box">
                         <span class="spec-label" data-i18n="detail.spec_type">PROJE TİPİ</span>
                         <strong class="spec-value" id="specType">Konut & Rezidans</strong>
-                    </div>
-                    <div class="spec-box">
-                        <span class="spec-label" data-i18n="detail.spec_concept">MİMARİ KONSEPT</span>
-                        <strong class="spec-value" id="specConcept">A++ Avant-Garde</strong>
                     </div>
                     <div class="spec-box">
                         <span class="spec-label" data-i18n="detail.spec_status">PROJE DURUMU</span>
@@ -412,12 +408,12 @@
     <div id="site-footer"></div>
 
     <!-- KÜTÜPHANELER -->
-    <script src="components/header.js?v=202611251100"></script>
-    <script src="components/footer.js?v=202611251100"></script>
+    <script src="components/header.js?v=202611251200"></script>
+    <script src="components/footer.js?v=202611251200"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="components/highmaps.js"></script>
     <script src="components/tr-all.js"></script>
-    <script src="script.js?v=202611251100"></script>
+    <script src="script.js?v=202611251200"></script>
 
     <!-- KESİN VE ZORLAYICI (FORCE) DİNAMİK YÜKLEYİCİ -->
     <script>
@@ -613,7 +609,6 @@
                 if (document.getElementById('specLoc')) document.getElementById('specLoc').innerText = proj.loc || 'Sakarya';
                 if (document.getElementById('specType')) document.getElementById('specType').innerText = typeLabel;
                 if (document.getElementById('specArea') && proj.area) document.getElementById('specArea').innerText = proj.area;
-                if (document.getElementById('specConcept') && proj.concept) document.getElementById('specConcept').innerText = proj.concept;
 
                 // 3. DURUM ROZETLERİ (ÇOK DİLLİ)
                 const isCompleted = (proj.status || '').toLowerCase().includes('tamam');
